@@ -1,0 +1,429 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+
+            .PENDT{
+                background-color: #E8E8E8 !important; 
+                background-image: none !important; 
+                font-weight: bold;                    
+
+            }
+
+            .EXACTO{
+                background-color: #7CEF7C !important; 
+                background-image: none !important; 
+                font-weight: bold;                    
+
+            }
+            .SAMORT{
+                background-color: #D0B1D0 !important; 
+                background-image: none !important; 
+                font-weight: bold;                    
+
+            }
+            .MAYOR{
+                background-color: #FF8860 !important; 
+                background-image: none !important; 
+                font-weight: bold; 
+            }
+            .MENOR{
+                background-color: #FFFFA3 !important; 
+                background-image: none !important; 
+                font-weight: bold; 
+            }
+            .MASUNO{
+                background-color: #AEE5FF !important; 
+                background-image: none !important; 
+                font-weight: bold; 
+
+            }
+
+            .MASUNOA{
+                background-color: #B5FFB5 !important; 
+                background-image: none !important; 
+                font-weight: bold; 
+
+            }
+            .ACUM{
+                background-color: #F5A9F2 !important; 
+                background-image: none !important; 
+                font-weight: bold; 
+
+            }
+            .EXTEMP{
+                background-color: #78E493 !important; 
+                background-image: none !important; 
+                font-weight: bold; 
+
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Reporte Resultado Pagos</div>
+                    </h3>
+
+
+                    <div class="Container100 ">
+                        <div class="ContainerIndent">
+                            <h:form id="frmRepResultados">
+
+                                <h:panelGrid id="pnlGdCatorcenasAplica" columns="3" cellpadding="3" cellspacing="5" 
+                                             >
+                                    <p:outputLabel  value="Selecciona la catorcena a consultar: " />
+                                    <p:calendar id="fechaCatorc" value="#{resultadoPagosBean.fecha}" locale="es"
+                                                required="true" requiredMessage="Debe elegir una catorcena para continuar." showOn="button">
+                                    </p:calendar>
+
+                                    <p:commandButton value="Consultar" 
+                                                     icon="ui-icon-refresh"
+                                                     actionListener="#{resultadoPagosBean.obtenerResultados}"
+                                                     update=":frmRepResultados"
+                                                     onstart="PF('statusDialog').show()"
+                                                     oncomplete="PF('statusDialog').hide()"
+                                                     >
+                                    </p:commandButton>
+
+                                </h:panelGrid>
+                                <p:messages></p:messages>
+
+                                <p:accordionPanel id="apTablas" dynamic="true" cache="true" style="width:1000px" rendered="#{resultadoPagosBean.rdrTablas}"
+                                                  multiple="true">  
+                                    <p:tab title="Pagos de amortizacion asignados">
+
+                                        <h:panelGrid columns="1">
+                                            <p:dataTable id="tblAmortizacionPagos" var="amo" value="#{resultadoPagosBean.amortizacionLst}"  
+                                                         emptyMessage="No hay registros que mostrar." 
+                                                         paginator="true" rows="50"
+                                                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+                                                         {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+                                                         rowsPerPageTemplate="10,50,100"
+                                                         filterEvent="enter"
+                                                         filteredValue="#{resultadoPagosBean.amortizacionLstFiltrada}"
+                                                         >  
+
+                                                <p:column  filterBy="#{amo.usuClaveEmpleado}" filterStyle="width: 70% !important" style='position: relative;width: 80px !important'>  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Clave empleado"/>  
+                                                    </f:facet>  
+                                                    <h:outputText value="#{amo.usuClaveEmpleado}" />  
+                                                </p:column> 
+
+                                                <p:column filterBy="#{amo.empAbreviacion}" filterStyle="width: 70% !important" style='position: relative;width: 80px !important'>  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Empresa"/>  
+                                                    </f:facet>  
+                                                    <h:outputText value="#{amo.empAbreviacion}" />  
+                                                </p:column>  
+                                                <p:column filterBy="#{amo.creClave}" style='position: relative'>  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Clave crédito"/>  
+                                                    </f:facet>  
+                                                    <h:outputText value="#{amo.creClave}" />  
+                                                </p:column>  
+
+                                                <p:column style='position: relative;width: 70px !important' >  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="No. Pago"/>  
+                                                    </f:facet>  
+                                                    <h:outputText value="#{amo.amoNumeroPago}" />  
+                                                </p:column>  
+
+                                                <p:column style='position: relative'>
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Capital"/>
+
+                                                    </f:facet>  
+                                                    <h:outputText value="#{amo.amoCapital}" >  
+                                                        <f:convertNumber currencySymbol="$" type="currency"/>
+                                                    </h:outputText>  
+                                                </p:column>  
+
+                                                <p:column style='position: relative'>  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Pago amortización"/>  
+                                                    </f:facet>
+                                                    <h:outputText value="#{amo.amoMontoPago}" >  
+                                                        <f:convertNumber currencySymbol="$" type="currency"/>
+                                                    </h:outputText> 
+                                                </p:column>
+
+                                                <p:column style='position: relative'>  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Pago archivo"/>  
+                                                    </f:facet>
+                                                    <h:outputText value="#{amo.pagDeposito}" >  
+                                                        <f:convertNumber currencySymbol="$" type="currency"/>
+                                                    </h:outputText> 
+                                                </p:column>  
+                                                <p:column style='position: relative'>  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Diferencia"/>  
+                                                    </f:facet>
+                                                    <h:outputText value="#{amo.diferencia}" >  
+                                                        <f:convertNumber currencySymbol="$" type="currency"/>
+                                                    </h:outputText> 
+                                                </p:column>  
+
+                                                <p:column filterBy="#{amo.amoEstNombre}" sortBy="#{amo.amoEstNombre}" style='position: relative'
+                                                          filterMatchMode="contains">  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Estatus de pago"/>  
+                                                    </f:facet>
+                                                    <h:outputText value="#{amo.amoEstNombre}" />  
+                                                </p:column>
+
+                                                <p:column style='position: relative;width: 100px !important'>  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Fecha de pago"/>  
+                                                    </f:facet> 
+                                                    <h:outputText value="#{amo.amoFechaPago}" >  
+                                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                                    </h:outputText>  
+                                                </p:column>  
+                                            </p:dataTable>  
+
+
+                                            <h:commandLink>  
+                                                <p:graphicImage value="../../resources/images/excel.png" /> 
+                                                <p:dataExporter type="xls"  target=":frmRepResultados:apTablas:tblAmortizacionPagos" fileName="creditos_pagados" />  
+                                            </h:commandLink>  
+
+                                        </h:panelGrid>
+                                    </p:tab>
+
+<!--                                    <p:tab title="Créditos no pagados">
+                                        <p:dataTable id="tblAmortizacionPendientes" var="amo" value="#{resultadoPagosBean.amortizacionNoPagadosLst}"  
+                                                     emptyMessage="No hay registros que mostrar." 
+                                                     paginator="true" rows="50"
+                                                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+                                                     {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+                                                     rowsPerPageTemplate="10,50,100"
+                                                     filterEvent="enter"
+                                                     filteredValue="#{resultadoPagosBean.amoNoPagadosLstFiltradas}"
+                                                     >  
+
+                                            <p:column filterBy="#{amo.usuClaveEmpleado}" style='position: relative'>  
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Clave empleado"/>  
+                                                </f:facet>  
+                                                <h:outputText value="#{amo.usuClaveEmpleado}" />  
+                                            </p:column> 
+
+                                            <p:column filterBy="#{amo.empAbreviacion}" filterStyle="width: 80% !important" style='position: relative;width: 80px !important'>  
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Empresa"/>  
+                                                </f:facet>  
+                                                <h:outputText value="#{amo.empAbreviacion}" />  
+                                            </p:column>  
+                                            <p:column filterBy="#{amo.creNombre}" style='position: relative;width: 30% !important'
+                                                      filterMatchMode="contains">  
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Nombre usuario"/>  
+                                                </f:facet>  
+                                                <h:outputText value="#{amo.creNombre}" />  
+                                            </p:column>  
+                                            <p:column filterBy="#{amo.creClave}" filterStyle="width: 80% !important" style='position: relative;width: 20% !important' >  
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Clave crédito"/>  
+                                                </f:facet>  
+                                                <h:outputText value="#{amo.creClave}" />  
+                                            </p:column>  
+
+                                            <p:column >  
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Pago amortización" />  
+                                                </f:facet>
+                                                <h:outputText value="#{amo.amoMontoPago}" >  
+                                                    <f:convertNumber currencySymbol="$" type="currency"/>
+                                                </h:outputText>  
+                                            </p:column>
+                                            <p:column >  
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Diferencia" />  
+                                                </f:facet>
+                                                <h:outputText value="#{amo.diferencia}" >  
+                                                    <f:convertNumber currencySymbol="$" type="currency"/>
+                                                </h:outputText>  
+                                            </p:column>
+
+                                            <p:column filterBy="#{amo.amoEstNombre}" filterStyle="width: 80% !important" >  
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Estatus de pago">  
+                                                    </h:outputText> 
+                                                </f:facet>
+                                                <h:outputText value="#{amo.amoEstNombre}" />  
+                                            </p:column>
+
+                                            <p:column >  
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Fecha de pago"/>  
+                                                </f:facet> 
+                                                <h:outputText value="#{amo.amoFechaPago}" >  
+                                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                                </h:outputText>   
+                                            </p:column>  
+                                        </p:dataTable> 
+
+                                        <h:commandLink>  
+                                            <p:graphicImage value="../../resources/images/excel.png" />   
+                                            <p:dataExporter type="xls"  target=":frmRepResultados:apTablas:tblAmortizacionPendientes" fileName="creditos_pendientes" />  
+                                        </h:commandLink>  
+                                    </p:tab>
+-->
+                                    <p:tab title="Detalle de pagos de archivo">
+                                        <h:panelGrid>
+                                            <p:dataTable id="tblPagos" var="pago" value="#{resultadoPagosBean.pagosLst}"
+                                                         widgetVar="pagosTabla"
+                                                         emptyMessage="No hay registros que mostrar." 
+                                                         paginator="true" rows="50"
+                                                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+                                                         {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+                                                         rowsPerPageTemplate="10,50,100"
+                                                         rowStyleClass="#{pago.pagEstColor}"
+                                                         filterEvent="enter"
+                                                         filteredValue="#{resultadoPagosBean.pagosLstFiltrados}"
+                                                         >  
+
+                                                <p:column filterBy="#{pago.pagClaveEmpleado}" filterStyle="width: 80% !important" >  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Clave empleado"/>  
+                                                    </f:facet>  
+                                                    <h:outputText value="#{pago.pagClaveEmpleado}" />  
+                                                </p:column>
+
+                                                <p:column filterBy="#{pago.empAbreviacion}" filterStyle="width: 80% !important" 
+                                                          filterMatchMode="contains" >  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Empresa"/>  
+                                                    </f:facet>  
+                                                    <h:outputText value="#{pago.empAbreviacion}" />  
+                                                </p:column>
+
+                                                <p:column filterBy="#{pago.pagUsuNombre}" filterMatchMode="contains" 
+                                                          filterStyle="width: 80% !important" style="width: 30% !important">  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Nombre empleado"/>  
+                                                    </f:facet>  
+                                                    <h:outputText value="#{pago.pagUsuNombre}" />  
+                                                </p:column>
+
+                                                <p:column >  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Fecha"/>  
+                                                    </f:facet>  
+                                                    <h:outputText value="#{pago.pagFecha}" >  
+                                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                                    </h:outputText>    
+                                                </p:column>
+
+                                                <p:column >  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Monto pago"/>  
+                                                    </f:facet>  
+                                                    <h:outputText value="#{pago.pagDeposito}" >  
+                                                        <f:convertNumber currencySymbol="$" type="currency"/>
+                                                    </h:outputText> 
+                                                </p:column>
+                                                <p:column >  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Acumulado"/>  
+                                                    </f:facet>  
+                                                    <h:outputText value="#{pago.pagAcumulado}" >  
+                                                        <f:convertNumber currencySymbol="$" type="currency"/>
+                                                    </h:outputText> 
+                                                </p:column>
+
+                                                <p:column filterBy="#{pago.pagEstNombre}" sortBy="#{pago.pagEstNombre}" 
+                                                          filterMatchMode="contains" headerText="Estatus pago" 
+                                                          filterStyle="width: 80% !important" >  
+
+                                                    <h:outputText value="#{pago.pagEstNombre}" />  
+                                                </p:column>
+                                                <p:column filterBy="#{pago.amoEstNombre}" filterStyle="width: 80% !important" 
+                                                          filterMatchMode="contains" >  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Estatus amortización"/>  
+                                                    </f:facet>  
+                                                    <h:outputText  value="#{pago.amoEstNombre}" />  
+                                                </p:column>
+                                                <p:column sortBy="#{pago.creClave}" >  
+                                                    <f:facet name="header">  
+                                                        <h:outputText value="Clave crédito"/>  
+                                                    </f:facet>  
+                                                    <h:outputText value="#{pago.creClave}" />  
+                                                </p:column>
+
+                                            </p:dataTable>
+                                            <h:commandLink>  
+                                                <p:graphicImage value="../../resources/images/excel.png" /> 
+                                                <p:dataExporter type="xls"  target=":frmRepResultados:apTablas:tblPagos" fileName="pagos_sin_asignar" />  
+                                            </h:commandLink>  
+
+
+                                        </h:panelGrid>
+                                    </p:tab>
+
+                                </p:accordionPanel>
+
+
+                            </h:form>
+
+                        </div>
+                    </div></div>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

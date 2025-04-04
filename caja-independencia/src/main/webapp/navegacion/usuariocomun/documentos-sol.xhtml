@@ -1,0 +1,58 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="Container100 Responsive100">
+        <div class="ContainerIndent">
+            <h:form id="frmDoctosSolicitud">
+                <f:event type="preRenderComponent" listener="#{doctosSolBean.init}"/>
+                <p:panel id="pnlDocs" styleClass="panelGrid" header="Documentación">
+
+                    <p:dataTable id="tblDocs" var="doc" value="#{doctosSolBean.documentos}"
+                                 widgetVar="tblDocsWd" style="width: 97%">
+
+                        <p:column headerText="DocumentoDOCSSS">
+                            <h:outputText value="#{doc.tipoDocumento}" />
+                        </p:column>
+                        <p:column headerText="Estatus">
+                            <h:outputText value="#{doc.strStatus}" />
+                        </p:column>
+                        <p:column headerText="Comentarios">
+                            <h:outputText value="#{doc.observaciones}" />
+                        </p:column>
+                        <p:column headerText="Subir documento" style="width:20%;text-align: center">
+                            <p:commandButton update=":frmDoctosSolicitud:subirDoc" oncomplete="PF('cargaDocumentoDlg').show()" icon="fa fa-file-pdf-o Fs16 white" 
+                                             disabled="#{doc.getiStatus() ne 1 and 
+                                                         doc.getiStatus() ne 4 }">
+                                <f:setPropertyActionListener value="#{doc}" target="#{doctosSolBean.docSeleccionado}"  />
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+                </p:panel>
+
+                <p:dialog id="subirDoc" header="Carga de documento" widgetVar="cargaDocumentoDlg" 
+                          modal="true" showEffect="fade" hideEffect="fade" resizable="false"
+                          >
+                    <p:ajax event="close" update=":frmDoctosSolicitud"   onstart="PF('statusDialog').show()"
+                            oncomplete="PF('statusDialog').hide()"/>
+
+                    <p:fileUpload  fileUploadListener="#{doctosSolBean.handleFileUpload}"  mode="advanced" 
+                                   cancelLabel="Cancelar" fileLimitMessage="Sólo puede subir un archivo" uploadLabel="Subir archivo"
+                                   invalidSizeMessage="El archivo es demasiado grande" fileLimit="1" auto="true"
+                                   oncomplete="PF('cargaDocumentoDlg').hide()" 
+                                   multiple="false" sizeLimit="10000000" invalidFileMessage="Sólo se permiten archivos en formato PDF" 
+                                   allowTypes="/(\.|\/)(pdf)$/" label="Abrir archivo" update="msjdoc, :frmDoctosSolicitud:tblDocs, growl"
+                                   />  
+
+                    <p:messages id="msjdoc"/>
+
+                </p:dialog>
+                <p:growl id="growl" for="growl"/>
+            </h:form>
+        </div>
+    </div>
+
+</ui:composition>

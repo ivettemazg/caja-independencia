@@ -1,0 +1,230 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+
+            .ajustado{
+                background-color: #9BFF78 !important; 
+                background-image: none !important; 
+                font-weight: bold;                    
+
+            }
+
+            .ajustado-parcial{
+                background-color: #FDFF75 !important; 
+                background-image: none !important; 
+                font-weight: bold;                    
+
+            }
+
+
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Ajuste bancos</div>
+                    </h3>
+
+                    <div class="Container10 ">
+                        <div class="ContainerIndent"> 
+                        </div>
+                    </div>
+
+                    <div class="Container100 Responsive100">
+                        <h:form id="frmReporteBancos">
+
+
+                            <p:panelGrid columns="5" style="border:0px !important; background:none; "
+                                         styleClass="FormContent"
+                                         layout="grid"  >
+
+                                <p:outputLabel value="Reporte desde " />  
+                                <p:calendar value="#{repBancosBean.fechaInicio}" navigator="true" 
+                                            id="calFechInicio" pattern="dd/MM/yyyy" locale="es" required="true"
+                                            requiredMessage="Por favor seleccione una fecha de inicio"/>
+
+                                <p:outputLabel value="hasta " />  
+                                <p:calendar value="#{repBancosBean.fechaFin}" navigator="true" 
+                                            id="calFechFin" pattern="dd/MM/yyyy" locale="es" required="true"
+                                            requiredMessage="Por favor seleccione una fecha de fin"/>
+
+                                <p:commandButton value="Cargar información" 
+                                                 actionListener="#{repBancosBean.cargaReporte}"
+                                                 update=":frmReporteBancos"
+                                                  onstart="PF('statusDialog').show()"
+                                                oncomplete="PF('statusDialog').hide()"/>
+
+                                <p:spacer height="25"/>
+                            </p:panelGrid>
+
+
+                            <p:dataTable id="tblRepBan" var="ban" value="#{repBancosBean.lstBancos}"  
+                                         emptyMessage="No hay conceptos en este rango de fechas"
+                                         rowKey="#{ban.ecId}" sortBy="#{ban.summary}" sortOrder="descending"
+                                         rowStyleClass="#{ban.color}"
+                                         filterEvent="enter"
+                                         filteredValue="#{repBancosBean.lstBancosFiltradas}"
+                                         paginatorPosition="bottom"
+                                         scrollable="true" scrollHeight="80%"
+                                         paginator="true" rows="25"  
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                         rowsPerPageTemplate="25, 35, 45"
+
+                                         >  
+                                <p:column 
+                                    >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Id"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{ban.ecId}" />  
+                                </p:column>
+
+                                <p:column filterBy="#{ban.conceptoStr}" filterStyle="width:80%" filterMatchMode="contains"
+                                          >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Concepto"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{ban.conceptoStr}" />  
+                                    
+                                </p:column>
+                                <p:column filterBy="#{ban.empAbreviacion}" filterStyle="width:80%" filterMatchMode="contains"
+                                          >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Empresa"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{ban.empAbreviacion}" />  
+                                </p:column>
+                                <p:column >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Descripcion"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{ban.ecDescripcion}" />  
+                                </p:column>
+
+                                <p:column style='position: relative' filterBy="#{ban.ecFechaConcepto}" filterStyle="width:80%" filterMatchMode="contains">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Fecha"/>  
+                                    </f:facet>  
+
+                                    <h:outputText value="#{ban.ecFechaConcepto}" >  
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+
+
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Monto"/>  
+                                    </f:facet> 
+                                    <h:outputText value="#{ban.ecMonto}" > 
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" pattern="###,###.00"/>
+                                    </h:outputText>  
+                                    
+                                    <f:facet name=""></f:facet>
+                                </p:column>
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Pendiente ajuste"/>  
+                                    </f:facet> 
+                                    <h:outputText value="#{ban.saldoPendienteAjuste}" > 
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" pattern="###,###.00"/>
+                                    </h:outputText>  
+                                </p:column>
+
+                                <p:column  filterBy="#{ban.estatus}" filterStyle="width:80%" filterMatchMode="contains">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Estatus"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{ban.estatus}" />  
+                                </p:column>
+
+                                <p:summaryRow listener="#{repBancosBean.calculaSummary(ban)}" > 
+                                    <p:column colspan="5" style="text-align:right" >
+                                        <h:outputText value="Total:" />
+                                    </p:column>
+                                    <p:column >
+                                        <h:outputText value="#{repBancosBean.totalMonto}">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column colspan="2">
+                                        <h:outputText value="#{repBancosBean.totalSaldo}">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </p:column>
+                                </p:summaryRow>
+                                
+                               </p:dataTable>
+
+                            <h:commandLink>  
+                                <p:graphicImage value="../../resources/images/excel.png" />  
+                                <p:dataExporter type="xls"  target=":frmReporteBancos:tblRepBan" fileName="reporte_empresa" />  
+                            </h:commandLink> 
+
+                            <p:messages id ="pmesa"/>
+
+
+
+                        </h:form>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </ui:define>
+
+</ui:composition>

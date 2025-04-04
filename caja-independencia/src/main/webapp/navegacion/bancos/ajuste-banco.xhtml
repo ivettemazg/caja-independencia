@@ -1,0 +1,420 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+
+            .ajustado{
+                background-color: #9BFF78 !important; 
+                background-image: none !important; 
+                font-weight: bold;                    
+
+            }
+
+            .ajustado-parcial{
+                background-color: #FDFF75 !important; 
+                background-image: none !important; 
+                font-weight: bold;                    
+
+            }
+
+
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Ajuste bancos</div>
+                    </h3>
+
+                    <div class="Container10 ">
+                        <div class="ContainerIndent"> 
+                        </div>
+                    </div>
+
+                    <h:form id="frmAjusteBanco">
+                        <p:panelGrid columns="5" style="border:0px !important; background:none; "
+                                     styleClass="FormContent"
+                                     layout="grid"  >
+
+                            <p:outputLabel value="Reporte desde " />  
+                            <p:calendar value="#{bancoAjusteBean.fechaInicio}" navigator="true" 
+                                        id="calFechInicio" pattern="dd/MM/yyyy" locale="es" required="true"
+                                        requiredMessage="Por favor seleccione una fecha de inicio"/>
+
+                            <p:outputLabel value="hasta " />  
+                            <p:calendar value="#{bancoAjusteBean.fechaFin}" navigator="true" 
+                                        id="calFechFin" pattern="dd/MM/yyyy" locale="es" required="true"
+                                        requiredMessage="Por favor seleccione una fecha de fin"/>
+
+                            <p:commandButton value="Cargar información" actionListener="#{bancoAjusteBean.cargaReporte}"
+                                            onstart="PF('statusDialog').show()"
+                                            oncomplete="PF('statusDialog').hide()"
+                                            update=":frmAjusteBanco"/>
+
+                            <p:spacer height="25"/>
+                        </p:panelGrid>
+
+
+                        <div class="Container40 Responsive40">
+
+                            <p:dataTable id="tblCSistem" var="csis" value="#{bancoAjusteBean.conceptsSistem}"  
+                                         emptyMessage="No hay conceptos en este rango de fechas"
+                                         selection="#{bancoAjusteBean.sistemSel}" 
+                                         rowStyleClass="#{csis.color}"
+                                         rowKey="#{csis.banId}"
+                                         sortBy="#{csis.idPantalla}" sortOrder="descending"
+                                          filterEvent="enter"
+                                          filteredValue="#{bancoAjusteBean.bancoFiltradas}"
+                                         >  
+                               
+                                <f:facet name="header">
+                                    Conceptos sistema
+                                </f:facet>
+
+                                <p:column selectionMode="multiple" style="width:9%" />
+
+                                <p:column style='position: relative' filterBy="#{csis.banFechatransaccion}" filterStyle="width:80%" 
+                                          filterMatchMode="contains" >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Fecha"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{csis.banFechatransaccion}" >  
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText> 
+                                </p:column>
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Usuarion\n/Archivo"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{csis.claveNombre}" >  
+                                    </h:outputText> 
+                                </p:column>
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Empresa"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{csis.banEmpresaStri}" >  
+                                    </h:outputText> 
+                                </p:column>
+                                <p:column style='position: relative; width: 27%' filterBy="#{csis.concepto}" filterStyle="width:80%" 
+                                          filterMatchMode="contains">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Concepto"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{csis.concepto}" />  
+                                </p:column>
+                                <p:column style='position: relative' filterBy="#{csis.banMonto}" filterStyle="width:80%" filterMatchMode="contains">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Monto"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{csis.banMonto}" > 
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" pattern="###,###.00"/>
+                                    </h:outputText> 
+                                </p:column>
+                               
+                                <p:column style='position: relative; width: 10%' filterBy="#{csis.idPantalla}" filterStyle="width:30%" filterMatchMode="contains">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Ref"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{csis.idPantalla}" />  
+                                </p:column>
+                                
+                                 <p:summaryRow listener="#{bancoAjusteBean.calcTotalBan(csis.rbeId)}" > 
+                                    <p:column colspan="4" style="text-align:right">
+                                        <h:outputText value="Total:" />
+                                    </p:column>
+                                    <p:column colspan="2">
+                                        <h:outputText value="#{bancoAjusteBean.totalBanco}">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </p:column>
+                                </p:summaryRow>
+
+
+                            </p:dataTable>
+                        </div>
+                        <div class="Container5 Responsive5">
+                            <p:spacer width="5pt"/>
+                        </div>
+                        <div class="Container50 Responsive50">
+                            <p:dataTable id="tblEC" var="cec" value="#{bancoAjusteBean.conceptEdoCta}"  
+                                         emptyMessage="No hay conceptos en este rango de fechas"
+                                         selection="#{bancoAjusteBean.edoCtaSel}" 
+                                         rowKey="#{cec.ecId}" sortBy="#{cec.idPantalla}" sortOrder="descending"
+                                         editable="true"
+                                         rowStyleClass="#{cec.color}"
+                                           filterEvent="enter"
+                                           filteredValue="#{bancoAjusteBean.edoCtaFiltradas}"
+                                         >  
+
+                                <p:ajax event="rowSelectCheckbox" listener="#{bancoAjusteBean.rowECSelect}"
+                                         onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"/>
+                                <p:ajax event="rowUnselectCheckbox" listener="#{bancoAjusteBean.rowECUnselect}" 
+                                         onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"/>
+                                <p:ajax event="rowEdit" listener="#{bancoAjusteBean.onRowEditEC}" 
+                                        update= ":frmAjusteBanco:msjTbls" 
+                                         onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"/>
+
+                                <f:facet name="header">
+                                    Conceptos estado de cuenta
+                                </f:facet>
+
+                                <p:column selectionMode="multiple" style="width:9%" />
+
+                                <p:column style='position: relative; width: 10%' filterBy="#{cec.idPantalla}" filterStyle="width:30%" filterMatchMode="contains">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Ref"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{cec.idPantalla}" />  
+                                </p:column>
+                                <p:column style='position: relative; width: 10%' filterBy="#{cec.ecId}" filterStyle="width:80%"
+                                          filterMatchMode="contains" rendered ="false">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Id"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{cec.ecId}" />  
+                                </p:column>
+
+                                <p:column style='position: relative; width: 18%' filterBy="#{cec.ecFechatransaccion}" filterStyle="width:80%" filterMatchMode="contains" >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Fecha"/>  
+                                    </f:facet>  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{cec.ecFechatransaccion}" >  
+                                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                            </h:outputText>
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <p:calendar value="#{cec.ecFechatransaccion}" navigator="true" 
+                                                        pattern="dd/MM/yyyy" locale="es" required="true" />  
+                                        </f:facet>  
+                                    </p:cellEditor> 
+
+                                </p:column>
+                                <p:column style='position: relative; width: 18%' filterBy="#{cec.ecDescripcion}" filterStyle="width:80%" filterMatchMode="contains">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Descripcion"/>  
+                                    </f:facet>  
+
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{cec.ecDescripcion}" /> 
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <p:inputText value="#{cec.ecDescripcion}" style="width:90%"  />
+                                        </f:facet>  
+                                    </p:cellEditor> 
+                                </p:column>
+                                <p:column style='position: relative; width: 23%' filterBy="#{cec.concepto.cbanNombre}" filterStyle="width:80%" filterMatchMode="contains">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Concepto"/>  
+                                    </f:facet>  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{cec.concepto.cbanNombre}" />  
+                                        </f:facet>
+
+                                        <f:facet name="input">  
+                                            <h:selectOneMenu value="#{cec.banConceptoId}"
+                                                             styleClass="ui-inputfield ui-widget ui-state-default ui-corner-all" >
+                                                <f:selectItems value="#{bancoAjusteBean.conceptos}" var="conc" itemLabel="#{conc.cbanNombre}" itemValue="#{conc.cbanId}" />
+                                            </h:selectOneMenu> 
+                                        </f:facet> 
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column style='position: relative; width: 20%' filterBy="#{cec.ecMonto}" filterStyle="width:80%" filterMatchMode="contains">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Monto"/>  
+                                    </f:facet> 
+
+                                    <p:cellEditor>  
+
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{cec.ecMonto}" > 
+                                                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" pattern="###,###.00"/>
+                                            </h:outputText>  
+                                        </f:facet>
+                                        <f:facet name="input">   
+                                            <p:inputNumber id="inMonto" value="#{cec.ecMonto}" 
+                                                           decimalPlaces="2" required="true" 
+                                                           requiredMessage="Debe meter un valor en el monto" />
+                                        </f:facet> 
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column style="width:5%"  >  
+                                    <p:rowEditor   />  
+                                </p:column>
+                                
+                                
+                                <p:summaryRow listener="#{bancoAjusteBean.calcTotalEC(cec.rbeId)}" > 
+                                    <p:column colspan="5" style="text-align:right">
+                                        <h:outputText value="Total:" />
+                                    </p:column>
+                                    <p:column colspan="2">
+                                        <h:outputText value="#{bancoAjusteBean.totalEdoCta}">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </p:column>
+                                </p:summaryRow>
+
+
+                                <f:facet name="footer" >
+                                    <p:commandButton id="multiViewButton1" value="Agregar concepto" 
+                                                     actionListener="#{bancoAjusteBean.initDlgAddCncp}"
+                                                      onstart="PF('statusDialog').show()"
+                                oncomplete="PF('statusDialog').hide()"
+                                                     />
+                                    <p:commandButton id="multiViewButton2" value="Eliminar concepto" 
+                                                     actionListener="#{bancoAjusteBean.eliminaConcepto}"
+                                                     update=":frmAjusteBanco:tblEC, frmAjusteBanco:tblCSistem,
+                                                    :frmAjusteBanco:msjFrmAjusteBanco"
+                                                     onstart="PF('statusDialog').show()"
+                                                     oncomplete="PF('statusDialog').hide()"
+                                                     />
+                                </f:facet>
+                            </p:dataTable>
+                            <p:messages id ="pmesa"/>
+                        </div>
+
+                        <p:panelGrid columns="1"  style="border:0px !important; background:none; " 
+                                     styleClass="FormContent" 
+                                     layout="grid"  >
+                            <p:spacer height="25"/>
+                            <p:messages id="msjTbls"/>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="4"  style="border:0px !important; background:none; " 
+                                     styleClass="FormContent" 
+                                     layout="grid"  >
+                            <p:spacer width="40"/>
+                            <p:commandButton value="Ajustar" class="Wid60" 
+                                             actionListener="#{bancoAjusteBean.ajustaConceptos}"
+                                             update=":frmAjusteBanco:tblEC, frmAjusteBanco:tblCSistem,
+                                             :frmAjusteBanco:msjFrmAjusteBanco"
+                                              onstart="PF('statusDialog').show()"
+                                              oncomplete="PF('statusDialog').hide()"/>
+                            <p:commandButton value="Quitar ajuste" class="Wid60" 
+                                             actionListener="#{bancoAjusteBean.quitarAjuste}"
+                                             update=":frmAjusteBanco:tblEC, frmAjusteBanco:tblCSistem,
+                                             :frmAjusteBanco:msjFrmAjusteBanco"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"
+                                             />
+                            <p:spacer width="40"/>
+                        </p:panelGrid>
+
+                        <p:growl id='msjFrmAjusteBanco' class="Wid100"/>
+
+                    </h:form>
+
+
+                    <p:dialog id="dlgAddConcept" widgetVar="dlgAddConceptW"  header="Agregar concepto"
+                              height="400" width="700" modal="true">
+                        <h:form id="dlgFrmAddConcept">
+                            <p:panelGrid columns="2" style="border:0px !important; background:none; "  styleClass="FormContent"
+                                         layout="grid" columnClasses="label"
+                                         >
+
+                                <p:separator />
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" style="border:0px !important; background:none; "  styleClass="FormContent"
+                                         layout="grid" columnClasses="label,value"
+                                         >
+
+                                <p:outputLabel for="cfech" value="Fecha transaccion: " />  
+                                <p:calendar id="cfech" value="#{bancoAjusteBean.nuevoEdoCta.ecFechatransaccion}" navigator="true" 
+                                            pattern="dd/MM/yyyy" locale="es" required="true"
+                                            requiredMessage="El campo fecha es requerido"/> 
+
+                                <p:outputLabel for="itDescripcion" value="Descripción :  " />  
+                                <p:inputText id="itDescripcion" value="#{bancoAjusteBean.nuevoEdoCta.ecDescripcion}" 
+                                             style="width:90%" />
+
+
+                                <p:outputLabel for="somConcept" value="Concepto :  " />  
+                                <h:selectOneMenu id="somConcept" value="#{bancoAjusteBean.nuevoEdoCta.banConceptoId}" required="true"
+                                                 requiredMessage="El campo concepto es requerido"
+                                                 styleClass="ui-inputfield ui-widget ui-state-default ui-corner-all" >
+                                    <f:selectItems value="#{bancoAjusteBean.conceptos}" var="conc" itemLabel="#{conc.cbanNombre}" itemValue="#{conc.cbanId}" />
+                                </h:selectOneMenu> 
+
+
+                                <p:outputLabel for="inMonto" value="Monto :  "/>  
+                                <p:inputNumber id="inMonto" value="#{bancoAjusteBean.nuevoEdoCta.ecMonto}" 
+                                               decimalPlaces="2" required="true"  
+                                               requiredMessage="El concepto monto es requerido" />
+
+                                <p:commandButton value="Agregar concepto"
+                                                 actionListener="#{bancoAjusteBean.agregaConceptoEdoCta}"
+                                                 icon="fa fa-user-plus Fs14 white"
+                                                 update=":frmAjusteBanco:tblEC, frmAjusteBanco:tblCSistem,
+                                                 :frmAjusteBanco:msjFrmAjusteBanco"
+                                                 onstart="PF('statusDialog').show()"
+                                                 oncomplete="PF('statusDialog').hide()"/>
+                            </p:panelGrid>
+                        </h:form>
+                    </p:dialog>
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>Caja Independencia</title>
+        <h:outputScript name="js/layout.js" library="spark-layout" />
+        <h:outputScript name="calendar_es.js"  />
+
+        <ui:insert name="head" />
+    </h:head>
+
+    <h:body>    
+        <div id="menu-mask"></div>
+        
+        <!--<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />-->
+			
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+            <p:graphicImage name="images/preloader.gif" library="spark-layout" />
+        </p:dialog>
+        
+        <p:dialog widgetVar="dlgSessionLost" modal="true" draggable="false" closable="false" resizable="false" >
+             <div id="layout-portlets-cover">
+            <div class="other-pages-box Container40 Responsive50 MarAuto Fnone TexAlCenter ShadowGray MarTop10"
+                 style="margin-top:5%; background-image:url(/spark/resources/spark-layout/images/loginpageillust.svg); background-repeat:no-repeat; background-position:center; background-size:cover;">
+                <div class="Container90 Fnone MarAuto TexAlCenter">
+                    <div class="EmptyBox50"></div>
+                    <h:graphicImage name="images/error-face.svg" library="spark-layout" styleClass="MarAuto MarTop20 Wid30"/>
+                    <span class="Fs40 Wid100 DispBlock red">Error</span>
+                    <span class="Wid100 DispBlock Fs30 red">Se perdió la sesión</span><br/>
+                    <span class="Wid100 DispBlock Fs18 red">Favor de loguearse de nuevo en el sistema</span>
+                    <div class="EmptyBox30"></div>
+                    <p:commandButton value="Regresar al Login" styleClass="Fs16 RedButton" 
+                                     actionListener="#{dashboardBean.logout()}"></p:commandButton>
+                    <div class="EmptyBox50"></div>
+                </div>
+            </div>
+        </div>
+        </p:dialog>
+
+        <ui:include src="topbar.xhtml" />
+
+        <ui:include src="layoutmenu.xhtml" />
+    
+
+        <div id="layout-portlets-cover">
+            <ui:insert name="content">
+                Template
+            </ui:insert>
+
+            <div class="layout-portlets-box TexAlCenter">
+                <span class="Fs14 gray FontRalewayRegular">Desarrollado por EvoTI  |  Todos los derechos reservados.</span>
+            </div>
+        </div>
+
+<!--        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+            <f:facet name="start">
+                <p:graphicImage name="images/preloader.gif" library="spark-layout"/>
+            </f:facet>
+
+            <f:facet name="complete" >
+                <h:outputText value="" />
+            </f:facet>
+        </p:ajaxStatus>-->
+
+        <h:outputStylesheet name="css/core-layout.css" library="spark-layout" />
+        <h:outputStylesheet name="css/font-awesome.css" library="spark-layout" />
+        <h:outputStylesheet name="css/animate.css" library="spark-layout" />
+        <h:outputStylesheet name="css/spark-layout-blue.css" library="spark-layout" />
+        <h:outputStylesheet name="css/colores-estatus.css" library="sindicato" />
+    </h:body>
+
+</html>

@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog id="dlgCreditoPadre" widgetVar="dlgCreditoPadre" width="900" height="400"
+              minimizable="false" maximizable="false" modal="true" 
+              header="Credito padre">
+        <h:form id="frmCrePadre">
+            <p:dataTable id="tblCredPadre" var="cre"  
+                         value="#{repEmpleadoBean.creditoPadre}"                                 
+                         rowKey="#{cre.creId}"
+                         emptyMessage="No hay un crédito padre para este crédito"
+                         >  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Clave credito"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{cre.creClave}" />  
+                </p:column>  
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Clave empleado"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{cre.creClaveEmpleado}" />  
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Nombre empleado"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{cre.nombreEmpleado}" />  
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Tipo credito"/>  
+                    </f:facet>  
+                    <h:outputText value="#{cre.creTipo}" />  
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Monto prestamo"/>  
+                    </f:facet>  
+                    <h:outputText value="#{cre.crePrestamo}" > 
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                    </h:outputText>   
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Catorcenas"/>  
+                    </f:facet>  
+                    <h:outputText value="#{cre.creCatorcenas}" />  
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Estatus"/>  
+                    </f:facet>  
+                    <h:outputText value="#{cre.creEstatusStr}" />  
+                </p:column> 
+            </p:dataTable> 
+        </h:form>
+    </p:dialog>
+
+</ui:composition>

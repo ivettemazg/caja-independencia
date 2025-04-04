@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>Registro de usuarios</title>
+        <h:outputScript name="js/layout.js" library="spark-layout" />
+
+        <h:outputText value="&lt;!--[if gte IE 9]&gt;" escape="false" />
+        <style type="text/css">
+            /* styles for IE 9 */
+        </style>
+        <h:outputText value="&lt;![endif]--&gt;" escape="false" />
+
+        <ui:insert name="head" />
+    </h:head>
+
+    <h:body>
+        
+        <h:form id="frmRegistro">
+        
+        <div id="layout-portlets-cover">
+            <div class="other-pages-box Container40 Responsive50 MarAuto Fnone TexAlCenter ShadowGray MarTop10"
+                 style="margin-top:5%; background-repeat:no-repeat; background-position:center; background-size:cover;">
+                <div class="Container90 Fnone MarAuto TexAlCenter">
+                    <div class="EmptyBox50"></div>
+                    <h:graphicImage name="images/LOGO.jpg" library="spark-layout" styleClass="MarAuto MarTop20 MarBot10"/>
+                    <div class="EmptyBox20"></div>
+                    <p:inputText value="#{registroBean.usuarioDto.nickName}" placeholder="NickName" styleClass="Container80 Fnone MarAuto Fs18" id="registroNickName" required="true"/>
+                    <div class="EmptyBox10"></div>
+                    <p:inputText value="#{registroBean.usuarioDto.nombre}" placeholder="Nombre" styleClass="Container80 Fnone MarAuto Fs18" id="registroNombre" required="true" />
+                    <div class="EmptyBox10"></div>
+                    <p:inputText value="#{registroBean.usuarioDto.paterno}" placeholder="Apellido Paterno" styleClass="Container80 Fnone MarAuto Fs18" id="registroPaterno" required="true" />
+                    <div class="EmptyBox10"></div>
+                    <p:inputText value="#{registroBean.usuarioDto.materno}" placeholder="Apellido Materno" styleClass="Container80 Fnone MarAuto Fs18" id="registroMaterno" required="true" />
+                    <div class="EmptyBox10"></div>
+                    <p:inputText value="#{registroBean.usuarioDto.correo}" placeholder="Correo" styleClass="Container80 Fnone MarAuto Fs18" required="true"/>
+                    <div class="EmptyBox10"></div>
+                    <p:inputMask value="#{registroBean.usuarioDto.telefono}" placeholder="Telefono" styleClass="Container80 Fnone MarAuto Fs18" mask="99-99-99-99" required="true"/>
+                    <div class="EmptyBox10"></div>
+                    <p:password value="#{registroBean.usuarioDto.password}" placeholder="Password" styleClass="Container80 Fnone MarAuto Fs18" required="true"/>
+                    <div class="EmptyBox10"></div>
+                    <div class="EmptyBox30"></div>
+                    <p:commandButton  value="Registrarse" styleClass="Fs16 BlueButton" 
+                                      actionListener="#{registroBean.guardaRegistro()}" 
+                                      update="frmRegistro"></p:commandButton>  
+                    <div class="EmptyBox10"></div>
+                    <div class="Seperator"></div>
+                    <div class="EmptyBox10"></div>
+                    <p:button  value="Olvidaste tu Password" styleClass="Fs16 RedButton" href="registro.xhtml"></p:button>
+                    <p:messages></p:messages>
+                    <div class="EmptyBox50"></div>
+                </div>
+            </div>
+        </div>
+
+        <h:outputStylesheet name="css/core-layout.css" library="spark-layout" />
+        <h:outputStylesheet name="css/font-awesome.css" library="spark-layout" />
+        <h:outputStylesheet name="css/animate.css" library="spark-layout" />
+        <h:outputStylesheet name="css/spark-layout.css" library="spark-layout" />
+       
+        </h:form>
+        
+    </h:body>
+
+</html>

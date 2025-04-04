@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13/07/2019 11:50:35 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.TipoTransaccion" table="tipo_transaccion" catalog="sindicato" optimistic-lock="version">
+        <id name="tipoTranId" type="int">
+            <column name="tipo_tran_id" />
+            <generator class="assigned" />
+        </id>
+        <property name="tipoTran" type="string">
+            <column name="tipo_tran" length="200" />
+        </property>
+        <property name="tipoTranDescripcion" type="string">
+            <column name="tipo_tran_descripcion" length="500" />
+        </property>
+    </class>
+</hibernate-mapping>

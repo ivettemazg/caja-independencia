@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27/06/2017 11:55:25 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.RelBancoEdocta" table="rel_banco_edocta" catalog="sindicato" optimistic-lock="version">
+        <composite-id name="id" class="mx.com.evoti.hibernate.pojos.RelBancoEdoctaId">
+            <key-property name="rbeId" type="long">
+                <column name="rbe_id" />
+            </key-property>
+            <key-property name="rbeIdBancoEc" type="int">
+                <column name="rbe_id_banco_ec" />
+            </key-property>
+            <key-property name="rbeTipo" type="int">
+                <column name="rbe_tipo" />
+            </key-property>
+        </composite-id>
+        <property name="rbeFechaRel" type="date">
+            <column name="rbe_fecha_rel" length="10" />
+        </property>
+    </class>
+</hibernate-mapping>

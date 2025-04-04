@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    
+    <f:event type="preRenderComponent" rendered="true" listener="#{finBean.obtieneTotalesMovimientos()}"/>
+
+    <p:dataTable id="tblAhorros" var="mov"  
+                 value="#{finBean.movimientos}"                                 
+                 >  
+
+        <p:column style='position: relative'>  
+            <f:facet name="header"  >  
+                <h:outputText value="Tipo ahorro"/>  
+            </f:facet>  
+            <h:outputText  value="#{mov.movProductoStr}" />  
+        </p:column>  
+
+        <p:column style='position: relative'>  
+            <f:facet name="header">  
+                <h:outputText value="Total"/>  
+            </f:facet>  
+            <h:outputText value="#{mov.totalMovimiento}"  > 
+                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+            </h:outputText> 
+        </p:column> 
+
+        <p:column style="width:20%" rendered="#{finBean.editTable}">  
+            <p:commandButton oncomplete="PF('dlgDevolucionesW').show()" icon="ui-icon-pencil" 
+                             title="Devolver" actionListener="#{finBean.inicializaDialogDev(mov)}">
+            </p:commandButton>
+        </p:column> 
+
+    </p:dataTable> 
+    <p:spacer height="20"/>
+    <h:panelGrid id="pgDevolucionesTotales" columns="3" cellpadding="10" cellspacing="10" >
+        
+       <h:outputText id = "otLblTotalDevolucion" value="Total de la Devolución " style="font-weight: bold" />  
+       <h:outputText id= "otEst" value="#{finBean.sumaTotalDevolucion}" >  
+            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+       </h:outputText> 
+        
+      <p:commandButton  value="Devolver total de ahorros" 
+                        actionListener="#{finBean.devolverTotalAhorro}"
+                        icon="fa fa-wrench Fs14 white"
+                        update=":frmCreditoDetalle:tblAhorros :frmCreditoDetalle:otEst"
+                        onstart="PF('statusDialog').show()"
+                        oncomplete="PF('statusDialog').hide()"/>
+    </h:panelGrid>
+    
+                    
+    
+</ui:composition>

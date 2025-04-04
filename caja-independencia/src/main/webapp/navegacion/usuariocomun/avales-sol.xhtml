@@ -1,0 +1,77 @@
+  <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+         
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+        
+                    <h:form id="frmAvaSol">
+                    <p:spacer height="20"/>
+                           <f:event type="preRenderComponent" rendered="true" listener="#{avaSolBean.init}"/>
+                                <p:panel id="pnlAvalesSol" styleClass="panelGrid" header="Por favor capture #{avaSolBean.noAvales} avales"
+                                         >
+                                    
+                                    
+                         <p:dataTable id="tblAvalesSol" value="#{avaSolBean.avalesDto}"
+                                     var="aval" style="width: 97%"
+                                     editable="#{avaSolBean.tblEditable}" >
+
+                            <p:ajax event="rowEdit" listener="#{avaSolBean.onEditAval}"
+                                      onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                    update=":frmAvaSol:tblAvalesSol, :frmAvaSol:growl" 
+                                    />  
+                            <p:ajax event="rowEditCancel" 
+                                    listener="#{avaSolBean.onCancelAval}" 
+                                      onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()" update=":frmAvaSol:tblAvalesSol"
+                                   />  
+
+                            <p:column style='position: relative'> 
+                                <f:facet name="header" >  
+                                    <h:outputText value="Clave aval"/>  
+                                </f:facet> 
+                                <p:cellEditor>  
+                                    <f:facet name="output">  
+                                        <h:outputText value="#{aval.cveEmpleado}" />  
+                                    </f:facet>  
+                                    <f:facet name="input">  
+                                        <p:outputLabel for="cveAval" value="Capture la clave de su aval: " style="width:40%"/>
+                                        <p:inputText id="cveAval" value="#{aval.cveEmpleado}" style="width:40%" label="Clave empleado"/>  
+                                    </f:facet>  
+                                </p:cellEditor> 
+                            </p:column>  
+
+                            <p:column style='position: relative'>  
+                                <f:facet name="header" >  
+                                    <h:outputText value="Nombre aval"/>  
+                                </f:facet>  
+                                <h:outputText value="#{aval.nombreCompleto}" />  
+                            </p:column>  
+                            
+                            <p:column style='position: relative'>  
+                                <f:facet name="header" >  
+                                    <h:outputText value="Estatus"/>  
+                                </f:facet>  
+                                <h:outputText value="#{aval.estatusAvalStr}" />  
+                            </p:column>  
+
+                            <p:column style="width:30%" rendered="#{avaSolBean.tblEditable}" >  
+                                <p:rowEditor rendered="#{aval.tblEditable}"   />  
+                            </p:column> 
+
+
+                            </p:dataTable>
+                        </p:panel>
+                   
+                        <p:messages id="messages" for="validAvales" showDetail="false" autoUpdate="true" closable="true"/>
+                        <p:growl id="growl" for="growl"></p:growl>          
+                    </h:form>
+                   
+              </div>
+            </div>
+           
+ </ui:composition>
+   

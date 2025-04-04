@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.SolicitudAvales" table="solicitud_avales">
+        <id name="idSolAva" type="java.lang.Integer">
+            <column name="id_sol_ava" />
+            <generator class="identity"></generator>
+        </id>
+        <many-to-one name="solicitudes" class="mx.com.evoti.hibernate.pojos.Solicitudes" fetch="select">
+            <column name="sol_ava_solicitud" />
+        </many-to-one>
+        <property name="solAvaClaveEmpleado" type="java.lang.Integer">
+            <column name="sol_ava_clave_empleado" />
+        </property>
+        <property name="solAvaCredito" type="java.lang.Integer">
+            <column name="sol_ava_credito" />
+        </property>
+        <property name="solAvaIdEmpleado" type="java.lang.Integer">
+            <column name="sol_ava_id_empleado" />
+        </property>
+        <property name="solAvaEstatus" type="java.lang.Integer">
+            <column name="sol_ava_estatus" />
+        </property>
+    </class>
+</hibernate-mapping>

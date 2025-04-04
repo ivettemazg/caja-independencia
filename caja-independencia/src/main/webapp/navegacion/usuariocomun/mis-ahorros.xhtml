@@ -1,0 +1,274 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+            
+             .ajustado{
+                    background-color: #9BFF78 !important; 
+                    background-image: none !important; 
+                    font-weight: bold;                    
+                    
+                }
+             .ajustado-parcial{
+                    background-color: #FFFF6F !important; 
+                    background-image: none !important; 
+                    font-weight: bold;                    
+                    
+                }
+             .noajustado{
+                    background-color: #B5EE7F !important; 
+                    background-image: none !important; 
+                    font-weight: bold;                    
+                    
+                }
+            
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                      <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Mis Ahorros</div>
+                    </h3>
+
+                    <div class="Container10 ">
+                        <div class="ContainerIndent"> 
+                        </div>
+                    </div>
+
+                    <div class="Container90 ">
+                        <div class="ContainerIndent">
+
+
+                            <h:form id="frmMisAhorros"  >  
+                                <f:event type="preRenderComponent" listener="#{misMovBean.init()}"/>
+
+                                <p:dataTable id="tblAhorros" var="mov" style="width: 80%"  
+                                             value="#{misMovBean.ahorroTotal}"                                 
+                                             selection="#{misMovBean.movSelected}" 
+                                             rowKey="#{mov.totalMovimiento}"
+                                             selectionMode="single"
+                                             sortBy="#{mov.movUsuId}"
+                                             >  
+
+                                    <p:column style='position: relative' rendered="false">  
+                                        <f:facet name="header"  >  
+                                            <h:outputText value="ID"/>  
+                                        </f:facet>  
+                                        <h:outputText  value="#{mov.movProducto}" />  
+                                    </p:column>  
+                                    <p:column style='position: relative'>  
+                                        <f:facet name="header"  >  
+                                            <h:outputText value="Tipo ahorro"/>  
+                                        </f:facet>  
+                                        <h:outputText  value="#{mov.movProductoStr}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Total"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{mov.totalMovimiento}">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText>   
+                                    </p:column> 
+
+                                    <p:summaryRow >
+                                        <p:column >
+                                            <h:outputText value="Total:" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{misMovBean.totalAhorro}">
+                                                <f:convertNumber type="currency" currencySymbol="$" />
+                                            </h:outputText>
+                                        </p:column>
+                                    </p:summaryRow>
+
+                                </p:dataTable> 
+
+
+                                <p:contextMenu for="tblAhorros" style="width : 200px"   >  
+
+                                    <p:menuitem value="Ver detalle" update=":frmDetalleMovs"
+                                                actionListener="#{misMovBean.verDetalle}"
+                                                oncomplete="PF('dlgDetalleAhorroW').show()"
+                                                icon ="fa fa-search"
+                                                >
+
+                                    </p:menuitem>
+
+                                </p:contextMenu> 
+
+                                <p:growl/>
+
+                            </h:form>
+                        </div></div>
+                </div>
+            </div>
+        </div>
+
+        <p:dialog id="dlgDetalleAhorro" header="Detalle ahorro" widgetVar="dlgDetalleAhorroW" width="1000" 
+                  height="400" closable="true" closeOnEscape="true" modal="true">
+            <h:form id="frmDetalleMovs" enctype="multipart/form-data" >  
+
+                <p:dataTable id="tblAhorroDetalle" var="mov" rendered="#{misMovBean.rdrFNF}"
+                             value="#{misMovBean.detalleMovs}"                                 
+                             paginator="true" rows="25"  
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                             rowsPerPageTemplate="25, 35, 45"
+                             filterEvent="enter"
+                             paginatorPosition="bottom" reflow="true"
+                             sortBy="#{mov.movUsuId}"
+                             >  
+
+                    <p:column style='position: relative'  filterBy="#{mov.movTipo}"  filterMatchMode="contains">  
+                        <f:facet name="header"  >  
+                            <h:outputText value="Tipo ahorro"/>  
+                        </f:facet>  
+                        <h:outputText  value="#{mov.movTipo}" />  
+                    </p:column>  
+
+                    <p:column style='position: relative' filterBy="#{mov.movDeposito}"  filterMatchMode="exact">  
+                        <f:facet name="header">  
+                            <h:outputText value="Monto"/>  
+                        </f:facet>  
+                        <h:outputText value="#{mov.movDeposito}" >
+                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                        </h:outputText>  
+                    </p:column> 
+
+                    <p:column style='position: relative' filterBy="#{mov.movFecha}"  filterMatchMode="contains" >  
+                        <f:facet name="header">  
+                            <h:outputText value="Fecha"/>  
+                        </f:facet>  
+                        <h:outputText value="#{mov.movFecha}" >  
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>  
+                    </p:column> 
+
+                    <p:summaryRow >
+                        <p:column >
+                            <h:outputText value="Total:" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{misMovBean.totalDetalle}">
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                    </p:summaryRow>
+
+                </p:dataTable> 
+
+
+                <p:dataTable id="tblAhorroVol" var="ahorro" rendered="#{misMovBean.rdrV}"
+                             value="#{misMovBean.ahorrosVol}"                                 
+
+                             >  
+
+
+                    <p:columnGroup type="header">
+
+                        <p:row>
+                            <p:column headerText="Tipo" />
+                            <p:column headerText="Monto" />
+                            <p:column headerText="Fecha" />
+                        </p:row>
+                    </p:columnGroup>
+
+
+                    <p:subTable var="rend" value="#{ahorro.rendimiento}" >
+                        <p:columnGroup type="header"  >
+
+                           <p:row >
+                               <p:column styleClass="ui-datatable-subtable-header">
+                                    <f:facet name="header" >
+                                        <h:outputText value="#{ahorro.nombre}" />
+                                    </f:facet>
+                                </p:column>
+                                <p:column styleClass="ui-datatable-subtable-header">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{ahorro.monto}" >
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                  <p:column styleClass="ui-datatable-subtable-header">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{ahorro.fecha}" >  
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:outputText>  
+                                    </f:facet>
+                                </p:column>
+                            </p:row>
+                        </p:columnGroup>
+
+                        <p:column>
+                            <h:outputText value="#{rend.nombre}" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{rend.monto}" >
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{rend.fecha}" >  
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>  
+                        </p:column>
+
+
+                    </p:subTable>
+                </p:dataTable> 
+            </h:form>
+        </p:dialog>
+
+
+    </ui:define>
+
+</ui:composition>

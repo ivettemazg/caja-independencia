@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="Container100 Responsive100">
+        <div class="ContainerIndent">
+            <h:form id="frmDatosBancariosSol">
+                <f:event type="preRenderComponent" rendered="true" listener="#{dbancariosBean.init}"/>
+                <p:spacer height="20"/>
+
+                <p:panelGrid id="pnlGrd3DatosBancarios" columns="2" columnClasses="label, value" style="border:0px !important; background:none; "  styleClass="FormContent"
+                               layout="grid">  
+                    <p:outputLabel for="solBanco" value="Banco: " />  
+                    <p:inputText id="solBanco" value="#{dbancariosBean.dbancarios.banco}" required="true" 
+                                 readonly="#{dbancariosBean.soloLectura}"/>  
+
+                    <p:outputLabel for="solNoCuenta" value="# Cuenta :  " />  
+                    <p:inputText id="solNoCuenta" value="#{dbancariosBean.dbancarios.cuenta}" required="true" 
+                                 readonly="#{dbancariosBean.soloLectura}"/>  
+
+                    <p:outputLabel for="solCveInter" value="Clabe interbancaria :  " />  
+                    <p:inputText id="solCveInter" value="#{dbancariosBean.dbancarios.clabe}" required="true" 
+                                 readonly="#{dbancariosBean.soloLectura}"/>  
+
+                    <p:outputLabel for="solNomTarjetaHabiente" value="Nombre Tarjetahabiente :  " />  
+                    <p:inputText id="solNomTarjetaHabiente" value="#{dbancariosBean.dbancarios.nombreTarjetaHabiente}" 
+                                 required="true" readonly="#{dbancariosBean.soloLectura}"/> 
+
+                    <p:spacer height="50"/>
+                    <p:commandButton value="Actualizar" 
+                                     actionListener="#{dbancariosBean.updtDatosBancarios}" 
+                                     disabled="#{dbancariosBean.disabledBtn}" 
+                                     rendered="#{dbancariosBean.rdrBtn}"
+                                       onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                     update=":frmDatosBancariosSol">
+                    </p:commandButton>  
+
+
+                </p:panelGrid> 
+
+                    <p:messages></p:messages>
+                    <p:growl id="growl" for="growl"/>
+            </h:form>
+        </div>
+    </div>
+
+</ui:composition>

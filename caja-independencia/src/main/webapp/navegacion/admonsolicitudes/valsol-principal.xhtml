@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="Container100 Responsive100">
+        <div class="ContainerIndent">
+            <h:form id="frmDatosBancariosSol">
+                <f:event type="preRenderComponent" rendered="true" listener="#{valSolPpalBean.init}"/>
+                <p:spacer height="20"/>
+
+                <h:panelGrid columns="4" cellpadding="10">   
+
+                    <p:outputLabel value="Solicitud: " /> 
+                    <h:outputText value="#{valSolPpalBean.solDto.solId}" style="font-weight: bold"/>
+
+                    <p:outputLabel value="Fecha creación: " /> 
+                    <h:outputText value="#{valSolPpalBean.solDto.solFechaCreacion}" style="font-weight: bold">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>  
+
+                </h:panelGrid>
+                <p:spacer height="20"/>
+                <h:panelGrid columns="4" cellpadding="10">   
+
+                    <p:outputLabel value="Sueldo Catorcenal: " />  
+                    <p:inputNumber id="itSueldoQuin" value="#{valSolPpalBean.solDto.tabCatorcenal}" readonly="false"
+                                   decimalPlaces="2"  minValue="0">
+                        <p:ajax listener="#{valSolPpalBean.actualizarDatos}"
+                                event="blur" 
+                                onstart="PF('statusDialog').show()"
+                                oncomplete="PF('statusDialog').hide()"
+                                update="itMonto, itCalculo, itMontoPagoCatorcenal, itCalculoPagoCatorcenal, itDisponible, itInteres "  />
+                    </p:inputNumber>
+                    <p:outputLabel value="Deducciones: " />  
+                    <p:inputNumber id="idDeducciones" value="#{valSolPpalBean.solDto.solDeducciones}" decimalPlaces="2"  minValue="0">
+                        <p:ajax listener="#{valSolPpalBean.actualizarDatos}"
+                                 onstart="PF('statusDialog').show()"
+                                oncomplete="PF('statusDialog').hide()"
+                                event="blur" update="itMonto, itCalculo, itMontoPagoCatorcenal, itCalculoPagoCatorcenal, itDisponible, itInteres "  />
+                    </p:inputNumber>
+                    <p:outputLabel value="Disponible (Sueldo-Deducciones): " />  
+                    <p:inputNumber id="itDisponible" value="#{valSolPpalBean.solDto.solDisponible}" readonly="true" decimalPlaces="2"  minValue="0"/>
+                    <p:outputLabel value="Calculo de 5 meses de salario: " />  
+                    <p:inputNumber id="itCalculo" value="#{valSolPpalBean.solDto.solCalcMontoSalario}" readonly="true" decimalPlaces="2"  minValue="0" />
+                    <p:outputLabel value="Calculo del 30% sobre el Ingreso Catorcenal: " />
+                    <p:inputNumber id="itCalculoPagoCatorcenal" value="#{valSolPpalBean.solDto.solCalcPagoSalario}" readonly="true" decimalPlaces="2"  minValue="0" />
+                    <p:outputLabel value="Monto Solicitado: " /> 
+                    <p:inputNumber id="itMonto" value="#{valSolPpalBean.solDto.solMontoSolicitado}" decimalPlaces="2" minValue="0"  >  
+                        <p:ajax listener="#{valSolPpalBean.actualizarDatos}"
+                                 onstart="PF('statusDialog').show()"
+                                oncomplete="PF('statusDialog').hide()"
+                                event="blur" update="itMonto, itCalculo, itMontoPagoCatorcenal, itCalculoPagoCatorcenal, itInteres "  />
+                    </p:inputNumber>
+
+                    <p:outputLabel value="Catorcenas a liquidar: " /> 
+                    <p:inputText id="itCatorcenasLiquid" value="#{valSolPpalBean.solDto.solCatorcenas}"  >  
+                        <p:ajax listener="#{valSolPpalBean.actualizarDatos}"
+                                 onstart="PF('statusDialog').show()"
+                                oncomplete="PF('statusDialog').hide()"
+                                event="blur" update="itMonto, itCalculo, itMontoPagoCatorcenal, itCalculoPagoCatorcenal, itInteres "  />
+                    </p:inputText>
+
+                    <p:outputLabel value="Monto del pago catorcenal: " /> 
+                    <p:inputNumber id="itMontoPagoCatorcenal" value="#{valSolPpalBean.solDto.solPagoCredito}" readonly="true" decimalPlaces="2" minValue="0"  />
+
+                    <p:outputLabel value="Intereses: " /> 
+                    <p:inputNumber id="itInteres" value="#{valSolPpalBean.solDto.solIntereses}" readonly="true" decimalPlaces="2" minValue="0" />
+
+                </h:panelGrid>  
+
+            </h:form>
+        </div>
+    </div>
+
+</ui:composition>

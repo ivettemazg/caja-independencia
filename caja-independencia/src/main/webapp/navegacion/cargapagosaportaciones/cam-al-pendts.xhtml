@@ -1,0 +1,281 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                };
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Altas Pendientes</div>
+                    </h3>
+                    <h:form id="frmAltasUsr">
+
+                        <f:event type="preRenderComponent" rendered="true" listener="#{altasBean.obtenerHistorialCambiosAltas}"/>
+
+                        <p:dataTable id="altasCambiosTbl" var="altasCambios" scrollable="true"  
+                                     value="#{altasBean.lstAltasCambiosDto}"
+                                     selection="#{altasBean.altaCambioSeleccionado}" 
+                                     rowKey="#{altasCambios.movClaveEmpleado}"
+                                     selectionMode="single"
+                                     paginator="true" rows="25"  
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                     rowsPerPageTemplate="25, 35, 45"
+                                     filterEvent="enter"
+                                     filteredValue="#{altasBean.lstFiltradosAltasCambios}"
+                                     >
+
+                            <p:ajax event="rowSelect" listener="#{altasBean.obtenerUsuarios()}"   
+                                    update =":frmAltasUsr :frmDlgAltaUsr"
+                                    onstart="PF('statusDialog').show()"
+                                    oncomplete="PF('statusDialog').hide()"/>  
+
+                            <p:column id="movNombreEmpleado" filterBy="#{altasCambios.movNombreEmpleado}"  filterMatchMode="contains"
+                                      filterStyle="width: 50px">
+
+                                <f:facet name="header">  
+                                    <h:outputText value="Nombre empleado"/>  
+                                </f:facet>  
+                                <h:outputText value="#{altasCambios.movNombreEmpleado}" />  
+
+                            </p:column> 
+                            <p:column id="movFecha" 
+                                      filterBy="#{altasCambios.movFecha}"  filterStyle="width: 60px"> 
+
+                                <f:facet name="header">  
+                                    <h:outputText value="Catorcena"/>  
+                                </f:facet>  
+                                <h:outputText value="#{altasCambios.movFecha}" />  
+
+                            </p:column>  
+                            <p:column id="movClaveEmpleado" 
+                                      filterBy="#{altasCambios.movClaveEmpleado}"  filterStyle="width: 40px"> 
+
+                                <f:facet name="header">  
+                                    <h:outputText value="Clave actual"/>  
+                                </f:facet>  
+                                <h:outputText value="#{altasCambios.movClaveEmpleado}" />  
+
+                            </p:column>  
+
+
+                            <p:column id="empAbreviacion" 
+                                      filterBy="#{altasCambios.empAbreviacion}"
+                                      filterMatchMode="contains">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Empresa actual"/>  
+                                </f:facet>  
+                                <h:outputText value="#{altasCambios.empAbreviacion}" />  
+                            </p:column>  
+
+                        </p:dataTable>
+
+                        <p:growl sticky="true" life="11000" showDetail="true"/>  
+                       
+                    </h:form>
+                    
+                     <p:dialog id="dlgUsuarios" header="Verificación de usuario" 
+                                  widgetVar="dlgUsuariosTbl"
+                                  width="1000" height="#{altasBean.tamanoDlg}" closable="true" closeOnEscape="true"
+                                  modal="true" 
+                                  >
+                            <p:ajax event="close" update=":frmAltasUsr"/> 
+                         <h:form id="frmDlgAltaUsr">
+
+                            <h:panelGrid columns ="1" id="pgGeneralUsuarios" class="Container100 Responsive100" > 
+                                <h:panelGrid id="pgInfoActual" columns="6" cellpadding="3" cellspacing="5" 
+                                             class="Container100 Responsive100"     > 
+
+                                    <p:outputLabel for="claveEmp" value="Clave empleado :  " />  
+                                    <h:outputText id="claveEmp" value="#{altasBean.altaCambioSeleccionado.movClaveEmpleado}" style="font-weight:bold"/>  
+
+                                    <p:outputLabel for="empresa" value="Empresa :  " />  
+                                    <h:outputText id="empresa" value="#{altasBean.altaCambioSeleccionado.empAbreviacion}" style="font-weight:bold"/> 
+
+                                    <p:outputLabel for="nombreCompleto" value="Nombre: " />  
+                                    <h:outputText id="nombreCompleto" value="#{altasBean.altaCambioSeleccionado.movNombreEmpleado}" style="font-weight:bold"/>         
+
+                                    <p:commandButton value="Dar de alta usuario" 
+                                                     actionListener="#{altasBean.inicializaAlta()}" 
+                                                     update =":frmAltasUsr :frmDlgAltaUsr"
+                                                      onstart="PF('statusDialog').show()"
+                                                        oncomplete="PF('statusDialog').hide()"
+                                                     ></p:commandButton>
+
+                                    <p:commandButton value="Aplicar cambio empresa" 
+                                                     actionListener="#{altasBean.realizarCambioEmpresa()}" 
+                                                     rendered="#{altasBean.rdrBtnCambioEmpresa}"
+                                                     update =":frmAltasUsr, :frmDlgAltaUsr"
+                                                     onstart="PF('statusDialog').show()"
+                                                      oncomplete="PF('statusDialog').hide()"
+                                                     ></p:commandButton>
+
+                                    <p:messages/>
+                                </h:panelGrid>
+                                <p:spacer height="20px" />
+                                <h:panelGrid id="pgNuevoUsuario" columns="6" cellpadding="3" cellspacing="5" class="Container100 Responsive100" 
+                                             rendered="#{altasBean.rdrPanelNuevoUsuario}">
+
+                                    <p:outputLabel for="nuevoPaterno" value="A. Paterno :  " />  
+                                    <p:inputText id="nuevoPaterno" value="#{altasBean.nuevoUsuario.paterno}" /> 
+
+                                    <p:outputLabel for="nuevoMaterno" value="A. Materno :  " />  
+                                    <p:inputText id="nuevoMaterno" value="#{altasBean.nuevoUsuario.materno}" />         
+
+                                    <p:outputLabel for="nuevoNombre" value="Nombre :  " />  
+                                    <p:inputText id="nuevoNombre" value="#{altasBean.nuevoUsuario.nombre}" />  
+
+                                    <p:commandButton value="Agregar usuario" 
+                                                     actionListener="#{altasBean.guardarUsuario}" 
+                                                     icon="fa fa-user-plus Fs16 white"
+                                                     update =":frmAltasUsr, :frmDlgAltaUsr"
+                                                     onsuccess="PF('dlgUsuariosTbl').hide()" 
+                                                      onstart="PF('statusDialog').show()"
+                                                    oncomplete="PF('statusDialog').hide()"
+                                                     ></p:commandButton>
+                                    <p:commandButton value="Cancelar" 
+                                                     actionListener="#{altasBean.cancelar()}" 
+                                                     update =":frmAltasUsr"
+                                                     onsuccess="PF('dlgUsuariosTbl').hide()" 
+                                                      onstart="PF('statusDialog').show()"
+                                                oncomplete="PF('statusDialog').hide()"
+                                                     ></p:commandButton>
+                                    
+                                </h:panelGrid>
+                                <h:panelGrid id="pagTblUsuarios" columns ="1" style="margin-top:5px; margin-left: 20px;"
+                                             rendered="#{not altasBean.rdrPanelNuevoUsuario}">
+                                    <p:dataTable id="usrsTbl" var="usuario" scrollable="true"
+                                                 value="#{altasBean.lstUsuarios}"
+
+                                                 selection="#{altasBean.usuarioSeleccionado}"
+                                                 scrollHeight="75%"
+                                                 rowKey="#{usuario.id}"
+                                                 paginator="true" rows="25"  
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                                 rowsPerPageTemplate="25, 35, 45"
+                                                
+                                                 filterEvent="enter"
+                                                 filteredValue="#{altasBean.lstUsuariosFiltrados}"
+                                                 >
+
+
+
+                                        <p:column selectionMode="single" style="width: 15px" />
+
+                                        <p:column id="usuId"  rendered="false">
+
+                                            <f:facet name="header">  
+                                                <h:outputText value="Id usuario"/>  
+                                            </f:facet>  
+                                            <h:outputText value="#{usuario.id}"  />  
+
+                                        </p:column> 
+                                        <p:column id="noEmpleado" 
+                                                  filterBy="#{usuario.cveEmpleado}" > 
+
+                                            <f:facet name="header">  
+                                                <h:outputText value="Clave"/>  
+                                            </f:facet>  
+                                            <h:outputText value="#{usuario.cveEmpleado}" />  
+
+                                        </p:column>  
+
+                                        <p:column id="nombre" filterBy="#{usuario.nombre}"  
+
+                                                  filterMatchMode="contains">
+
+                                            <f:facet name="header">  
+                                                <h:outputText value="Nombre"/>  
+                                            </f:facet>  
+                                            <h:outputText value="#{usuario.nombre}" />  
+
+                                        </p:column> 
+                                        <p:column id="paterno" 
+                                                  filterBy="#{usuario.paterno}" filterMatchMode="contains"
+                                                  > 
+
+                                            <f:facet name="header">  
+                                                <h:outputText value="A Paterno"/>  
+                                            </f:facet>  
+                                            <h:outputText value="#{usuario.paterno}" />  
+
+                                        </p:column>  
+                                        <p:column id="materno" 
+                                                  filterBy="#{usuario.materno}" filterMatchMode="contains"
+                                                  > 
+
+                                            <f:facet name="header">  
+                                                <h:outputText value="A Materno"/>  
+                                            </f:facet>  
+                                            <h:outputText value="#{usuario.materno}" />  
+
+                                        </p:column>  
+
+
+                                        <p:column id="empresa" 
+                                                  filterBy="#{usuario.empresa}" filterMatchMode="contains">  
+                                            <f:facet name="header">  
+                                                <h:outputText value="Empresa"/>  
+                                            </f:facet>  
+                                            <h:outputText value="#{usuario.empresa}" />  
+                                        </p:column>  
+
+
+                                    </p:dataTable>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                            </h:form>
+                        </p:dialog>
+                    
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

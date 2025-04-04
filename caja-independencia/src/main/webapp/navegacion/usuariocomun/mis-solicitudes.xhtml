@@ -1,0 +1,191 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Mis Solicitudes</div>
+                    </h3>
+                    <h:form id="frmMisSolicitudes" >  
+                        <f:event type="preRenderComponent" listener="#{misSolsBean.obtieneSolicitudesCliente}"/>
+                        <p:dataTable id="tblEstatusSolicitud" var="solicitudCte" value="#{misSolsBean.misSolicitudes}"  
+                                     emptyMessage="Usted no tiene solicitudes que mostrar."
+                                     >  
+
+                            <p:column style='position: relative'>  
+                                <f:facet name="header">  
+                                    <h:outputText value="Folio solicitud"/>  
+                                </f:facet>  
+                                <h:outputText  />
+                                <p:commandLink id="cmDetSol" value="#{solicitudCte.solId}" 
+                                                actionListener="#{misSolsBean.goToDetalleSolicitud(solicitudCte)}" 
+                                                onstart="PF('statusDialog').show()"
+                                                oncomplete="PF('statusDialog').hide()"
+                                                ajax="false" update=":frmMisSolicitudes" >
+                                </p:commandLink>
+                            </p:column>  
+
+                            <p:column style='position: relative'>  
+                                <f:facet name="header">  
+                                    <h:outputText value="Tipo solicitud"/>  
+                                </f:facet>  
+                                <h:outputText value="#{solicitudCte.proDescripcion}" />  
+                            </p:column>  
+
+                            <p:column style='position: relative'>  
+                                <f:facet name="header">  
+                                    <h:outputText value="Estatus de la solicitud"/>  
+                                </f:facet>  
+                                <h:outputText value="#{solicitudCte.solEstatusStr}" />  
+                            </p:column>  
+
+                            <p:column style='position: relative'>  
+                                <f:facet name="header" >  
+                                    <h:outputText value="Observación"/>  
+
+                                </f:facet>  
+                                <h:outputText value="#{solicitudCte.solObservacion}" />  
+                                <p:separator rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"/>
+                                <p:commandLink id="clAnA" value="Descargar anexo A" rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"
+                                               actionListener="#{misSolsBean.generaAnexoA(solicitudCte)}" 
+                                                onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                               ajax="false" update="frmMisSolicitudes" >
+                                    <p:fileDownload value="#{misSolsBean.anexoA}" /> 
+                                </p:commandLink>
+                                <p:separator rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"/>
+                                <p:commandLink id="clAnB" value="Descargar anexo B" rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"
+                                               actionListener="#{misSolsBean.generaAnexoB(solicitudCte)}" 
+                                                onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                               ajax="false" update="frmMisSolicitudes" >
+                                    <p:fileDownload value="#{misSolsBean.anexoB}" /> 
+                                </p:commandLink>
+                                <p:separator rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"/>
+                                <p:commandLink id="clAnC" value="Descargar anexo C" rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"
+                                               actionListener="#{misSolsBean.generaAnexoC(solicitudCte)}" 
+                                                onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                               ajax="false" update="frmMisSolicitudes" >
+                                    <p:fileDownload value="#{misSolsBean.anexoC}" /> 
+                                </p:commandLink>
+                                <p:separator rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"/>
+                                <p:commandLink id="clSol" value="Descargar solicitud" rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"
+                                               actionListener="#{misSolsBean.generaSolicitudCredito(solicitudCte)}" 
+                                                onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                               ajax="false" update="frmMisSolicitudes" >
+                                    <p:fileDownload value="#{misSolsBean.solicitud}" /> 
+                                </p:commandLink>
+                                <p:separator rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"/>
+                                <p:commandLink id="clAvi" value="Descargar aviso" rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"
+                                               actionListener="#{misSolsBean.generaAviso(solicitudCte)}" 
+                                                onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                               ajax="false" update="frmMisSolicitudes" >
+                                    <p:fileDownload value="#{misSolsBean.aviso}" /> 
+                                </p:commandLink>
+                                <p:separator rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"/>
+
+                                <p:commandLink id="enviarDoctosFirmados" value="Enviar documentos firmados" 
+                                               actionListener="#{misSolsBean.pasarDatosSolicitud(solicitudCte)}"
+                                               oncomplete="PF('dlgEnviarDoctosW').show(); PF('statusDialog').hide()" 
+                                                onstart="PF('statusDialog').show()"
+                                               rendered="#{solicitudCte.solEstatus eq 4 ? true: false}"/>
+
+                              
+
+
+                            </p:column>  
+                            <p:column style="width:32px;text-align: center">
+                                <p:commandButton icon="fa fa-remove" title="Eliminar"
+                                                 actionListener="#{misSolsBean.eliminaSolicitud()}" 
+                                                 onstart="PF('statusDialog').show()"
+                                                 oncomplete="PF('statusDialog').hide()"
+                                                 ajax="false" update=":frmMisSolicitudes" >
+                                   
+                               </p:commandButton>
+                           </p:column>
+
+
+                        </p:dataTable>  
+
+                        <p:growl id="growlMisSols" />
+                       
+
+                    </h:form>
+                    
+                      <p:dialog id="dlgEnviarDoctos" header="Envío de documentación firmada" widgetVar="dlgEnviarDoctosW" width="1000" 
+                                          height="400" closable="true" dynamic="true" modal="true"
+                                          >
+                                   <p:ajax event="close" update=":frmMisSolicitudes "/>
+                                    <h:form id="frmEnvioCorreo" enctype="multipart/form-data" >  
+                                        
+                                        <p:fileUpload   id="pdfs2" 
+                                                        fileUploadListener="#{misSolsBean.handleFileUpload}" mode="advanced" dragDropSupport="false" 
+                                                        invalidSizeMessage="El archivo es demasiado pesado" fileLimit="6"
+                                                        multiple="true" sizeLimit="10000000" invalidFileMessage="Sólo se permiten archivos .pdf" 
+                                                        allowTypes="/(\.|\/)(pdf)$/"  
+                                                        cancelLabel="Cancelar" uploadLabel="Subir archivo" label="Abrir archivo"  update=":frmEnvioCorreo"/>  
+
+
+                                         <p:growl for="docFirmada"/>
+                                    </h:form>
+                                </p:dialog>
+                    
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

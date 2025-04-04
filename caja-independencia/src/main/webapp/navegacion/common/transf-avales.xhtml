@@ -1,0 +1,147 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                >
+
+
+
+    <p:dialog id="dlgTransferir" widgetVar="dlgTransferirW" width="900" height="400"
+              minimizable="false" maximizable="false" modal="true" 
+              header="Transferir">
+        <h:form id="frmDlgTransferir">
+            <h:panelGrid id="pgReasignaCredito" columns="1" cellpadding="7" cellspacing="7" >
+                <h:panelGrid id="pgDatosCredit" columns="4" cellpadding="7" cellspacing="7" >
+
+                    <p:outputLabel for="ipCveCredito" value="Clave credito :  " />  
+                    <h:outputText id="ipCveCredito" value="#{transAvalesBean.cveCredSeleccionado}" > 
+                    </h:outputText> 
+
+                    <p:outputLabel for="ipMontoDeuda" value="Monto Adeudo :  " />  
+                    <h:outputText id="ipMontoDeuda" value="#{transAvalesBean.adeudoTotalCredito}" > 
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2"  />
+                    </h:outputText> 
+                </h:panelGrid>
+                <p:dataTable id="tblAvalesFiniq" value="#{transAvalesBean.avales}"
+                             var="aval" style="width: 840px" rendered="#{transAvalesBean.rdrTblAvales}"
+                             emptyMessage="No hay avales para este crédito o bien los avales ya fueron dados de baja"
+                             editable="true">
+
+                    <p:ajax event="rowEdit" listener="#{transAvalesBean.onEditTransfiere}" 
+                            update=":frmDlgTransferir:tblAvalesFiniq :frmDlgTransferir:msjDlgAjusteCredito" 
+                            onstart="PF('statusDialog').show()"
+                            oncomplete="PF('statusDialog').hide()"
+                            />  
+
+
+                    <p:column style='position: relative'>  
+                        <f:facet name="header" >  
+                            <h:outputText value="Clave empleado"/>  
+                        </f:facet>  
+                        <h:outputText value="#{aval.avalCveEmpleado}" />  
+                    </p:column>  
+
+                    <p:column style='position: relative'>  
+                        <f:facet name="header" >  
+                            <h:outputText value="Nombre aval"/>  
+                        </f:facet>  
+                        <h:outputText value="#{aval.avalNombreCompleto}" />  
+                    </p:column>  
+
+                    <p:column style='position: relative'>  
+                        <f:facet name="header">  
+                            <h:outputText value="Empresa"/>  
+                        </f:facet>  
+                        <h:outputText value="#{aval.empAbrev}" />  
+                    </p:column>
+
+                    <p:column headerText="Cantidad" style='position: relative'>  
+
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{aval.montoCredito}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <p:inputNumber value="#{aval.montoCredito}" label="Cantidad" 
+                                               required="true" decimalPlaces="2" maxValue="#{transAvalesBean.adeudoTotalCredito}" >  
+                                </p:inputNumber>  
+                            </f:facet>  
+                        </p:cellEditor> 
+
+
+                    </p:column>  
+
+                    <p:column headerText="Catorcenas" style='position: relative'>  
+
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{aval.catorcenas}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <p:inputNumber value="#{aval.catorcenas}" label="Catorcenas" 
+                                               required="true" decimalPlaces="0" >  
+                                </p:inputNumber>  
+                            </f:facet>  
+                        </p:cellEditor> 
+
+
+                    </p:column>  
+
+                    <p:column headerText="Fecha primer pago" style='position: relative'>  
+
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{aval.primerCatorcena}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <p:selectOneMenu value="#{aval.primerCatorcena}" required="true" >  
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" /> 
+                                    <f:selectItems value="#{transAvalesBean.catorcenasSiguientes}" />  
+
+                                </p:selectOneMenu> 
+                            </f:facet>  
+                        </p:cellEditor> 
+
+
+                    </p:column>  
+
+                    <p:column style="width:10%">  
+                        <p:rowEditor />  
+                    </p:column> 
+
+
+                </p:dataTable>
+
+
+                <h:panelGrid columns ="2"> 
+                    <p:commandButton id="cbAjusteCreditosAvales" value="Transferir" 
+                                     actionListener="#{transAvalesBean.transfiereCreditos()}"
+                                     rendered="#{transAvalesBean.rdrBtnTransferir}"
+                                     update=":frmDlgTransferir:msjDlgAjusteCredito"
+                                     onstart="PF('statusDialog').show()"
+                                     oncomplete="PF('statusDialog').hide()"
+                                     />
+
+
+                    <p:outputLabel value="Fecha en que se manda a incobrable:  "  rendered="#{transAvalesBean.rdrBtnIncobrable}"/>  
+                    <p:calendar value="#{transAvalesBean.fechaIncobrable}" navigator="true" pattern="dd/MM/yyyy" 
+                                rendered="#{transAvalesBean.rdrBtnIncobrable}" locale="es" required="true" />
+
+
+
+                    <p:commandButton id="cbIncobrable" value="Mandar a incobrable" actionListener="#{transAvalesBean.mandarAIncobrable()}"
+                                     rendered="#{transAvalesBean.rdrBtnIncobrable}"
+                                     update=":frmDlgTransferir:msjDlgAjusteCredito"
+                                     onstart="PF('statusDialog').show()"
+                                     oncomplete="PF('statusDialog').hide()"
+                                     />
+
+                </h:panelGrid> 
+                <p:messages id="msjDlgAjusteCredito" />
+            </h:panelGrid>  
+
+
+        </h:form>
+    </p:dialog>
+</ui:composition>

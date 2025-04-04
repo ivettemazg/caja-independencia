@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16/01/2017 04:22:46 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Bitacora" table="bitacora">
+        <id name="bitId" type="int">
+            <column name="bit_id" />
+            <generator class="identity" />
+        </id>
+        <property name="bitTipo" type="int">
+            <column name="bit_tipo" not-null="true" />
+        </property>
+        <property name="bitNota" type="string">
+            <column name="bit_nota" length="500" />
+        </property>
+        <property name="bitTitulo" type="string">
+            <column name="bit_titulo" length="100" />
+        </property>
+        <property name="bitFecha" type="date">
+            <column name="bit_fecha" length="10" />
+        </property>
+        <property name="bitUsuario" type="int">
+            <column name="bit_usuario" not-null="true" />
+        </property>
+        <property name="bitReferencia" type="java.lang.Long">
+            <column name="bit_referencia" not-null="true" />
+        </property>
+        <property name="bitSubreferencia" type="java.lang.Long">
+            <column name="bit_subreferencia" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+
+    <h:form id="frmSolAhorros">
+        <p:fieldset  legend="Aportaciones" toggleable="true" toggleSpeed="500" >
+            <p:dataTable id="tblAhorrosRep" var="mov" style="width: 90%"  
+                         value="#{valSolDetBean.lstTotalesAhorro}"  
+                         sortBy="#{mov.movUsuId}"
+                         >  
+
+                <p:column style='position: relative' rendered="false">  
+                    <f:facet name="header"  >  
+                        <h:outputText value="ID"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{mov.movProducto}" />  
+                </p:column>  
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Tipo ahorro"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{mov.movProductoStr}" />  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Total"/>  
+                    </f:facet>  
+                    <h:outputText value="#{mov.totalMovimiento}">
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>   
+                </p:column> 
+
+                <p:summaryRow>
+                    <p:column >
+                        <h:outputText value="Total:" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{valSolDetBean.totalAhorro}">
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </h:outputText>
+                    </p:column>
+                </p:summaryRow>
+
+            </p:dataTable> 
+
+        </p:fieldset>
+    </h:form>  
+
+
+</ui:composition>

@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+
+    <h:form id="frmBuscaEmpleado">
+        <p:panelGrid id="pgBusquedaUsr" columns ="4" style="border:0px !important; background:none; "  styleClass="FormContent"
+                     layout="grid"  >
+
+            <h:outputText value="CLAVE DE EMPLEADO: " style="font-weight: bold"/>  
+            <p:inputText id="baBuClave" value="#{repEmpleadoBean.claveEmpleado}" required="true"
+                         requiredMessage="Debe introducir la clave del empleado">
+            </p:inputText>
+
+
+
+            <p:selectOneMenu id="somBuEmpresas"
+                             value="#{repEmpleadoBean.empresa}" converter="empConverter"
+                             styleClass="ui-inputfield ui-widget ui-state-default ui-corner-all" 
+                             required="true" requiredMessage="Debe introducir la empresa">
+                <f:selectItem itemLabel="Seleccione" itemValue="" /> 
+                <f:selectItems value="#{repEmpleadoBean.empresas}" var="emp"  
+                               itemLabel="#{emp.empAbreviacion}" itemValue="#{emp}"></f:selectItems>
+            </p:selectOneMenu> 
+            
+            <p:commandButton value="Buscar usuario" 
+                        actionListener="#{repEmpleadoBean.buscaEmpleado}"
+                        update=":frmDatosEmpl, :frmBuscaEmpleado:pgBusquedaUsr2,  
+                        :frmBuscaEmpleado:pgBusquedaUsr3,
+                        :frmBuscaEmpleado:msjBusqueda, :frmDevolucionesAhorro, :frmAhorros,  
+                        :frmCredsEmpleado, :frmAvalCreditos, :frmBtnsNotas, :frmPagos :frmDevolucionesPagos"
+                        onstart="PF('statusDialog').show()"
+                        oncomplete="PF('statusDialog').hide()" ></p:commandButton> 
+
+            <p:messages id="msjBusqueda" for="msjBusqueda"/>
+            <p:spacer height="15" />
+        </p:panelGrid>
+        <p:panelGrid id="pgBusquedaUsr2" columns ="2" style="border:0px !important; background:none; "  styleClass="FormContent"
+                     layout="grid"  >
+            <h:outputText id = "otLblEst" value="Estatus: " style="font-weight: bold" rendered="#{repEmpleadoBean.rdrFieldSets}"/>  
+            <h:outputText id= "otEst" value="#{repEmpleadoBean.estEmpleado}" rendered="#{repEmpleadoBean.rdrFieldSets}"/> 
+            <h:outputText id = "otLblFechaBaja" value="Fecha baja: " style="font-weight: bold" rendered="#{repEmpleadoBean.rdrFechaBaja}"/>  
+            <h:outputText id= "otFechaBaja" value="#{repEmpleadoBean.usuario.usuFechaBaja}" rendered="#{repEmpleadoBean.rdrFechaBaja}"/> 
+             <p:spacer height="25" />
+        </p:panelGrid>
+        <p:panelGrid id="pgBusquedaUsr3" columns ="3" style="border:0px !important; background:none; "  styleClass="FormContent"
+                     layout="grid"  >
+            <h:outputText id = "otLblEstHabilitado" value="#{repEmpleadoBean.habilitado} " style="font-weight: bold" rendered="#{repEmpleadoBean.rdrFieldSets}"/>  
+            <p:commandButton value="Bloquear/Desbloquear usuario" rendered="#{repEmpleadoBean.rdrFieldSets}"
+                                             icon="fa fa-user-times Fs16 white"
+                                             actionListener="#{repEmpleadoBean.habilitarDeshabilitar()}"
+                                             update=" :frmBuscaEmpleado:pgBusquedaUsr3,
+                                                :frmBuscaEmpleado:msjBusqueda"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"
+                                             
+                                             >
+            </p:commandButton>
+            
+            <p:spacer height="20%"></p:spacer>
+             <h:outputText id = "otLblEstOmitir" value="#{repEmpleadoBean.omiteValidaciones} " style="font-weight: bold" rendered="#{repEmpleadoBean.rdrFieldSets}"/>  
+            <p:commandButton value="Activar/Omitir validaciones para este usuario" rendered="#{repEmpleadoBean.rdrFieldSets}"
+                                             icon="fa fa-user-times Fs16 white"
+                                             actionListener="#{repEmpleadoBean.omitirValidaciones()}"
+                                             update=" :frmBuscaEmpleado:pgBusquedaUsr3,
+                                                :frmBuscaEmpleado:msjBusqueda"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"
+                                             
+                                             >
+            </p:commandButton>
+            
+        </p:panelGrid>
+
+    </h:form>    
+</ui:composition>

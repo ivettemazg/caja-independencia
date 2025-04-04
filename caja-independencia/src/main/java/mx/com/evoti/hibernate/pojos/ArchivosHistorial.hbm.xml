@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.ArchivosHistorial" table="archivos_historial">
+        <id name="arhId" type="java.lang.Integer">
+            <column name="arh_id" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="arhNombreArchivo" type="string">
+            <column name="arh_nombre_archivo" length="500" />
+        </property>
+        <property name="arhFechaSubida" type="date">
+            <column name="arh_fecha_subida" length="10" />
+        </property>
+        <property name="arhEmpresa" type="java.lang.Integer">
+            <column name="arh_empresa" />
+        </property>
+        <property name="arhEstatus" type="java.lang.Integer">
+            <column name="arh_estatus" />
+        </property>
+        <property name="arhRegistros" type="java.lang.Integer">
+            <column name="arh_registros" />
+        </property>
+        <property name="arhTipoArchivo" type="java.lang.Integer">
+            <column name="arh_tipo_archivo" />
+        </property>
+        <property name="arhFechaCatorcena" type="date">
+            <column name="arh_fecha_catorcena" length="10" />
+        </property>
+    </class>
+</hibernate-mapping>

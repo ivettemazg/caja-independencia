@@ -1,0 +1,83 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <f:event type="preRenderComponent" rendered="true" listener="#{credsActivBean.obtieneCreditosDetalle()}"/>
+
+    <p:dataTable id="tblCreditoAdeudosSol" var="cre"  
+                 value="#{credsActivBean.creditos}"                                 
+                 rowKey="#{cre.creId}"
+                 emptyMessage="El usuario no tiene créditos"
+                 rowStyleClass="#{cre.creEstatusNombre}"
+                 >  
+
+        <p:column style='position: relative'>  
+            <f:facet name="header"  >  
+                <h:outputText value="Clave credito"/>  
+            </f:facet>  
+            <h:outputText  value="#{cre.creClave}" />  
+        </p:column>  
+
+        <p:column style='position: relative'>  
+            <f:facet name="header">  
+                <h:outputText value="Tipo credito"/>  
+            </f:facet>  
+            <h:outputText value="#{cre.proDescripcion}" />  
+        </p:column> 
+        <p:column style='position: relative'>  
+            <f:facet name="header">  
+                <h:outputText value="Monto prestamo"/>  
+            </f:facet>  
+            <h:outputText value="#{cre.crePrestamo}" > 
+                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+            </h:outputText>   
+        </p:column> 
+        <p:column style='position: relative'>  
+            <f:facet name="header">  
+                <h:outputText value="Catorcenas"/>  
+            </f:facet>  
+            <h:outputText value="#{cre.creCatorcenas}" />  
+        </p:column> 
+        <p:column style='position: relative'>  
+            <f:facet name="header">  
+                <h:outputText value="Estatus"/>  
+            </f:facet>  
+            <h:outputText value="#{cre.creEstatusNombre}" />  
+        </p:column> 
+        <p:column style='position: relative'>  
+            <f:facet name="header">  
+                <h:outputText value="Saldo moroso"/>  
+            </f:facet>  
+            <h:outputText value="#{cre.saldoPendiente}" > 
+                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+            </h:outputText>     
+        </p:column> 
+        <p:column style='position: relative'>  
+            <f:facet name="header">  
+                <h:outputText value="Saldo capital"/>  
+            </f:facet>  
+            <h:outputText value="#{cre.saldoCapital}" > 
+                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+            </h:outputText>     
+        </p:column> 
+        <p:column style='position: relative'>  
+            <f:facet name="header">  
+                <h:outputText value="Saldo total"/>  
+            </f:facet>  
+            <h:outputText value="#{cre.saldoTotal}" > 
+                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+            </h:outputText>     
+        </p:column> 
+        <p:column style='position: relative'>  
+            <f:facet name="header">  
+                <h:outputText value="Catorcenas pendientes"/>  
+            </f:facet>  
+            <h:outputText value="#{cre.catorcenasPendientes}" />  
+        </p:column> 
+
+    </p:dataTable> 
+
+</ui:composition>

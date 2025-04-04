@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Amortizacion" table="amortizacion">
+        <id name="amoId" type="java.lang.Integer">
+            <column name="amo_id" />
+            <generator class="identity"></generator>
+        </id>
+        <many-to-one name="creditosFinal" class="mx.com.evoti.hibernate.pojos.CreditosFinal" fetch="select">
+            <column name="amo_credito" />
+        </many-to-one>
+        <property name="amoNumeroPago" type="java.lang.Integer">
+            <column name="amo_numero_pago" />
+        </property>
+        <property name="amoCapital" type="java.lang.Double">
+            <column name="amo_capital" precision="22" scale="0" />
+        </property>
+        <property name="amoAmortizacion" type="java.lang.Double">
+            <column name="amo_amortizacion" precision="22" scale="0" />
+        </property>
+        <property name="amoInteres" type="java.lang.Double">
+            <column name="amo_interes" precision="22" scale="0" />
+        </property>
+        <property name="amoIva" type="java.lang.Double">
+            <column name="amo_iva" precision="22" scale="0" />
+        </property>
+        <property name="amoMontoPago" type="java.lang.Double">
+            <column name="amo_monto_pago" precision="22" scale="0" />
+        </property>
+        <property name="amoSolicitud" type="java.lang.Long">
+            <column name="amo_solicitud" />
+        </property>
+        <property name="amoSaldo" type="java.lang.Double">
+            <column name="amo_saldo" precision="22" scale="0" />
+        </property>
+        <property name="amoFechaPago" type="date">
+            <column name="amo_fecha_pago" length="10" />
+        </property>
+        <property name="amoEstatus" type="string">
+            <column name="amo_estatus" length="20" />
+        </property>
+        <property name="amoClaveEmpleado" type="java.lang.Integer">
+            <column name="amo_clave_empleado" />
+        </property>
+        <property name="amoPagoId" type="java.lang.Integer">
+            <column name="amo_pago_id" />
+        </property>
+        <property name="amoUsuId" type="java.lang.Integer">
+            <column name="amo_usu_id" />
+        </property>
+        <property name="amoProducto" type="java.lang.Integer">
+            <column name="amo_producto" />
+        </property>
+        <property name="amoEstatusInt" type="java.lang.Integer">
+            <column name="amo_estatus_int" />
+        </property>
+    </class>
+</hibernate-mapping>

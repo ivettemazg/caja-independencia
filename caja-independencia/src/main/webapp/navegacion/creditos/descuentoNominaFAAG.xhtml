@@ -1,0 +1,182 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+
+            .ajustado{
+                background-color: #9BFF78 !important; 
+                background-image: none !important; 
+                font-weight: bold;                    
+
+            }
+
+            .ajustado-parcial{
+                background-color: #FDFF75 !important; 
+                background-image: none !important; 
+                font-weight: bold;                    
+
+            }
+
+
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Descuento de Nomina para Fondo de Ahorro y Aguinaldo</div>
+                    </h3>
+                    <h:form id = "frmDesctoNominaFAAG">
+
+                        <p:panelGrid columns="5" style="border:0px !important; background:none; "
+                                     styleClass="FormContent"
+                                     layout="grid"  >
+
+                            <p:outputLabel value="Catorcena : " />  
+                            <p:calendar navigator="true" value="#{descuentoNominaBean.fechaCatorcena}"
+                                        id="CalCatotcenaDescuentoNominaOtras" pattern="dd/MM/yyyy" locale="es" required="true"
+                                        requiredMessage="Por favor seleccione una catorcena"/>
+
+                            <p:commandButton value="Consultar" 
+                                             actionListener="#{descuentoNominaBean.generaDescuentoNominaFAAG}"
+                                             update =":frmDesctoNominaFAAG"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"/>
+
+                        </p:panelGrid>
+
+                        <p:dataTable id="tblCreditoFAAG"
+                            var="creditosXDescontarFAAG" value="#{descuentoNominaBean.descuentoNominaFAAG}" 
+                                     rendered="true"
+                                     emptyMessage="No existe creditos por descontar"
+                                     >
+
+                            <p:column style='position: relative'>
+                                <f:facet name="header">
+                                    <h:outputText value="Fecha Deposito"/>  
+                                </f:facet>
+                                <h:outputText  value="#{creditosXDescontarFAAG.fechaDeposito}" />  
+                            </p:column>  
+
+                            <p:column style='position: relative'>
+                                <f:facet name="header">
+                                    <h:outputText value="Prestamo"/>  
+                                </f:facet>
+                                <h:outputText  value="#{creditosXDescontarFAAG.prestamo}" />  
+                            </p:column>  
+
+                            <p:column style='position: relative'>
+                                <f:facet name="header">
+                                    <h:outputText value="Fecha Primer Pago"/>  
+                                </f:facet>
+                                <h:outputText  value="#{creditosXDescontarFAAG.fechaPrimerPago}" />  
+                            </p:column>
+
+                            <p:column style='position: relative'>
+                                <f:facet name="header">
+                                    <h:outputText value="Producto"/>  
+                                </f:facet>
+                                <h:outputText  value="#{creditosXDescontarFAAG.producto}" />  
+                            </p:column>
+
+                            <p:column style='position: relative'>
+                                <f:facet name="header">
+                                    <h:outputText value="Clave"/>  
+                                </f:facet>
+                                <h:outputText  value="#{creditosXDescontarFAAG.claveCredito}" />  
+                            </p:column>
+
+                            <p:column style='position: relative'>
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre"/>  
+                                </f:facet>
+                                <h:outputText  value="#{creditosXDescontarFAAG.nombre}" />  
+                            </p:column>
+
+                            <p:column style='position: relative'>
+                                <f:facet name="header">
+                                    <h:outputText value="Empresa"/>  
+                                </f:facet>
+                                <h:outputText  value="#{creditosXDescontarFAAG.empresa}" />  
+                            </p:column>
+
+                            <p:column style='position: relative'>
+                                <f:facet name="header">
+                                    <h:outputText value="Interes"/>  
+                                </f:facet>
+                                <h:outputText  value="#{creditosXDescontarFAAG.interes}" />  
+                            </p:column>
+
+                            <p:column style='position: relative'>
+                                <f:facet name="header">
+                                    <h:outputText value="Clave Empleado"/>  
+                                </f:facet>
+                                <h:outputText  value="#{creditosXDescontarFAAG.claveEmpleado}" />  
+                            </p:column>
+
+                            <p:column style='position: relative'>
+                                <f:facet name="header">
+                                    <h:outputText value="Pago Total"/>  
+                                </f:facet>
+                                <h:outputText  value="#{creditosXDescontarFAAG.pagoTotal}" />  
+                            </p:column>
+
+                        </p:dataTable>
+                         <h:commandLink>  
+                                            <p:graphicImage value="../../resources/images/excel.png" />   
+                                            <p:dataExporter type="xls"  target=":frmDesctoNominaFAAG:tblCreditosFAAG" fileName="creditos_pendientes" />  
+                                        </h:commandLink>  
+                        
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

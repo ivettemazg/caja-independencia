@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="Container100 Responsive100">
+        <div class="ContainerIndent">
+            <h:form id="frmDoctosSolicitud">
+                <f:event type="preRenderComponent" listener="#{doctosSolBean.init}"/>
+                <p:dataGrid  id="tblDocs" var="doc" value="#{doctosSolBean.documentos}"
+                             widgetVar="tblDocsWd" columns="3" layout="grid">
+
+
+                    <p:panel header="#{doc.tipoDocumento}" style="text-align:center">
+                        <h:panelGrid columns="1" style="width:100%" class="Container100 Responsive100">
+
+                            <h:outputText value="#{doc.strStatus}" />
+                            <p:commandButton update=":frmDoctosSolicitud:pgVisorPdf" 
+                                             actionListener="#{doctosSolBean.abrirDialogVisor(doc)}"
+                                              icon="fa fa-file-pdf-o Fs16 white" 
+                                              process="@this"
+                                             >
+                                <f:setPropertyActionListener value="#{doc}" target="#{doctosSolBean.docSeleccionado}"   />
+                            </p:commandButton>
+
+                        </h:panelGrid>
+                    </p:panel>
+
+                </p:dataGrid >
+
+
+                <p:dialog id="dlgVisorPdfs" widgetVar="dlgDocPdf" width="900" height="600"
+                          minimizable="true" maximizable="true" modal="true" >
+                    <p:ajax event="close" listener="#{doctosSolBean.eliminaImagen()}" />
+                    
+                    <h:panelGrid id="pgBtnValidaPdf" columns="2" style="height: 15%">
+                        <p:commandButton value="Aprobar"
+                            actionListener="#{doctosSolBean.updtEstatusDoc(3)}"
+                                         icon="fa fa-thumbs-o-up Fs16 white" update=":frmDoctosSolicitud"
+                                         process="@this" oncomplete="PF('dlgDocPdf').hide(); PF('statusDialog').hide()"
+                                          onstart="PF('statusDialog').show()"
+                                        
+                                        >
+                        </p:commandButton>
+                        <p:commandButton value="Rechazar"
+                                         actionListener="#{doctosSolBean.abrirDialogMotivRechazo}"
+                                           icon="fa  fa-thumbs-o-down Fs16 white" 
+                                         process="@this" 
+                                         onstart="PF('statusDialog').show()"
+                                         oncomplete="PF('statusDialog').hide()"
+                                        >
+                        </p:commandButton>
+                    </h:panelGrid>
+                    <h:panelGrid id="pgVisorPdf" class="Container100 Responsive100" columns="1"
+                                 style="height:80%"
+                                 >
+                    
+                    <object type="application/pdf"  data="../../#{doctosSolBean.docSeleccionado.nombreDocumento}" height="100%" width="100%"
+                            internalinstanceid="6" >
+                        Su browser no puede mostrar el pdf, <a href="../../#{doctosSolBean.docSeleccionado.nombreDocumento}">click</a> para descargarlo.
+                    </object>
+                    
+                    </h:panelGrid>
+                </p:dialog>
+
+                
+                 <p:dialog id="dlgMotivRechazoDoc" widgetVar="dlgMotivRechazoDoc" >
+                    <h:panelGrid columns="1" cellpadding="5" >
+                        <h4>Describa el motivo del rechazo</h4>  
+                        <p:inputTextarea rows="5" cols="30" counter="counter" maxlength="150"       
+                                         counterTemplate="{0} Caracteres restantes" autoResize="false"
+                                         value="#{doctosSolBean.motivoRechazo}"
+                                         required="true"
+                                         requiredMessage="Por favor indique el motivo del rechazo de la solicitud"/>
+                        <h:outputText id="counter" /> 
+                        <p:commandButton value="Aceptar"  actionListener="#{doctosSolBean.updtEstatusDoc(4)}"
+                                         oncomplete="PF('dlgMotivRechazoDoc').hide(); PF('dlgDocPdf').hide(); PF('statusDialog').hide()"
+                                         onstart="PF('statusDialog').show()"
+                                         update=":frmDoctosSolicitud"
+                                         ></p:commandButton>
+                    </h:panelGrid>
+                </p:dialog>
+                
+                <p:growl id="valdocGrowl"/>
+            </h:form>
+        </div>
+    </div>
+
+</ui:composition>

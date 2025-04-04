@@ -1,0 +1,232 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Historial de solicitudes</div>
+                    </h3>
+                    <f:event type="preRenderComponent" listener="#{historialBean.init()}"/>
+                    <h:form id="frmHistorialSolicitudes">
+
+                        <p:dataTable id="tblHistSols" var="historial" value="#{historialBean.historialSolicitudes}" widgetVar="historialTable"
+                                     emptyMessage="Sin historial" filterEvent="enter" paginatorPosition="bottom" 
+                                     reflow="true" scrollable="true" scrollHeight="70%" paginator="true" rows="25"  
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                     rowsPerPageTemplate="25, 35, 45" rowKey="#{historial.folio}" 
+                                     selection="#{historialBean.solSelected}" selectionMode="single">
+
+                            <p:column filterBy="#{historial.folio}" headerText="Folio" sortBy="#{historial.folio}">
+                                <h:outputText value="#{historial.folio}" />
+                            </p:column>
+                            <p:column headerText="Monto Solicitado">
+                                <h:outputText value="#{historial.montoSolicitado}">
+                                    <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Catorcenas">
+                                <h:outputText value="#{historial.catorcenas}" />
+                            </p:column>
+                            <p:column filterBy="#{historial.estatus}" headerText="Estatus">
+                                <h:outputText value="#{historial.estatus}" />
+                            </p:column>
+                            <p:column headerText="Fecha Creacion">
+                                <h:outputText value="#{historial.fechaCreacion}" />
+                            </p:column>
+                            <p:column filterBy="#{historial.usuClaveEmpleado}" headerText="Clave Empleado">
+                                <h:outputText value="#{historial.usuClaveEmpleado}" />
+                            </p:column>
+                            <p:column filterBy="#{historial.nombre}" headerText="Nombre">
+                                <h:outputText value="#{historial.nombre}" />
+                            </p:column>
+                            <p:column filterBy="#{historial.empresa}" headerText="Empresa">
+                                <h:outputText value="#{historial.empresa}" />
+                            </p:column>
+                            <p:column filterBy="#{historial.producto}" headerText="Producto">
+                                <h:outputText value="#{historial.producto}" />
+                            </p:column>
+                        </p:dataTable>
+
+                        <p:contextMenu for="tblHistSols" style="width : 200px" >  
+                            <p:menuitem value="Ver Detalle" icon="fa fa-search"
+                                        actionListener="#{historialBean.abreDetalleSolicitud}"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                        update=":frmDetalleSolicitud">
+                            </p:menuitem>
+                            <p:menuitem value="Ver Avales" icon="fa fa-search"
+                                        actionListener="#{historialBean.verAvalesSolicitud}"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                        update=":frmAvalesSolicitud">
+                            </p:menuitem>
+                            <p:menuitem value="Documentacion" icon="fa fa-search"
+                                        actionListener="#{historialBean.verDocumentacion}"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                        update=":frmDoctosSolicitud">
+                            </p:menuitem>
+                        </p:contextMenu> 
+                    </h:form>
+
+                    <p:dialog id="dlgDetalleSolicitud" header="Detalle Solicitud" widgetVar="dlgDetalleSolicitudW" width="1100" 
+                              height="400" closable="true" closeOnEscape="true" modal="true" >
+
+                        <h:form id="frmDetalleSolicitud" enctype="multipart/form-data" >  
+                            <h:panelGrid columns="6"  cellpadding="3"  
+                                         styleClass="FormContent" 
+                                         >
+
+
+                                <h:outputText value="Tipo solicitud " style="font-weight: bold" />  
+                                <h:outputText id="producto" 
+                                              value="#{historialBean.detalleSolicitud.producto}" />
+                                <h:outputText  value="Estatus " style="font-weight: bold"/>  
+                                <h:outputText id="estatus" 
+                                              value="#{historialBean.detalleSolicitud.estatus}" />
+
+                                <h:outputText  value="Monto solicitado " style="font-weight: bold"/>  
+                                <h:outputText id="montoSolicitado" value="#{historialBean.detalleSolicitud.montoSolicitado}" > 
+                                    <f:convertNumber maxFractionDigits="2" minFractionDigits="2" pattern="###,###.00"/>
+                                </h:outputText>
+
+                                <h:outputText value="Catorcenas " style="font-weight: bold"/>  
+                                <h:outputText id="catorcenas" 
+                                              value="#{historialBean.detalleSolicitud.catorcenas}" />
+                                <h:outputText  value="Banco " style="font-weight: bold"/>  
+                                <h:outputText id="banco" 
+                                              value="#{historialBean.detalleSolicitud.banco}" />
+                                <h:outputText  value="Número de cuenta " style="font-weight: bold"/>  
+                                <h:outputText id="numeroCuenta" 
+                                              value="#{historialBean.detalleSolicitud.numeroCuenta}"/>
+                                <h:outputText  value="Clabe " style="font-weight: bold"/>  
+                                <h:outputText id="clabe" 
+                                              value="#{historialBean.detalleSolicitud.clabe}" />
+                                <h:outputText  value="Tarjetahabiente " style="font-weight: bold"/>  
+                                <h:outputText id="tarjetaHabiente" 
+                                              value="#{historialBean.detalleSolicitud.tarjetaHabiente}" />
+                                <h:outputText  value="Referencia " style="font-weight: bold"/>  
+                                <h:outputText id="referencia" 
+                                              value="#{historialBean.detalleSolicitud.referencia}" />
+
+                                <h:outputText  value="Aseguradora " style="font-weight: bold"/>  
+                                <h:outputText id="aseguradora" 
+                                              value="#{historialBean.detalleSolicitud.aseguradora}" />
+
+                                <h:outputText  value="Poliza " style="font-weight: bold"/>  
+                                <h:outputText id="poliza" 
+                                              value="#{historialBean.detalleSolicitud.poliza}" />
+
+                                <h:outputText  value="Fecha creación " style="font-weight: bold"/>  
+                                <h:outputText id ="fechaCreacion" value="#{historialBean.detalleSolicitud.fechaCreacion}" >  
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>  
+
+                                <h:outputText  value="Fecha autorización " style="font-weight: bold"/>  
+                                <h:outputText id ="fechaAutorizacion" value="#{historialBean.detalleSolicitud.fechaAutorizacion}" >  
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>  
+
+                                <h:outputText  value="Fecha fondeo " style="font-weight: bold"/>  
+                                <h:outputText id ="fechaFondeo" value="#{historialBean.detalleSolicitud.fechaFondeo}" >  
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>  
+
+                                <h:outputText value="Fecha envío documentación " style="font-weight: bold"/>  
+                                <h:outputText id ="fechaEnvioDoc" value="#{historialBean.detalleSolicitud.fechaEnvioDoc}" >  
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>  
+
+                                <h:outputText  value="Fecha depósito " style="font-weight: bold"/>  
+                                <h:outputText id ="fechaDeposito" value="#{historialBean.detalleSolicitud.fechaDeposito}" >  
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>  
+
+                                <h:outputText  value="Fecha cancelación " style="font-weight: bold"/>  
+                                <h:outputText id ="fechaCancelacion" value="#{historialBean.detalleSolicitud.fechaCancelacion}" >  
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText> 
+
+                                 <h:outputText  value="Motivo rechazo " style="font-weight: bold"/>  
+                                <h:outputText id="motivoRechazo" 
+                                              value="#{historialBean.detalleSolicitud.motivoRechazo}"  />
+                                
+                            </h:panelGrid>
+                            <p:growl id="dlgSolDetalle"/>
+                        </h:form>
+                    </p:dialog>
+
+                    <p:dialog id="dlgAvalesSolicitud" header="Avales" widgetVar="dlgAvalesSolicitudW" width="1100" 
+                              height="500" closable="true" closeOnEscape="true" modal="true" >
+                        <h:form id="frmAvalesSolicitud" enctype="multipart/form-data" >  
+                            <p:dataTable id="tblAvalesSolicitud" var="avales" 
+                                         value="#{historialBean.avalesSolicitud}"                                 
+                                         scrollable="true"
+                                         scrollHeight="400" emptyMessage="Usted no tiene pagos que mostrar para este crédito." > 
+
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header"  >  
+                                        <h:outputText value="Clave Empleado"/>  
+                                    </f:facet>  
+                                    <h:outputText  value="#{avales.usuClaveEmpleado}" />  
+                                </p:column>  
+
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header"  >  
+                                        <h:outputText value="Nombre"/>  
+                                    </f:facet>  
+                                    <h:outputText  value="#{avales.nombre}" />  
+                                </p:column>  
+
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header"  >  
+                                        <h:outputText value="Correo"/>  
+                                    </f:facet>  
+                                    <h:outputText  value="#{avales.correo}" />  
+                                </p:column>  
+
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header"  >  
+                                        <h:outputText value="Telefono"/>  
+                                    </f:facet>  
+                                    <h:outputText  value="#{avales.telefono}" />  
+                                </p:column>  
+
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header"  >  
+                                        <h:outputText value="Celular"/>  
+                                    </f:facet>  
+                                    <h:outputText  value="#{avales.celular}" />  
+                                </p:column>  
+
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header"  >  
+                                        <h:outputText value="Fecha Baja"/>  
+                                    </f:facet>  
+                                    <h:outputText  value="#{avales.fechaBaja}" />  
+                                </p:column>  
+
+                            </p:dataTable> 
+
+                            <p:growl id="dlgAmoRep"/>
+                        </h:form>
+                    </p:dialog>
+
+
+                    <ui:insert name="histDocumentos" >
+                        <ui:include src="hist-documentos.xhtml"/>
+                    </ui:insert>
+
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

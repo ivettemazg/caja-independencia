@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Reporte de Usuarios</div>
+                    </h3>
+                    <f:event type="preRenderComponent" listener="#{reporteUsuariosBean.init()}"/>
+                    <h:form id="frmReporteUsuarios">
+                        <p:dataTable id="tblUsuarios" var="usuarios" value="#{reporteUsuariosBean.reporteUsuarios}" widgetVar="reporteUsuariosTable"
+                                     emptyMessage="No existen usuarios" filterEvent="enter" paginatorPosition="bottom" 
+                                     reflow="true" scrollable="true" scrollHeight="70%" paginator="true" rows="25"  
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                            <p:column filterBy="#{usuarios.claveEmpleado}" headerText="Clave de Empleado">
+                                <h:outputText value="#{usuarios.claveEmpleado}" />
+                            </p:column>
+                            <p:column filterBy="#{usuarios.nombre}" headerText="Nombre">
+                                <h:outputText value="#{usuarios.nombre}" />
+                            </p:column>
+                            <p:column filterBy="#{usuarios.paterno}" headerText="Paterno">
+                                <h:outputText value="#{usuarios.paterno}" />
+                            </p:column>
+                            <p:column filterBy="#{usuarios.materno}" headerText="Materno">
+                                <h:outputText value="#{usuarios.materno}" />
+                            </p:column>
+                            <p:column filterBy="#{usuarios.empresaAbreviacion}" headerText="Empresa">
+                                <h:outputText value="#{usuarios.empresaAbreviacion}" />
+                            </p:column>
+                            <p:column filterBy="#{usuarios.fechaIngresoCaja}" headerText="Fecha Ingreso Caja">
+                                <h:outputText value="#{usuarios.fechaIngresoCaja}" />
+                            </p:column>
+                            <p:column filterBy="#{usuarios.fechaIngresoEmpresa}" headerText="Fecha Ingreso Empresa">
+                                <h:outputText value="#{usuarios.fechaIngresoEmpresa}" />
+                            </p:column>
+                            <p:column filterBy="#{usuarios.fechaBaja}" headerText="Fecha Baja">
+                                <h:outputText value="#{usuarios.fechaBaja}" />
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,226 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Proceso Rendimiento</div>
+                    </h3>
+
+                    <h:form id="mesesRendimiento">
+                        <f:event type="preRenderComponent" listener="#{procesoBean.init()}"/>
+
+                        <h:panelGrid id="grid" columns="5" cellpadding="10" cellspacing="10"  style="border:0px !important; background:none; "  styleClass="FormContent"
+                                     >
+                            <p:selectOneMenu id="menuFechas" value="#{procesoBean.selectedDate}" required="true" effect="fold">  
+                                <p:ajax listener="#{procesoBean.consultaInversionesComisiones}" update="grid" />
+                                <f:selectItem itemLabel="Elige una fecha" itemValue="" />  
+                                <f:selectItems value="#{procesoBean.dates}" />  
+                            </p:selectOneMenu>
+
+                            <p:outputLabel for="interes" value="Intereses de inversión: " />  
+                            <p:inputText id="interes" 
+                                         value="#{procesoBean.intereses}"/>
+
+                            <p:outputLabel for="comisiones" value="Comisiones: " />  
+                            <p:inputText id="comisiones" 
+                                         value="#{procesoBean.comisiones}"/>
+
+                            <p:commandButton value="Consultar" id="consultar" 
+                                             actionListener="#{procesoBean.mesesRendimiento}"
+                                             oncomplete="PF('dlgAhorroAcumuladoTotal').show(); PF('statusDialog').hide()"
+                                             onstart="PF('statusDialog').show()"
+                                             update=":frmAhorroAcumuladoTotal"/>
+                        </h:panelGrid>
+
+
+                        <p:messages id="msjRendimiento"/>
+                    </h:form>
+
+                    <p:dialog id="dlgAhorroAcumuladoTotal" header="Ahorro acumulado total" 
+                              widgetVar="dlgAhorroAcumuladoTotal" modal="true" 
+                              width="90%" height="90%" closable="true" closeOnEscape="true">
+                        <h:form id="frmAhorroAcumuladoTotal">
+                            <p:panel id="valores" style="margin-bottom:20px">
+                                <h:panelGrid columns="2">
+                                    <h:panelGrid columns="2" width="50%">
+                                        <p:outputLabel for="ahorrofijo" value="Ahorro fijo:  " />  
+                                        <h:outputText id="ahorrofijo" 
+                                                      value="#{procesoBean.valoresAcumulado['ahorroFijo']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+
+                                        <p:outputLabel for="ahorronofijo" value="Ahorro no fijo:  " />  
+                                        <h:outputText id="ahorronofijo" 
+                                                      value="#{procesoBean.valoresAcumulado['ahorroNoFijo']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+
+                                        <p:outputLabel for="ahorrovoluntario" value="Ahorro voluntario:  " />  
+                                        <h:outputText id="ahorrovoluntario" 
+                                                      value="#{procesoBean.valoresAcumulado['ahorroVoluntario']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+
+                                        <p:outputLabel for="acumuladoTotal" value="Acumulado total:  " />  
+                                        <h:outputText id="acumuladoTotal" 
+                                                      value="#{procesoBean.valoresAcumulado['acumuladoTotal']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2" width="50%">
+                                        <p:outputLabel for="exacto" value="Exacto:  " />  
+                                        <h:outputText id="exacto" 
+                                                      value="#{procesoBean.valoresAcumulado['exacto']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+
+                                        <p:outputLabel for="mayor" value="Mayor:  " />  
+                                        <h:outputText id="mayor" 
+                                                      value="#{procesoBean.valoresAcumulado['mayor']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+
+                                        <p:outputLabel for="mas1Credito" value="Mas de un crédito:  " />  
+                                        <h:outputText id="mas1Credito" 
+                                                      value="#{procesoBean.valoresAcumulado['mas1Credito']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+
+                                        <p:outputLabel for="mas1CreditoAcumulado" value="Mas de un crédito acumulado:  " />  
+                                        <h:outputText id="mas1CreditoAcumulado" 
+                                                      value="#{procesoBean.valoresAcumulado['mas1CreditoAcumulado']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+
+                                        <p:outputLabel for="acumulado" value="Acumulado:  " />  
+                                        <h:outputText id="acumulado" 
+                                                      value="#{procesoBean.valoresAcumulado['acumulado']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+
+                                        <p:outputLabel for="capital" value="Capital: " />  
+                                        <h:outputText id="capital" 
+                                                      value="#{procesoBean.valoresAcumulado['capital']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+
+                                        <p:outputLabel for="extemporaneo" value="Extemporaneo: " />  
+                                        <h:outputText id="extemporaneo" 
+                                                      value="#{procesoBean.valoresAcumulado['extemporaneo']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+
+                                        <p:outputLabel for="pagostotal" value="Pagos total: " />  
+                                        <h:outputText id="pagostotal" 
+                                                      value="#{procesoBean.valoresAcumulado['pagosTotal']}" 
+                                                      style="font-weight:bold">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText> 
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel id="desglose" style="margin-bottom:20px">
+                                <h:panelGrid columns="6">
+                                    <p:outputLabel for="des_acumulado" value="Acumulado:  " />  
+                                    <h:outputText id="des_acumulado" 
+                                                  value="#{procesoBean.valoresAcumulado['acumuladoTotal']}" 
+                                                  style="font-weight:bold">
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                    </h:outputText>
+
+                                    <p:outputLabel for="des_inversion" value="Interes de inversión:  " />  
+                                    <h:outputText id="des_inversion" 
+                                                  value="#{procesoBean.valoresAcumulado['interesInversion']}" 
+                                                  style="font-weight:bold">
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                    </h:outputText>
+
+                                    <p:outputLabel for="des_comision" value="Comisión:  " />  
+                                    <h:outputText id="des_comision" 
+                                                  value="#{procesoBean.valoresAcumulado['comision']}" 
+                                                  style="font-weight:bold">
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                    </h:outputText>
+
+
+                                    <p:outputLabel for="des_pagosTotal" value="Interes pagados mensuales:  " />  
+                                    <h:outputText id="des_pagosTotal" 
+                                                  value="#{procesoBean.valoresAcumulado['pagosTotal']}" 
+                                                  style="font-weight:bold">
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                    </h:outputText>
+
+                                    <p:outputLabel for="des_interesTotalMensual" value="Interes total mensual:  " />  
+                                    <h:outputText id="des_interesTotalMensual" 
+                                                  value="#{procesoBean.valoresAcumulado['interesTotalMensual']}" 
+                                                  style="font-weight:bold">
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                    </h:outputText>
+
+                                    <p:outputLabel for="des_reserva" value="Reserva:  " />  
+                                    <h:outputText id="des_reserva" 
+                                                  value="#{procesoBean.valoresAcumulado['reserva']}" 
+                                                  style="font-weight:bold">
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                    </h:outputText>
+
+
+
+                                    <p:outputLabel for="des_interesNetoMensual" value="Interes neto mensual:  " />  
+                                    <h:outputText id="des_interesNetoMensual" 
+                                                  value="#{procesoBean.valoresAcumulado['interesNetoMensual']}" 
+                                                  style="font-weight:bold">
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                    </h:outputText>
+
+                                    <p:outputLabel for="des_factorRendimiento" value="Factor rendimiento:  " />  
+                                    <h:outputText id="des_factorRendimiento" 
+                                                  value="#{procesoBean.valoresAcumulado['factorRendimiento']}" 
+                                                  style="font-weight:bold">
+                                        <f:convertNumber maxFractionDigits="4" minFractionDigits="4"/>
+                                    </h:outputText>
+                                </h:panelGrid>
+                            </p:panel>
+
+ 
+                            <p:commandButton value="Ejecutar" action="#{procesoBean.ejecutaCalculo()}" 
+                                             update=":mesesRendimiento" 
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()">
+                                    <p:confirm header="Confirmación" message="#{procesoBean.mensajeConfirmacion}" icon="fa fa-exclamation-triangle" />
+                            </p:commandButton>
+
+                            
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-times" />
+                            </p:confirmDialog>  
+                            
+                            <p:messages id="msjErrAhorroAcumuladoTotal"/>
+                        </h:form>
+                    </p:dialog>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

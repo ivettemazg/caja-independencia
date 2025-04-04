@@ -1,0 +1,379 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                };
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:event type="preRenderComponent" listener="#{repEmpleadoBean.init}"/>
+        <div class="layout-portlets-box">
+            <p:fieldset legend="Empleado" toggleable="true" toggleSpeed="500">
+                <ui:insert name="busquedaEmpleado" >
+                    <ui:include src="busqueda-empleado.xhtml"/>
+                </ui:insert>
+            </p:fieldset>
+
+
+            <h:form id="frmDatosEmpl" >
+                <p:spacer height="20 pt" rendered="#{repEmpleadoBean.rdrFieldSets}"/>
+                <p:fieldset  legend="Datos empleado" toggleable="true" toggleSpeed="500" rendered="#{repEmpleadoBean.rdrFieldSets}" >
+                    <ui:insert name="repEmpPerfil" >
+                        <ui:include src="../usuariocomun/perfil.xhtml"/>
+                    </ui:insert>
+                </p:fieldset>
+            </h:form>
+            <h:form id="frmDevolucionesAhorro" >
+                <p:spacer height="20 pt" rendered="#{repEmpleadoBean.rdrFieldSets}"/>
+                <p:fieldset  legend="Devoluciones" toggleable="true" toggleSpeed="500" rendered="#{repEmpleadoBean.rdrFieldSets}" >
+
+                    <p:dataTable id="tblAhorros" var="mov"  
+                                 value="#{repEmpleadoBean.movimientos}"                                 
+                                >  
+
+                        <p:ajax event="rowEdit" listener="#{repEmpleadoBean.onEdit}" 
+                                update=":frmDevolucionesAhorro:tblAhorros 
+                                :frmDevolucionesAhorro:reDevs  :frmDevolucionesAhorro:msjDevs"/>  
+                        <p:ajax event="rowEditCancel" 
+                                onstart="PF('statusDialog').show()"
+                                oncomplete="PF('statusDialog').hide()"
+                                update=":frmDevolucionesAhorro:msjDevs" />
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header"  >  
+                                <h:outputText value="Tipo ahorro"/>  
+                            </f:facet>  
+                            <h:outputText  value="#{mov.movProductoStr}" />  
+                        </p:column>  
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Total"/>  
+                            </f:facet>  
+                            <h:outputText value="#{mov.totalMovimiento}"  > 
+                                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                            </h:outputText> 
+                        </p:column> 
+
+                         <p:column style="width:20%">
+                            <p:commandButton update=":frmDlgDev" oncomplete="PF('dlgDevolucionesW').show()" icon="ui-icon-pencil" title="Devolver">
+                               <f:setPropertyActionListener value="#{mov}" target="#{repEmpleadoBean.movDevSelected}" />
+                           </p:commandButton>
+                       </p:column>
+
+                    </p:dataTable> 
+                    <p:messages id="msjDevs" closable="true"  ></p:messages>
+                </p:fieldset>
+                <p:growl id="reDevs" for="reDevs" />
+                <p:spacer height="20 pt" rendered="#{repEmpleadoBean.rdrFieldSets}"/>
+            </h:form>
+            
+            
+            <p:dialog id="dlgDevoluciones" widgetVar="dlgDevolucionesW" 
+                      modal="true" closeOnEscape="true" closable="true" draggable="true" fitViewport="true"
+                      >
+                   
+                    <h:form id="frmDlgDev">
+                        <f:event type="preRenderComponent" rendered="true" listener="#{repEmpleadoBean.inicializaDialogDev}"/>
+                        <h:panelGrid columns="1" cellpadding="5" >
+                           
+                            <p:outputLabel for="montoTotal" value="Total Ahorro " />  
+                            <p:inputText id="montoTotal" 
+                                 value="#{repEmpleadoBean.movDevSelected.totalMovimiento}" readonly="true" />
+                            
+                            <p:outputLabel for="montoDev" value="Monto a devolver " />  
+                            <p:inputText id="montoDev" 
+                                         value="#{repEmpleadoBean.movDevSelected.devolucion}"  />
+
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" cellpadding="5" >
+                            <p:outputLabel for = "fechaDev" value="Fecha devolución :  " />  
+                            <p:calendar value="#{repEmpleadoBean.movDevSelected.devolucionFecha}" navigator="true" 
+                                id="fechaDev" pattern="dd/MM/yyyy" locale="es" required="true" yearRange="c-3:c+3" />
+
+                            <p:commandButton value="Devolver"  actionListener="#{repEmpleadoBean.aplicaDevolucion}"
+                                             oncomplete="PF('dlgDevolucionesW').hide(); PF('statusDialog').hide()"
+                                             onstart="PF('statusDialog').show()"
+                                              update=":frmDevolucionesAhorro:tblAhorros 
+                                              :frmDevolucionesAhorro:reDevs 
+                                              :frmDevolucionesAhorro:msjDevs">
+                            </p:commandButton>
+                        </h:panelGrid>
+                        
+                    </h:form>
+            </p:dialog>
+
+            <ui:insert name="aportaciones" >
+                <ui:include src="ahorros-rp.xhtml"/>
+            </ui:insert>
+
+            <ui:insert name="pagos" >
+                <ui:include src="pagos-Personal.xhtml"/>
+            </ui:insert>
+
+            <h:form id="frmDevolucionesPagos" >
+                <p:spacer height="20 pt"/>
+                <p:fieldset  legend="Devolucion de Pagos" toggleable="true" toggleSpeed="500" rendered="#{repEmpleadoBean.rdrFieldSets}" >
+
+                    <p:dataTable id="tblAcumulado" var="acum"  
+                                 value="#{repEmpleadoBean.acumulado}"                                 
+                                 editable="true">  
+
+                        <p:ajax event="rowEdit" listener="#{repEmpleadoBean.onEditAcumulado}" 
+                                update=":frmDevolucionesPagos:tblAcumulado
+                                :frmDevolucionesPagos:reDevs  :frmDevolucionesPagos:msjDevs"
+                                onstart="PF('statusDialog').show()"
+                                oncomplete="PF('statusDialog').hide()"/>  
+                        <p:ajax event="rowEditCancel" update=":frmDevolucionesPagos:msjDevs" 
+                                onstart="PF('statusDialog').show()"
+                                oncomplete="PF('statusDialog').hide()"/>
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header"  >  
+                                <h:outputText value="Tipo"/>  
+                            </f:facet>  
+                            <h:outputText  value="#{acum.leyendaAcumulado}" />  
+                        </p:column>  
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Acumulado"/>  
+                            </f:facet>  
+                            <h:outputText value="#{acum.acumulado}"  > 
+                                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                            </h:outputText> 
+                        </p:column> 
+
+                        <p:column headerText="Cantidad a devolver" style='position: relative'>  
+
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{acum.devolucion}"  > 
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                                    </h:outputText> 
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:inputNumber id="inDevPag" value="#{acum.devolucion}" required="true" 
+                                                   maxValue="#{acum.devolucion}" decimalPlaces="2" 
+                                                   minValue="0" converterMessage="El valor debe ser numérico" 
+                                                   >  
+                                    </p:inputNumber>  
+                                </f:facet>  
+                            </p:cellEditor> 
+                        </p:column>  
+
+                        <p:column headerText="Fecha devolución" style='position: relative'>  
+
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{acum.fechaDevolucion}" >
+                                        <f:convertDateTime pattern="dd/MM/yyyy" locale="es" />
+                                    </h:outputText> 
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:calendar value="#{acum.fechaDevolucion}" navigator="true" 
+                                                id="calFechaDevolucion" pattern="dd/MM/yyyy" locale="es" required="true" 
+                                                requiredMessage="Debe meter un valor en la fecha"/>
+                                </f:facet>  
+                            </p:cellEditor> 
+
+                        </p:column> 
+
+                        <p:column style="width:20%" >  
+                            <p:rowEditor />  
+                        </p:column> 
+
+                    </p:dataTable> 
+                    <p:messages id="msjDevs" closable="true"  ></p:messages>
+                </p:fieldset>
+                <p:growl id="reDevs" for="reDevs" />
+                <p:spacer height="20 pt" rendered="#{repEmpleadoBean.rdrFieldSets}"/>
+            </h:form>
+
+            <h:form id="frmAvalCreditos" >
+                <p:spacer height="20 pt" rendered="#{repEmpleadoBean.rdrFieldSets}"/>
+                <p:fieldset  legend="Aval de los creditos" toggleable="true" toggleSpeed="500" rendered="#{repEmpleadoBean.rdrAvalCreditos}" >
+                    <p:dataTable id="tblAvalCreditos" var="cre"  
+                                 value="#{repEmpleadoBean.creditosAval}"                                 
+                                 >  
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header"  >  
+                                <h:outputText value="Clave credito"/>  
+                            </f:facet>  
+                            <h:outputText  value="#{cre.creClave}" />  
+                        </p:column>  
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Tipo credito"/>  
+                            </f:facet>  
+                            <h:outputText value="#{cre.creTipo}" />  
+                        </p:column> 
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Monto prestamo"/>  
+                            </f:facet>  
+                            <h:outputText value="#{cre.crePrestamo}" > 
+                                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                            </h:outputText>   
+                        </p:column> 
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Catorcenas"/>  
+                            </f:facet>  
+                            <h:outputText value="#{cre.creCatorcenas}" />  
+                        </p:column> 
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Estatus"/>  
+                            </f:facet>  
+                            <h:outputText value="#{cre.creEstatusStr}" />  
+                        </p:column> 
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Clave empleado"/>  
+                            </f:facet>  
+                            <h:outputText value="#{cre.creClaveEmpleado}" />  
+                        </p:column> 
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Empresa"/>  
+                            </f:facet>  
+                            <h:outputText value="#{cre.creEmpresa}" />  
+                        </p:column> 
+
+
+                    </p:dataTable> 
+                </p:fieldset>
+            </h:form>
+
+            <h:form id="frmCredsEmpleado" >
+                <p:spacer height="20 pt" rendered="#{repEmpleadoBean.rdrFieldSets}"/>
+                <p:fieldset  legend="Creditos empleado" toggleable="true" toggleSpeed="500" rendered="#{repEmpleadoBean.rdrFieldSets}" >
+                    <ui:insert name="creditos" >
+                        <ui:include src="creditos-adeudo-tbl.xhtml"/>
+                    </ui:insert>
+
+                    <p:contextMenu for="tblCreditoAdeudos" style="width : 200px" >  
+
+                        <p:menuitem value="Abrir amortizacion" icon="fa fa-search"
+                                    actionListener="#{repEmpleadoBean.initDlgAmortizacion}"
+                                    onstart="PF('statusDialog').show()"
+                                    oncomplete="PF('statusDialog').hide()"
+                                    update=":frmAmortizacion" 
+                                    >
+
+                        </p:menuitem>
+
+                        <p:menuitem value="Transferir crédito" icon="fa fa-arrow-right"
+                                    actionListener="#{repEmpleadoBean.openDlgTransferir}"
+                                    oncomplete="PF('dlgTransferirW').show(); PF('statusDialog').hide()"
+                                    onstart="PF('statusDialog').show()"
+                                    update=":frmDlgTransferir" 
+                                    >
+
+                        </p:menuitem>
+                        <p:menuitem value="Ver avales" icon="fa fa-arrow-right"
+                                    actionListener="#{repEmpleadoBean.openDlgVerAvales}"
+                                    oncomplete="PF('dlgVerAvales').show(); PF('statusDialog').hide()"
+                                    onstart="PF('statusDialog').show()"
+                                    update=":frmDlgAvales" 
+                                    ></p:menuitem>
+                        <p:menuitem value="Ver crédito padre" icon="fa fa-arrow-right"
+                                    actionListener="#{repEmpleadoBean.openDlgCrePadre}"
+                                    oncomplete="PF('dlgCreditoPadre').show(); PF('statusDialog').hide()"
+                                    onstart="PF('statusDialog').show()"
+                                    update=":frmCrePadre"
+
+                                    >
+                        </p:menuitem>
+
+                    </p:contextMenu> 
+
+                </p:fieldset>
+                <p:growl life="11000" sticky="true"></p:growl>
+                <p:spacer height="20 pt" rendered="#{repEmpleadoBean.rdrFieldSets}"/>
+            </h:form>
+            <ui:insert name="dlgTransferir" >
+                <ui:include src="transf-avales.xhtml"/>
+            </ui:insert>
+            <ui:insert name="amoCred" >
+                <ui:include src="amortizacion-rep-e.xhtml"/>
+            </ui:insert>
+            <ui:insert name="avales" >
+                <ui:include src="avales-rep-e.xhtml"/>
+            </ui:insert>
+            <ui:insert name="creditoPadre" >
+                <ui:include src="credito-padre.xhtml"/>
+            </ui:insert>
+            <ui:insert name="notas" >
+                <ui:include src="notas-repe.xhtml"/>
+            </ui:insert>
+
+            <h:form id="frmBtnsNotas">
+                <h:panelGrid id="pgNotas" columns="1" cellpadding="5" cellspacing="5" >
+                    <p:spacer height="10"/>
+                    <p:commandLink  update=":frmAddNota" actionListener="#{repEmpleadoBean.initDlgAddNota}"
+                                    rendered="#{repEmpleadoBean.rdrFieldSets}"
+                                    onstart="PF('statusDialog').show()"
+                                    oncomplete="PF('statusDialog').hide()">
+                        <h:outputText value="Agregar nota" />
+                    </p:commandLink>
+                    <p:commandLink  update=":frmListaNotas:tblNotas" actionListener="#{repEmpleadoBean.initDlgNotas}" 
+                                    rendered="#{repEmpleadoBean.rdrFieldSets}"
+                                    onstart="PF('statusDialog').show()"
+                                    oncomplete="PF('statusDialog').hide()">
+                        <h:outputText value="Ver notas" />
+                    </p:commandLink>
+                </h:panelGrid>
+            </h:form>
+
+        </div>
+
+    </ui:define>
+
+</ui:composition>

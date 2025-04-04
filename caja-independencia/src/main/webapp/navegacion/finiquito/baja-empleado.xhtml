@@ -1,0 +1,174 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Baja empleados</div>
+                    </h3>
+
+
+                    <f:event type="preRenderComponent" listener="#{baeBean.init()}"/>
+                    <h:form id="frmBajaEmpleado">
+                        <p:panelGrid id="pgBusqudaUsrBajaFiniq" columns ="4" style="border:0px !important; background:none; "  styleClass="FormContent"
+                                     layout="grid"  >
+
+                            <h:outputText value="CLAVE DE EMPLEADO: " style="font-weight: bold"/>  
+                            <p:inputText id="baClaveEmpleado" value="#{baeBean.claveEmpleado}" >
+                                <p:ajax event="blur" listener="#{baeBean.buscarUsuario}"  onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()" />
+                            </p:inputText>
+
+
+
+                            <p:selectOneMenu id="somEmpresas"
+                                             value="#{baeBean.empresa}" converter="empConverter"
+                                             styleClass="ui-inputfield ui-widget ui-state-default ui-corner-all" >
+                                <f:selectItem itemLabel="Seleccione" itemValue="" /> 
+                                <f:selectItems value="#{baeBean.empresas}" var="emp"  
+                                               itemLabel="#{emp.empAbreviacion}" itemValue="#{emp}"></f:selectItems>
+                                <p:ajax update=":frmBajaEmpleado:msjBajaInicial, :frmBajaEmpleado:pgDatosUserBaja,
+                                        :frmUsrsBaja" 
+                                        listener="#{baeBean.buscarUsuario}"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                        />  
+
+                            </p:selectOneMenu> 
+                            <p:spacer height="50" />
+                        </p:panelGrid>
+                        <p:messages id="msjBajaInicial" for="msjBajaInicial"/>
+                        <p:panelGrid id="pgDatosUserBaja" columns ="4" style="border:0px !important; background:none; "  styleClass="FormContent"
+                                     layout="grid"  >
+
+                            <h:outputText value="Nombre "  style="font-weight: bold"  rendered="#{baeBean.rdrDatosBajaEmpleado}"/>  
+                            <h:outputText id="baNombreCompleto" value="#{baeBean.nombreCompleto}" 
+                                          style="width: 150px" rendered="#{baeBean.rdrDatosBajaEmpleado}"/>
+
+
+                            <h:outputText value="Fecha de baja  " style="font-weight: bold" 
+                                          rendered="#{baeBean.rdrDatosBajaEmpleado}" />  
+
+                            <p:calendar value="#{baeBean.fechaBaja}" rendered="#{baeBean.rdrDatosBajaEmpleado}"
+                                        navigator="true" id="baCalFechaIngreso" pattern="dd/MM/yyyy" locale="es">
+                            </p:calendar>
+
+
+                            <p:commandButton id="idBtnGuardarDatosBa" value="Guardar información"  
+                                             rendered="#{baeBean.rdrDatosBajaEmpleado}"
+                                             actionListener="#{baeBean.darDeBaja()}"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"
+                                             update=":frmBajaEmpleado:dlgMsgExito"/>
+
+
+
+                        </p:panelGrid>
+
+                        <p:dialog id="dlgMsgExito" widgetVar="dlgMessageExito" modal="true" closable="true" 
+                                  >
+                            <p:ajax event="close" listener="#{baeBean.goToFiniquito()}" />
+                            <p:messages id="msjDadoBaja" for="msjDadoBaja"></p:messages>
+                        </p:dialog>
+
+                        <p:growl id="growl" sticky="true" life="11000"/>
+                    </h:form>
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <p:dialog id="dlgEligeUsr" widgetVar="dlgEligeUsrW" modal="true" width="500" height="200">
+
+            <h:form id="frmUsrsBaja" >
+                <p:dataTable id="tblUsrsBaja" var="usu" value="#{baeBean.usuariosBaja}" selection="#{baeBean.usuarioBaja}" rowKey="#{usu.usuId}">
+
+                    <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                    <p:column headerText="Id" rendered="false">
+                        <h:outputText value="#{usu.usuId}" />
+                    </p:column>
+                    <p:column headerText="Clave empleado">
+                        <h:outputText value="#{usu.usuClaveEmpleado}" />
+                    </p:column>
+                    <p:column headerText="Empresa">
+                        <h:outputText value="#{baeBean.empresa.empAbreviacion}" />
+                    </p:column>
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{usu.usuNombre}" />
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:commandButton process="tblUsrsBaja" update=":frmUsrsBaja :frmBajaEmpleado" icon="fa fa-check" 
+                                         actionListener="#{baeBean.seleccionaUsuario}"
+                                         onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide(); PF('dlgEligeUsrW').hide()"
+                                         value="Seleccionar" />
+                    </f:facet>
+
+                </p:dataTable>
+
+            </h:form>
+
+        </p:dialog>
+
+
+
+    </ui:define>
+</ui:composition>

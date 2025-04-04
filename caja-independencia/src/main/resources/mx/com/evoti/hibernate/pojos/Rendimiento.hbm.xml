@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Rendimiento" table="rendimiento">
+        <id name="renId" type="java.lang.Integer">
+            <column name="ren_id" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="renFecha" type="date">
+            <column name="ren_fecha" length="10" />
+        </property>
+        <property name="renInteres" type="java.lang.Double">
+            <column name="ren_interes" precision="22" scale="0" />
+        </property>
+        <property name="renAcumulado" type="java.lang.Double">
+            <column name="ren_acumulado" precision="22" scale="0" />
+        </property>
+        <property name="renFactor" type="java.lang.Double">
+            <column name="ren_factor" precision="22" scale="0" />
+        </property>
+        <property name="renEstatus" type="java.lang.Integer">
+            <column name="ren_estatus" />
+        </property>
+        <property name="renInteresesInversion" type="java.lang.Double">
+            <column name="ren_intereses_inversion" precision="22" scale="0" />
+        </property>
+        <property name="renComisionesBancarias" type="java.lang.Double">
+            <column name="ren_comisiones_bancarias" precision="22" scale="0" />
+        </property>
+        <property name="renReserva" type="java.lang.Double">
+            <column name="ren_reserva" precision="22" scale="0" />
+        </property>
+        <property name="renGananciaNeta" type="java.lang.Double">
+            <column name="ren_ganancia_neta" precision="22" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

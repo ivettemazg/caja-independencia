@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Productos" table="productos">
+        <id name="proId" type="int">
+            <column name="pro_id" />
+            <generator class="assigned"></generator>
+        </id>
+        <property name="proDescripcion" type="string">
+            <column name="pro_descripcion" length="30" />
+        </property>
+        <property name="proSiglas" type="string">
+            <column name="pro_siglas" length="20" />
+        </property>
+        <set name="solicitudeses" table="solicitudes" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="sol_producto" not-null="true" />
+            </key>
+            <one-to-many class="mx.com.evoti.hibernate.pojos.Solicitudes" />
+        </set>
+    </class>
+</hibernate-mapping>

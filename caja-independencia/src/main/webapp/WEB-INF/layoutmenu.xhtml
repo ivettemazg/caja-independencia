@@ -1,0 +1,73 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ps="http://primefaces.org/spark"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    <h:form>
+        <ps:menu>
+            <p:menuitem value="Personal" action="#{navigationController.goToHomeScreen()}" icon="fa fa-home "/>
+            <p:separator rendered="#{navigationController.usuario.rol != 'Usuario'}"/>
+            <p:submenu label="Solicitudes" icon="fa fa-archive" rendered="#{navigationController.usuario.rol != 'Usuario'}">
+                <p:menuitem value="Pendientes" action="#{navigationController.goToValidaSolicitudes()}" icon="ui-icon-document"/>
+                <p:menuitem value="Historial solicitudes" action="#{navigationController.goToHistorialSolicitudes()}" />
+            </p:submenu>
+            <p:separator rendered="#{navigationController.usuario.rol != 'Usuario'}"/>
+            <p:submenu label="Créditos" icon="fa fa-asterisk" rendered="#{navigationController.usuario.rol != 'Usuario'}">
+                <p:menuitem value="Fondeos" action="#{navigationController.goToFondeos()}"/>
+                <p:menuitem value="Seguimiento documentación fondeos"  action="#{navigationController.goToSeguimientoFondeo()}" />
+                <p:menuitem value="Crédito seguro de auto" outcome="/navegacion/admonsolicitudes/credito-sauto.xhtml" icon="ui-icon-document" />
+                <p:menuitem value="Reporte de créditos" action="#{navigationController.goToReporteCreditos()}" icon="ui-icon-document" />
+                <p:submenu label="Descuentos de nómina"  icon="fa fa-user-plus">
+                    <p:menuitem value="Nomina / Automovil" action="#{navigationController.goToDescuentoNomina()}" icon="ui-icon-document"/>
+                    <p:menuitem value="Fondo Ahorro / Aguinaldo" action="#{navigationController.goToDescuentoNominaOtros()}" icon="ui-icon-document"/>
+                </p:submenu>
+            </p:submenu>
+            <p:separator rendered="#{navigationController.usuario.rol != 'Usuario'}"/>
+            <p:submenu label="Empleados" icon="fa fa-users" rendered="#{navigationController.usuario.rol != 'Usuario'}">
+                 <p:submenu label="Altas y cambios"  icon="fa fa-user-plus">
+                    <p:menuitem value="Aplicar cambios" action="#{navigationController.goToAplicaCambios()}" icon="ui-icon-document"/>
+                    <p:menuitem value="Pendientes" action="#{navigationController.goToAlCamPends()}" icon="ui-icon-document"/>
+                </p:submenu>
+                  
+                 <p:submenu label="Finiquitos"  >
+                    <p:menuitem value="Dar de baja Usuario" action="#{navigationController.goToBajaUsuario()}" icon="ui-icon-document"/>
+                    <p:menuitem value="Bajas pendientes" action="#{navigationController.goToBajasPendts()}"/>
+                    <p:menuitem value="Historial bajas" action="#{navigationController.goToHistBajas()}" icon="ui-icon-document"/>
+                </p:submenu>
+                
+                <p:menuitem value="Reporte morosos" action="#{navigationController.goToReporteMorosos()}" />
+                <p:menuitem value="Reporte personal" outcome="/navegacion/common/reporte-empleado.xhtml"  />
+                <p:menuitem value="Reporte Usuarios" outcome="/navegacion/common/reporteUsuarios.xhtml"  />
+            </p:submenu>
+            <p:separator rendered="#{navigationController.usuario.rol != 'Usuario'}"/>
+            <p:submenu label="Tesorería" icon="fa fa-bank " rendered="#{navigationController.usuario.rol != 'Usuario'}">
+                <p:menuitem value="Ahorros por devolver de bajas" action="#{navigationController.goToAhorrosXDevolver()}" />
+                <p:menuitem value="Descuentos por cobrar de créditos" outcome="/navegacion/tesoreria/desctos-x-cobrar.xhtml" />
+                <p:menuitem value="Reporte bancos"  outcome="/navegacion/bancos/reporte-bancos.xhtml"/>
+                <p:menuitem value="Ajuste bancos" action="#{navigationController.goToAjusteBanco()}" />
+                
+            </p:submenu>
+            <p:separator rendered="#{navigationController.usuario.rol != 'Usuario'}" />
+            <p:submenu label="Rendimiento" icon="fa fa-usd" rendered="#{navigationController.usuario.rol != 'Usuario'}">
+                 <p:menuitem value="Proceso" action="#{navigationController.goToProcesoRendimiento()}" />
+                <p:menuitem value="Reporte mensual" />
+            </p:submenu>
+            <p:separator rendered="#{navigationController.usuario.rol != 'Usuario'}"/>
+            <p:submenu label="Pagos/Aportaciones" icon="fa fa-money" rendered="#{navigationController.usuario.rol != 'Usuario'}">
+                <p:menuitem value="Carga de archivos" action="#{navigationController.goToCargaArchivos()}" icon="ui-icon-document"/>
+                <p:menuitem value="Aplicar pagos" action="#{navigationController.goToAplicaPagos()}" />
+                 <p:submenu label="Reporte de resultados"  icon="fa ui-icon-document">
+                    <p:menuitem value="Pagos"  outcome="/navegacion/cargapagosaportaciones/rep-resultado-pagos.xhtml"/>
+                    <p:menuitem value="Aportaciones" action="#{navigationController.goToReporteAportaciones()}" icon="ui-icon-document"/>
+                </p:submenu>
+            </p:submenu>
+            <p:separator rendered="#{navigationController.usuario.rol != 'Usuario'}"/>
+            <p:submenu label="Administrador" icon="fa fa-money" rendered="#{navigationController.usuario.rol != 'Usuario'}">
+                <p:menuitem value="Bitacora de movimientos" action="#{navigationController.goToBitacoraMovimientos()}" icon="ui-icon-document"/>
+            </p:submenu>
+        </ps:menu>
+    </h:form>
+
+</ui:composition>

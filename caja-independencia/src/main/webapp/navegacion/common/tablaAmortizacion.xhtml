@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+            <p:dataTable id="tblAmortizaciones" var="amoDto" value="#{amortizacionBean.amortizacion}"  
+
+                         scrollable="true"
+                         scrollHeight="200"
+                         
+                         >  
+
+                <p:column style='position: relative' rendered="#{amortizacionBean.rdrTabla}">  
+                    <f:facet name="header" >  
+                        <h:outputText value="No. Pago"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amoDto.amoNumeroPago}" />  
+                </p:column>  
+
+                <p:column style='position: relative' rendered="#{amortizacionBean.rdrTabla}">  
+                    <f:facet name="header">  
+                        <h:outputText value="Capital"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amoDto.amoCapital}"  > 
+                           <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                </h:outputText> 
+                </p:column>  
+
+                <p:column style='position: relative' rendered="#{amortizacionBean.rdrTabla}">  
+                    <f:facet name="header">  
+                        <h:outputText value="Amortizacion" />  
+                    </f:facet>  
+                    <h:outputText value="#{amoDto.amoAmortizacion}" > 
+                           <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                </h:outputText>  
+                </p:column>  
+
+                <p:column style='position: relative' rendered="#{amortizacionBean.rdrTabla}">  
+                    <f:facet name="header">  
+                        <h:outputText value="Interes" />  
+                    </f:facet>  
+                    <h:outputText value="#{amoDto.amoInteres}"  > 
+                           <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                </h:outputText> 
+                </p:column>  
+                <p:column style='position: relative' rendered="#{amortizacionBean.rdrTabla}">  
+                    <f:facet name="header">  
+                        <h:outputText value="IVA Fecha disposici&oacute;n" />  
+                    </f:facet>  
+                    <h:outputText value="#{amoDto.amoIva}"  > 
+                           <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                </h:outputText>   
+                </p:column>  
+                <p:column style='position: relative' rendered="#{amortizacionBean.rdrTabla}">  
+                    <f:facet name="header">  
+                        <h:outputText value="Pago" />  
+                    </f:facet>  
+                    <h:outputText value="#{amoDto.amoMontoPago}"  > 
+                           <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                </h:outputText>   
+                </p:column>   
+
+            </p:dataTable>  
+            <p:panelGrid columns="6" layout="grid" style="border:0px !important; background:none;" styleClass="FormContent">  
+                <h:outputLabel for="totalInteres" value="Total de Intereses: " style="font-weight:bold"/>            
+                <h:outputText id="totalInteres" value="#{amortizacionBean.montoTotalInteres}" >  
+                      <f:convertNumber maxFractionDigits="2" minFractionDigits="2" 
+                                       type="currency" currencySymbol="$"/>
+                </h:outputText>
+                <h:outputLabel for="totalPagar" value="Total a pagar: " style="font-weight:bold"/>            
+                <h:outputText id="totalPagar" value="#{amortizacionBean.montoTotalPagar}"  >  
+                      <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                </h:outputText> 
+            </p:panelGrid>  
+                </div>
+                </div>
+        </ui:composition>
+    </h:body>
+</html>
+

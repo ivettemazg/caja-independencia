@@ -1,0 +1,41 @@
+✅ 1. Después de hacer cambios en el pom.xml
+Cada vez que cambies dependencias, plugins o configuraciones del pom.xml, ejecuta:
+mvn clean install -U
+
+✅ 2. Para compilar y generar el WAR
+Si solo hiciste cambios en código (no en el pom.xml), puedes usar:
+mvn clean package
+
+✅ 3. Para desplegar el WAR en Tomcat
+Si ya configuraste el plugin tomcat7-maven-plugin en el pom.xml, usa:
+
+mvn tomcat7:deploy
+🔹 Esto:
+    • Sube el WAR a Tomcat en el path que configuraste (/Sindicato, por ejemplo).
+    • Usa las credenciales de ~/.m2/settings.xml y la URL del plugin.
+
+✅ 4. ¿Y si el WAR ya está desplegado en Tomcat?
+Si el WAR ya está desplegado y solo quieres actualizarlo sin errores, usa:
+
+mvn tomcat7:redeploy
+🔹 Esto elimina el WAR anterior y lo vuelve a subir en el mismo path.
+
+✅ 5. Si quieres eliminar el WAR del servidor Tomcat
+Puedes quitar la aplicación desplegada desde Maven con:
+
+mvn tomcat7:undeploy
+🔹 Esto elimina la app en el path definido (/Sindicato), pero no borra nada localmente.
+
+📋 Resumen de Comandos Maven para tu flujo
+Etapa	Comando
+Cambios en el pom.xml	mvn clean install -U
+Compilar y generar el WAR	mvn clean package
+Desplegar WAR en Tomcat	mvn tomcat7:deploy
+Volver a desplegar (ya existe)	mvn tomcat7:redeploy
+Eliminar WAR de Tomcat	mvn tomcat7:undeploy
+
+
+PARAR E INICIAR TOMCAT:
+/opt/homebrew/Cellar/tomcat@8/8.5.100/libexec/bin/shutdown.sh
+
+/opt/homebrew/Cellar/tomcat@8/8.5.100/libexec/bin/startup.sh

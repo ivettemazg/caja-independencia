@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Devoluciones" table="devoluciones">
+        <id name="devId" type="java.lang.Integer">
+            <column name="dev_id" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="devAcumId" type="java.lang.Integer">
+            <column name="dev_acum_id" />
+        </property>
+        <property name="devMonto" type="java.lang.Double">
+            <column name="dev_monto" precision="22" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

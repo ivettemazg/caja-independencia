@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Reporte de bitacora de transacciones</div>
+                    </h3>
+
+                    <f:event type="preRenderComponent" listener="#{bitacoraAdmonBean.init}"/>
+                    <h:form id="frmBitacoraTransacciones">
+
+                        <p:dataTable id="tblTransacciones" var="tra" value="#{bitacoraAdmonBean.transacciones}"
+                                     rowKey="#{tra.tranId}"
+                                     emptyMessage="Sin registros"
+                                     filterEvent="enter"
+                                     paginatorPosition="bottom" reflow="true"
+                                     scrollable="true" scrollHeight="70%"
+                                     paginator="true" rows="25"  
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                     rowsPerPageTemplate="25, 35, 45">
+
+                            <p:column headerText="Usuario administrador">
+                                <h:outputText value="#{tra.tranClaveUsuario}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column filterBy="#{tra.tranFecha}" headerText="Fecha transaccion">
+                                <h:outputText value="#{tra.tranFecha}" />
+                            </p:column>
+                            <p:column filterBy="#{tra.ttranDescripcion}" headerText="Descripcion de transaccion">
+                                <h:outputText value="#{tra.ttranDescripcion}" />
+                            </p:column>
+                            <p:column filterBy="#{tra.userOfTran}" headerText="Usuario de la transaccion">
+                                <h:outputText value="#{tra.userOfTran}" />
+                            </p:column>
+                            <p:column filterBy="#{tra.empresaUserOfTran}" headerText="Empresa de usuario de transaccion">
+                                <h:outputText value="#{tra.empresaUserOfTran}" />
+                            </p:column>
+                            <p:column filterBy="#{tra.monto}" headerText="Monto">
+                                <h:outputText value="#{tra.monto}" >
+                                    <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column filterBy="#{tra.folioCredito}" headerText="Folio credito">
+                                <h:outputText value="#{tra.folioCredito}" />
+                            </p:column>
+                        </p:dataTable>
+
+                        <h:commandLink>  
+                            <p:graphicImage value="../../resources/images/excel.png" />  
+                            <p:dataExporter type="xls" target="tblTransacciones" fileName="ReporteBitacoraTransacciones" />  
+                        </h:commandLink> 
+
+
+                        <p:growl id="growl"/>
+                    </h:form>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

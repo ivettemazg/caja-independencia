@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Pagos" table="pagos">
+        <id name="pagId" type="java.lang.Integer">
+            <column name="pag_id" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="pagClaveEmpleado" type="java.lang.Integer">
+            <column name="pag_clave_empleado" />
+        </property>
+        <property name="pagFecha" type="date">
+            <column name="pag_fecha" length="10" />
+        </property>
+        <property name="pagDeposito" type="java.lang.Double">
+            <column name="pag_deposito" precision="22" scale="0" />
+        </property>
+        <property name="pagAcumulado" type="java.lang.Double">
+            <column name="pag_acumulado" precision="22" scale="0" />
+        </property>
+        <property name="pagEmpresa" type="java.lang.Integer">
+            <column name="pag_empresa" />
+        </property>
+        <property name="pagCredito" type="java.lang.Integer">
+            <column name="pag_credito" />
+        </property>
+        <property name="pagUsuId" type="java.lang.Integer">
+            <column name="pag_usu_id" />
+        </property>
+        <property name="pagEstatus" type="java.lang.Integer">
+            <column name="pag_estatus" />
+        </property>
+        <property name="pagUsuNombre" type="string">
+            <column name="pag_usu_nombre" length="200" />
+        </property>
+        <property name="pagArhId" type="java.lang.Integer">
+            <column name="pag_arh_id" />
+        </property>
+        <property name="pagEstatusAmortizacion" type="java.lang.Integer">
+            <column name="pag_estatus_amortizacion" />
+        </property>
+        <property name="antes7" type="java.lang.Integer">
+            <column name="antes7" />
+        </property>
+    </class>
+</hibernate-mapping>

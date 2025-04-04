@@ -1,0 +1,156 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+   
+ <h:form id="frmPagos">
+      <p:spacer height="20 pt" rendered="#{repEmpleadoBean.rdrFieldSets}"/>
+        <p:fieldset  legend="Pagos" toggleable="true" toggleSpeed="500" rendered="#{repEmpleadoBean.rdrFieldSets}" >
+            
+            
+            <p:dataTable id="tblPagosAgrupados" var="tblPagos" style="width: 90%"  
+                         value="#{repEmpleadoBean.pagosAgrupados}" selection="#{repEmpleadoBean.estatusPagSelected}" 
+                         rowKey="#{tblPagos.claveEstatus}"
+                         selectionMode="single">
+
+                <p:column style='position: relative' rendered="false">  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Clave Estatus"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{tblPagos.claveEstatus}" />  
+                </p:column>  
+
+                <p:column style='position: relative' >  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Estatus"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{tblPagos.estatus}" />  
+                </p:column>  
+
+                <p:column style='position: relative' >  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Deposito"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{tblPagos.deposito}" >
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Acumulado"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{tblPagos.acumulado}" >
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>  
+                </p:column>  
+
+                <p:column style='position: relative' >  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Numero Pagos"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{tblPagos.numeroPagos}" />
+                </p:column>  
+
+            </p:dataTable>
+
+            <p:contextMenu for="tblPagosAgrupados" style="width : 200px" >  
+
+                <p:menuitem value="Ver detalle" update=":frmPagos"
+                            actionListener="#{repEmpleadoBean.verDetallePagos}"
+                            onstart="PF('statusDialog').show()"
+                            oncomplete="PF('dlgDetallePagos').show(); PF('statusDialog').hide()"
+                            icon ="fa fa-search" >
+
+                </p:menuitem>
+
+            </p:contextMenu> 
+
+   
+
+    <p:dialog id="dlgDetallePagos" header="Detalle de Pagos por Estatus" widgetVar="dlgDetallePagos" width="1000" 
+              height="400" closable="true" closeOnEscape="true" modal="true">
+        <h:form id="frmDetallePagos" enctype="multipart/form-data" >  
+
+            <p:dataTable id="tblPagosDetalle" var="detallePagos" 
+                         value="#{repEmpleadoBean.detallePagosByEstatus}"     
+                         paginator="true" rows="25"  
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                         rowsPerPageTemplate="25, 35, 45"
+                         filterEvent="enter"
+                         paginatorPosition="bottom" reflow="true">  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Fecha de Pago"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{detallePagos.fechaPago}" />  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Deposito"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{detallePagos.deposito}" />  
+                </p:column> 
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Acumulado"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{detallePagos.acumulado}" />  
+                </p:column> 
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Pago Catorcena"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{detallePagos.pagoCatorcena}" />  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Amortizacion"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{detallePagos.amortizacion}" />  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Interes"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{detallePagos.interes}" />  
+                </p:column> 
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Fecha Catorcena"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{detallePagos.fechaCatorcena}" />  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Estatus"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{detallePagos.estatusAmortizacion}" />  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Clave Credito"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{detallePagos.claveCredito}" />  
+                </p:column>  
+
+            </p:dataTable> 
+        </h:form>
+    </p:dialog>
+
+</p:fieldset>
+ </h:form>
+
+
+</ui:composition>

@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Solicitudes" table="solicitudes"  >
+        <id name="solId" type="java.lang.Long">
+            <column name="sol_id" />
+            <generator class="identity"></generator>
+        </id>
+        <many-to-one name="productos" class="mx.com.evoti.hibernate.pojos.Productos" fetch="select">
+            <column name="sol_producto" not-null="true" />
+        </many-to-one>
+        <many-to-one name="solicitudEstatus" class="mx.com.evoti.hibernate.pojos.SolicitudEstatus" fetch="select">
+            <column name="sol_estatus" not-null="true" />
+        </many-to-one>
+        <many-to-one name="usuarios" class="mx.com.evoti.hibernate.pojos.Usuarios" fetch="select">
+            <column name="sol_usu_id" not-null="true" />
+        </many-to-one>
+        <property name="solClaveEmpleado" type="java.lang.Integer">
+            <column name="sol_clave_empleado" />
+        </property>
+        <property name="solSueldoNeto" type="java.lang.Double">
+            <column name="sol_sueldo_neto" precision="22" scale="0" />
+        </property>
+        <property name="solDeducciones" type="java.lang.Double">
+            <column name="sol_deducciones" precision="22" scale="0" />
+        </property>
+        <property name="solMontoSolicitado" type="java.lang.Double">
+            <column name="sol_monto_solicitado" precision="22" scale="0" />
+        </property>
+        <property name="solCatorcenas" type="java.lang.Integer">
+            <column name="sol_catorcenas" />
+        </property>
+        <property name="solPagoCredito" type="java.lang.Double">
+            <column name="sol_pago_credito" precision="22" scale="0" />
+        </property>
+        <property name="solBanco" type="string">
+            <column name="sol_banco" length="50" />
+        </property>
+        <property name="solNumeroCuenta" type="string">
+            <column name="sol_numero_cuenta" length="50" />
+        </property>
+        <property name="solClabeInterbancaria" type="string">
+            <column name="sol_clabe_interbancaria" length="50" />
+        </property>
+        <property name="solReferencia" type="string">
+            <column name="sol_referencia" length="50" />
+        </property>
+        <property name="solNoPoliza" type="string">
+            <column name="sol_no_poliza" length="50" />
+        </property>
+        <property name="solAseguradora" type="string">
+            <column name="sol_aseguradora" length="50" />
+        </property>
+        <property name="solNombreTarjetahabiente" type="string">
+            <column name="sol_nombre_tarjetahabiente" length="50" />
+        </property>
+        <property name="solPagoTotal" type="java.lang.Double">
+            <column name="sol_pago_total" precision="22" scale="0" />
+        </property>
+        <property name="solAguinaldo" type="java.lang.Double">
+            <column name="sol_aguinaldo" precision="22" scale="0" />
+        </property>
+        <property name="solFa" type="java.lang.Double">
+            <column name="sol_fa" precision="22" scale="0" />
+        </property>
+        <property name="solIntereses" type="java.lang.Double">
+            <column name="sol_intereses" precision="22" scale="0" />
+        </property>
+        <property name="solObservacion" type="string">
+            <column name="sol_observacion" length="200" />
+        </property>
+        <property name="solFechaUltCatorcena" type="date">
+            <column name="sol_fecha_ult_catorcena" length="10" />
+        </property>
+        <property name="solFechaAutorizacion" type="date">
+            <column name="sol_fecha_autorizacion" length="10" />
+        </property>
+        <property name="solFechaCreacion" type="date">
+            <column name="sol_fecha_creacion" length="10" />
+        </property>
+        <property name="solFechaCancelacion" type="date">
+            <column name="sol_fecha_cancelacion" length="10" />
+        </property>
+        <property name="solFechaFondeo" type="date">
+            <column name="sol_fecha_fondeo" length="10" />
+        </property>
+        <property name="solFechaEnviodocumentos" type="date">
+            <column name="sol_fecha_enviodocumentos" length="10" />
+        </property>
+        <property name="solFacatorcena" type="java.lang.Integer">
+            <column name="sol_facatorcena" />
+        </property>
+        <property name="solFechaDeposito" type="date">
+            <column name="sol_fecha_deposito" length="10" />
+        </property>
+        <property name="solMotivoRechazo" type="string">
+            <column name="sol_motivo_rechazo" length="150" />
+        </property>
+        <property name="solEstatusDb" type="java.lang.Integer">
+            <column name="sol_estatus_db" />
+        </property>
+        <property name="solFormatoDocFirmada" type="java.lang.Integer">
+            <column name="sol_formato_doc_firmada" />
+        </property>
+        <set name="solicitudAvaleses" table="solicitud_avales" inverse="true" lazy="true" cascade="persist" fetch="select">
+            <key>
+                <column name="sol_ava_solicitud" />
+            </key>
+            <one-to-many class="mx.com.evoti.hibernate.pojos.SolicitudAvales" />
+        </set>
+        <set name="imageneses" table="imagenes" inverse="true" lazy="true" cascade="all" fetch="select">
+            <key>
+                <column name="ima_solicitud" />
+            </key>
+            <one-to-many class="mx.com.evoti.hibernate.pojos.Imagenes" />
+        </set>
+    </class>
+</hibernate-mapping>

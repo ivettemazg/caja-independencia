@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    
+    <name>primefaces-spark</name>
+    
+    <component>
+        <component-type>org.primefaces.component.SparkMenu</component-type>
+        <component-class>org.primefaces.spark.component.menu.SparkMenu</component-class>
+    </component>
+    
+    <render-kit>
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.SparkMenuRenderer</renderer-type>
+            <renderer-class>org.primefaces.spark.component.menu.SparkMenuRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+    
+    
+    <application>
+    <action-listener>org.primefaces.application.DialogActionListener</action-listener>
+     <navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
+     <view-handler>org.primefaces.application.DialogViewHandler</view-handler>
+ </application>
+    
+    <navigation-case>
+        <from-outcome>dlgBitacora</from-outcome>
+        <to-view-id>/navegacion/bitacora/dlg-bitacora.xhtml</to-view-id>
+    </navigation-case>
+   
+    
+</faces-config>

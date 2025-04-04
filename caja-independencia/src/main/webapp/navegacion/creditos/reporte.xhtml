@@ -1,0 +1,322 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Reporte de créditos</div>
+                    </h3>
+
+                    <f:event type="preRenderComponent" listener="#{reporteBean.init}"/>
+                    <h:form id="frmRepCreds">
+
+                        <p:dataTable id="tblRepCred" var="cre" value="#{reporteBean.reporte}"
+                                     rowKey="#{cre.creId}"
+                                     selection="#{reporteBean.credSelected}"
+                                     selectionMode="single"
+                                     rowStyleClass="#{cre.creEstatusStr}"
+                                     emptyMessage="Sin registros"
+                                     filterEvent="enter"
+                                     paginatorPosition="bottom" reflow="true"
+                                     scrollable="true" scrollHeight="70%"
+                                     paginator="true" rows="25"  
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                     rowsPerPageTemplate="25, 35, 45">
+
+                            <p:column headerText="Préstamo">
+                                <h:outputText value="#{cre.crePrestamo}">
+                                    <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column filterBy="#{cre.creFechaPrimerPago}" headerText="Fecha primer pago">
+                                <h:outputText value="#{cre.creFechaPrimerPago}" />
+                            </p:column>
+                            <p:column filterBy="#{cre.creTipo}" headerText="Tipo de crédito">
+                                <h:outputText value="#{cre.creTipo}" />
+                            </p:column>
+                            <p:column filterBy="#{cre.creClave}" headerText="Clave de crédito">
+                                <h:outputText value="#{cre.creClave}" />
+                            </p:column>
+                            <p:column filterBy="#{cre.creEstatusStr}" headerText="Estatus">
+                                <h:outputText value="#{cre.creEstatusStr}" />
+                            </p:column>
+                            <p:column filterBy="#{cre.creClaveEmpleado}" headerText="Clave de empleado">
+                                <h:outputText value="#{cre.creClaveEmpleado}" />
+                            </p:column>
+                            <p:column filterBy="#{cre.creEmpresa}" headerText="Empresa">
+                                <h:outputText value="#{cre.creEmpresa}" />
+                            </p:column>
+                            <p:column filterBy="#{cre.creNombre}" headerText="Nombre">
+                                <h:outputText value="#{cre.creNombre}" />
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <p:contextMenu for="tblRepCred" style="width : 200px" >  
+
+                            <p:menuitem value="Abrir amortizacion" icon="fa fa-search"
+                                        actionListener="#{reporteBean.initDlgAmortizacion}"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                        update=":frmAmortizacion" 
+                                        >
+
+                            </p:menuitem>
+
+                            <p:menuitem value="Ver avales" icon="fa fa-arrow-right"
+                                        actionListener="#{reporteBean.openDlgVerAvales}"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('dlgVerAvales').show(); PF('statusDialog').hide()"
+                                        update=":frmDlgAvales" 
+                                        ></p:menuitem>
+                            <p:menuitem value="Ver crédito padre" icon="fa fa-arrow-right"
+                                        actionListener="#{reporteBean.openDlgCrePadre}"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('dlgCreditoPadre').show(); PF('statusDialog').hide()"
+                                        update=":frmCrePadre"
+                                        >
+                            </p:menuitem>
+                            <p:menuitem value="Documentos firmados" icon="fa fa-image"
+                                        update =":frmDlgVisorDocFirms"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                        actionListener="#{reporteBean.obtenerDoctoFirmado()}"
+                                        />  
+
+                            <p:menuitem value="Mandar a incobrable" icon="fa  fa-arrow-right"
+                                        update =":frmIncob"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                        actionListener="#{reporteBean.initDlgIncobrable()}"
+                                        />  
+
+                        </p:contextMenu> 
+
+                        <h:commandLink>  
+                            <p:graphicImage value="../../resources/images/excel.png" />  
+                            <p:dataExporter type="xls" target="tblRepCred" fileName="ReporteCreditos" />  
+                        </h:commandLink> 
+
+
+                        <p:growl id="growl"/>
+                    </h:form>
+
+
+
+                    <p:dialog id="dlgAmortizacion" header="Amortización" widgetVar="dlgAmortizacionW" width="1100" 
+                              height="500" closable="true" closeOnEscape="true" modal="true" >
+                        <h:form id="frmAmortizacion" enctype="multipart/form-data" >  
+                            <p:dataTable id="tblAmortizacion" var="amo" 
+                                         value="#{reporteBean.amortizacion}"                                 
+                                         scrollable="true"
+                                         scrollHeight="400" emptyMessage="Usted no tiene pagos que mostrar para este crédito." 
+                                         rowStyleClass="#{amo.amoEstColor}"
+                                         > 
+
+
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header"  >  
+                                        <h:outputText value="Pago"/>  
+                                    </f:facet>  
+                                    <h:outputText  value="#{amo.amoNumeroPago}" />  
+                                </p:column>  
+
+                                <p:column style='position: relative'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Capital"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{amo.amoCapital}" >
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                    </h:outputText>  
+                                </p:column> 
+                                <p:column style='position: relative'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Amortizacion"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{amo.amoAmortizacion}" >
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                    </h:outputText>  
+                                </p:column> 
+                                <p:column style='position: relative'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Interés"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{amo.amoInteres}" >
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                    </h:outputText>  
+                                </p:column> 
+                                <p:column style='position: relative'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Monto pago"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{amo.amoMontoPago}" >
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                    </h:outputText>  
+                                </p:column> 
+
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Fecha"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{amo.amoFechaPago}" >  
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>  
+                                </p:column> 
+                                <p:column style='position: relative' >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Estatus"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{amo.amoEstatus}" />
+                                </p:column> 
+                            </p:dataTable> 
+
+                             <h:commandLink>  
+                                        <p:graphicImage value="../../resources/images/excel.png" />  
+                                        <p:dataExporter type="xls" target="tblAmortizacion" fileName="Amortizacion" />  
+                          </h:commandLink> 
+                            
+                            <p:growl id="dlgAmoRep"/>
+                        </h:form>
+                        
+                        
+                        
+                    </p:dialog>
+
+                    <p:dialog id="dlgVerAvales" widgetVar="dlgVerAvales" width="900" height="400"
+                              minimizable="false" maximizable="false" modal="true" 
+                              header="Avales credito">
+                        <h:form id="frmDlgAvales">
+                            <h:panelGrid >
+
+                                <p:dataTable id="tblAvalesSolPdtes" var="aval"  
+                                             value="#{reporteBean.avales}"                                 
+                                             emptyMessage="Este crédito no tiene avales"
+                                             >  
+
+
+                                    <p:column headerText="Nombre">  
+                                        <h:outputText value="#{aval.nombreCompleto}" />  
+                                    </p:column>  
+
+                                    <p:column headerText="Clave empleado">  
+                                        <h:outputText value="#{aval.cveEmpleado}" />  
+                                    </p:column>  
+                                    <p:column headerText="Empresa">  
+                                        <h:outputText value="#{aval.empresaAbreviacion}" />  
+                                    </p:column> 
+                                    <p:column headerText="Fecha ingreso">  
+                                        <h:outputText value="#{aval.fechaIngresoCaja}" />  
+                                    </p:column> 
+
+                                    <p:column headerText="Estatus empleado">  
+                                        <h:outputText value="#{aval.estatusStr}" />  
+                                    </p:column> 
+                                    <p:column headerText="Credito" rendered="#{reporteBean.rdrAvalCredTransf}">  
+                                        <h:outputText value="#{aval.claveCredTransf}" />  
+                                    </p:column> 
+
+                                </p:dataTable> 
+                            </h:panelGrid>  
+                        </h:form>
+                    </p:dialog>
+
+                    <p:dialog id="dlgCreditoPadre" widgetVar="dlgCreditoPadre" width="900" height="400"
+                              minimizable="false" maximizable="false" modal="true" 
+                              header="Credito padre">
+                        <h:form id="frmCrePadre">
+                            <p:dataTable id="tblCredPadre" var="cred"  
+                                         value="#{reporteBean.creditoPadre}"                                 
+                                         rowKey="#{cred.creId}"
+                                         emptyMessage="No hay un crédito padre para este crédito"
+                                         >  
+
+                                <p:column style='position: relative'>  
+                                    <f:facet name="header"  >  
+                                        <h:outputText value="Clave credito"/>  
+                                    </f:facet>  
+                                    <h:outputText  value="#{cred.creClave}" />  
+                                </p:column>  
+
+                                <p:column style='position: relative'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Tipo credito"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{cred.creTipo}" />  
+                                </p:column> 
+                                <p:column style='position: relative'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Monto prestamo"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{cred.crePrestamo}" > 
+                                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                                    </h:outputText>   
+                                </p:column> 
+                                <p:column style='position: relative'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Catorcenas"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{cred.creCatorcenas}" />  
+                                </p:column> 
+                                <p:column style='position: relative'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Estatus"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{cred.creEstatusStr}" />  
+                                </p:column> 
+                            </p:dataTable> 
+                        </h:form>
+                    </p:dialog>
+
+                    <p:dialog id="dlgVisorDocFirms" widgetVar="dlgVisorDocFirms" width="900" height="500"
+                              minimizable="false" maximizable="false" modal="true">
+                           <p:ajax event="close" listener="#{reporteBean.eliminaImagen()}" />
+                        <h:form id="frmDlgVisorDocFirms" style="height: 100%">
+
+                            <h:panelGrid id="pgVisorPdf" class="Container100 Responsive100" columns="1"
+                                         style="height: 100%"
+                                         >
+
+                                <object type="application/pdf" data="../../#{reporteBean.doctoFirmado.imaImagen}?pfdrid_c=true" height="90%" width="100%"
+                                        internalinstanceid="6" >
+                                    Su browser no puede mostrar el pdf, <a href="../../#{reporteBean.doctoFirmado.imaImagen}">click</a> para descargarlo.
+                                </object>
+
+
+                            </h:panelGrid>
+                        </h:form>
+                    </p:dialog>
+
+                    <p:dialog id="dlgMandarIncobrable" widgetVar="dlgMandarIncob" width="450" height="150"
+                              minimizable="false" maximizable="false" modal="true" 
+                              header="Mandar a incobrable">
+                        <h:form id="frmIncob">
+                            <h:panelGrid columns ="2" cellpadding="5" cellspacing="5"> 
+
+                                <p:outputLabel value="Fecha en que se manda a incobrable:  " rendered="#{reporteBean.rdrIncob}"/>  
+                                <p:calendar value="#{reporteBean.fechaIncobrable}" navigator="true" pattern="dd/MM/yyyy" rendered="#{reporteBean.rdrIncob}"
+                                            locale="es" required="true" />
+
+                                <p:commandButton id="cbIncobrable" value="Mandar a incobrable" rendered="#{reporteBean.rdrIncob}"
+                                                 actionListener="#{reporteBean.mandarAIncobrable()}"
+                                                 onstart="PF('statusDialog').show()"
+                                                 oncomplete="PF('statusDialog').hide()"
+                                                 update=":frmRepCreds"
+                                                 />
+                                <p:messages id="msjIncob" showDetail="true" />
+                            </h:panelGrid>
+                        </h:form>
+                    </p:dialog>
+
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

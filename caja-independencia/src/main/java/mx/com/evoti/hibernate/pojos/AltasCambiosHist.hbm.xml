@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.AltasCambiosHist" table="altas_cambios_hist">
+        <id name="cnhId" type="java.lang.Integer">
+            <column name="cnh_id" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="cnhUsuId" type="java.lang.Integer">
+            <column name="cnh_usu_id" />
+        </property>
+        <property name="cnhArhId" type="java.lang.Integer">
+            <column name="cnh_arh_id" />
+        </property>
+        <property name="cnhTipo" type="java.lang.Integer">
+            <column name="cnh_tipo" />
+        </property>
+        <property name="cnhClaveAnterior" type="java.lang.Integer">
+            <column name="cnh_clave_anterior" />
+        </property>
+        <property name="cnhClaveActual" type="java.lang.Integer">
+            <column name="cnh_clave_actual" />
+        </property>
+        <property name="cnhEmpresaAnterior" type="java.lang.Integer">
+            <column name="cnh_empresa_anterior" />
+        </property>
+        <property name="cnhEmpresaActual" type="java.lang.Integer">
+            <column name="cnh_empresa_actual" />
+        </property>
+        <property name="cnhCatorcenaTransaccion" type="date">
+            <column name="cnh_catorcena_transaccion" length="10" />
+        </property>
+        <property name="cnhMovId" type="java.lang.Integer">
+            <column name="cnh_mov_id" />
+        </property>
+        <property name="cnhFecha" type="date">
+            <column name="cnh_fecha" length="10" />
+        </property>
+    </class>
+</hibernate-mapping>

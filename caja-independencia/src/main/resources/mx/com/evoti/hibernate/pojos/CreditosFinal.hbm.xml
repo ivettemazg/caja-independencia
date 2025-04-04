@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.CreditosFinal" table="creditos_final">
+        <id name="creId" type="java.lang.Integer">
+            <column name="cre_id" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="creFechaDeposito" type="date">
+            <column name="cre_fecha_deposito" length="10" />
+        </property>
+        <property name="creFechaIncobrable" type="date">
+            <column name="cre_fecha_incobrable" length="10" />
+        </property>
+        <property name="creEmpresa" type="string">
+            <column name="cre_empresa" length="50" />
+        </property>
+        <property name="creNombre" type="string">
+            <column name="cre_nombre" length="50" />
+        </property>
+        <property name="creTipo" type="string">
+            <column name="cre_tipo" length="20" />
+        </property>
+        <property name="crePrestamo" type="java.lang.Double">
+            <column name="cre_prestamo" precision="22" scale="0" />
+        </property>
+        <property name="creCatorcenas" type="java.lang.Integer">
+            <column name="cre_catorcenas" />
+        </property>
+        <property name="creFechaPrimerPago" type="date">
+            <column name="cre_fecha_primer_pago" length="10" />
+        </property>
+        <property name="creClaveEmpleado" type="java.lang.Integer">
+            <column name="cre_clave_empleado" />
+        </property>
+        <property name="creProducto" type="java.lang.Integer">
+            <column name="cre_producto" />
+        </property>
+        <property name="creSolicitud" type="java.lang.Long">
+            <column name="cre_solicitud" />
+        </property>
+        <property name="crePagoQuincenal" type="java.lang.Double">
+            <column name="cre_pago_quincenal" precision="22" scale="0" />
+        </property>
+        <property name="creSaldo" type="java.lang.Double">
+            <column name="cre_saldo" precision="22" scale="0" />
+        </property>
+        <property name="creClave" type="string">
+            <column name="cre_clave" length="50" />
+        </property>
+        <property name="creEstatus" type="java.lang.Integer">
+            <column name="cre_estatus" />
+        </property>
+        <property name="creUsuId" type="java.lang.Integer">
+            <column name="cre_usu_id" />
+        </property>
+        <property name="crePadre" type="java.lang.Integer">
+            <column name="cre_padre" />
+        </property>
+        <property name="creFechaNuevoMonto" type="date">
+            <column name="cre_fecha_nuevo_monto" length="10" />
+        </property>
+        <set name="amortizacions" table="amortizacion" inverse="true" lazy="true" cascade="all" fetch="select">
+            <key>
+                <column name="amo_credito" />
+            </key>
+            <one-to-many class="mx.com.evoti.hibernate.pojos.Amortizacion" />
+        </set>
+    </class>
+</hibernate-mapping>

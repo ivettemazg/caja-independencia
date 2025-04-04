@@ -1,0 +1,44 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog id="dlgVerAvales" widgetVar="dlgVerAvales" width="900" height="400"
+                  minimizable="false" maximizable="false" modal="true" 
+                  header="Avales credito">
+            <h:form id="frmDlgAvales">
+                <h:panelGrid >
+
+                    <p:dataTable id="tblAvalesSolPdtes" var="aval"  
+                                 value="#{repEmpleadoBean.avales}"                                 
+                                 emptyMessage="Este crédito no tiene avales"
+                                 >  
+
+                     
+                        <p:column headerText="Nombre">  
+                            <h:outputText value="#{aval.nombreCompleto}" />  
+                        </p:column>  
+
+                        <p:column headerText="Clave empleado">  
+                            <h:outputText value="#{aval.cveEmpleado}" />  
+                        </p:column>  
+                        <p:column headerText="Empresa">  
+                            <h:outputText value="#{aval.empresaAbreviacion}" />  
+                        </p:column> 
+                        <p:column headerText="Fecha ingreso">  
+                            <h:outputText value="#{aval.fechaIngresoCaja}" />  
+                        </p:column> 
+                       
+                        <p:column headerText="Estatus empleado">  
+                            <h:outputText value="#{aval.estatusStr}" />  
+                        </p:column> 
+                        <p:column headerText="Credito" rendered="#{repEmpleadoBean.rdrAvalCredTransf}">  
+                            <h:outputText value="#{aval.claveCredTransf}" />  
+                        </p:column> 
+
+                    </p:dataTable> 
+                </h:panelGrid>  
+            </h:form>
+        </p:dialog>
+
+</ui:composition>

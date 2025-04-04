@@ -1,0 +1,349 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+
+            .ajustado{
+                background-color: #9BFF78 !important; 
+                background-image: none !important; 
+                font-weight: bold;                    
+
+            }
+
+            .ajustado-parcial{
+                background-color: #FDFF75 !important; 
+                background-image: none !important; 
+                font-weight: bold;                    
+
+            }
+
+
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Reporte de Aportaciones por Catorcena y Empresa</div>
+                    </h3>
+
+                    <h:form id = "frmReporteAportaciones">
+
+                        <p:panelGrid columns="5" style="border:0px !important; background:none; "
+                                     styleClass="FormContent"
+                                     layout="grid"  >
+
+                            <p:outputLabel value="Catorcena : " />  
+                            <p:calendar navigator="true" value="#{reporteAportacionesBean.fechaCatorcena}"
+                                        id="CalCatotcenaDescuentoNomina" pattern="dd/MM/yyyy" locale="es" required="true"
+                                        requiredMessage="Por favor seleccione una catorcena"/>
+
+                            <p:outputLabel value="Empresa :  " />  
+                            <p:selectOneMenu label="descuentoNominaEmpresa" required="true"
+                                             value="#{reporteAportacionesBean.empresa}">  
+                                <f:selectItem itemLabel="Empresa" itemValue="" />  
+                                <f:selectItem itemLabel="AMX" itemValue="1" />  
+                                <f:selectItem itemLabel="TECH" itemValue="2" />    
+                                <f:selectItem itemLabel="SIS" itemValue="3" />    
+                                <f:selectItem itemLabel="CAR" itemValue="4" />    
+                                <f:selectItem itemLabel="SND" itemValue="5" />  
+                            </p:selectOneMenu>
+
+                            <p:commandButton value="Consultar" actionListener="#{reporteAportacionesBean.generaReporteAportacionesCatorcenal}"
+                                             update =":frmReporteAportaciones"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"/>
+
+                            <p:spacer height="25"/>
+
+                        </p:panelGrid>
+
+                        <p:accordionPanel>
+
+                            <p:tab title="Datos del archivo">
+
+                                <p:dataTable var="datosDelArchivo" value="#{reporteAportacionesBean.descripcionArchivo}" 
+                                             emptyMessage="No se encontraron datos en su busqueda">
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombre de Archivo"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{datosDelArchivo.nombreArchivo}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Fecha de subida"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{datosDelArchivo.fechaSubida}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Estatus"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{datosDelArchivo.estatus}" />  
+                                    </p:column>  
+
+                                </p:dataTable>
+
+                            </p:tab>
+
+                            <p:tab title="Resumen del Archivo">
+
+                                <p:dataTable var="resumenArchivo" value="#{reporteAportacionesBean.resumenArchivo}" 
+                                             emptyMessage="No se encontraron datos en su busqueda">
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Producto"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{resumenArchivo.producto}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Deposito"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{resumenArchivo.deposito}">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText>  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Registros"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{resumenArchivo.registros}" />  
+                                    </p:column>  
+
+                                </p:dataTable>
+
+                            </p:tab>
+
+                            <p:tab title="Detalle de Archivo">
+
+                                <p:dataTable var="detalleArchivo" value="#{reporteAportacionesBean.detalleArchivo}" 
+                                             emptyMessage="No se encontraron datos en su busqueda" filterEvent="enter">
+
+                                    <p:column style='position: relative' filterBy="#{detalleArchivo.producto}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Producto"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{detalleArchivo.producto}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative' filterBy="#{detalleArchivo.claveEmpleado}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Clave de Empleado"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{detalleArchivo.claveEmpleado}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative' filterBy="#{detalleArchivo.nombre}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombre"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{detalleArchivo.nombre}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'  sortBy="#{detalleArchivo.deposito}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Deposito"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{detalleArchivo.deposito}">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText>  
+                                    </p:column>  
+
+                                </p:dataTable>
+
+                            </p:tab>
+
+                            <p:tab title="Usuarios No Registrados">
+
+                                <p:dataTable var="usuariosNoRegistrados" value="#{reporteAportacionesBean.usuariosNoRegistrados}" 
+                                             emptyMessage="No se encontraron datos en su busqueda">
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Producto"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{usuariosNoRegistrados.producto}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Clave de Empleado"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{usuariosNoRegistrados.claveEmpleado}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombre"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{usuariosNoRegistrados.nombre}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Deposito"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{usuariosNoRegistrados.deposito}">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText>
+                                    </p:column>  
+
+                                </p:dataTable>
+
+                            </p:tab>
+
+                            <p:tab title="Usuarios con Baja">
+
+                                <p:dataTable id="usuariosBaja" var="usu" value="#{reporteAportacionesBean.usuariosConBaja}" 
+                                             emptyMessage="No se encontraron datos en su busqueda"
+                                             rowKey="#{usu.usuId}"  
+                                             selection="#{reporteAportacionesBean.usuariosConBajaSeleccionados}"
+                                             >
+                                    
+                                <p:ajax event="rowSelectCheckbox" listener="#{reporteAportacionesBean.rowSelect}"  
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"/>
+                                <p:ajax event="rowUnselectCheckbox" listener="#{reporteAportacionesBean.rowUnselect}"  
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"/>
+
+                                <p:column selectionMode="multiple" style="width:4%" />
+
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Producto"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{usu.producto}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Clave de Empleado"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{usu.claveEmpleado}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombre"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{usu.nombre}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Deposito"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{usu.deposito}">  
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText>
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>
+                                        <f:facet name="header">
+                                            <h:outputText value="Fecha de Baha"/>  
+                                        </f:facet>
+                                        <h:outputText  value="#{usu.fechaBaja}" />  
+                                    </p:column>  
+
+                                </p:dataTable>
+
+                                
+                        <p:contextMenu for="usuariosBaja" style="width : 200px"   >  
+
+                            <p:menuitem value="Reactivar usuarios" update=":frmReporteAportaciones"
+                                        icon ="fa fa-search" oncomplete="PF('dlgConfirm').show();"
+                                        >
+                            </p:menuitem>
+
+                        </p:contextMenu> 
+                                
+                                
+                        <p:dialog widgetVar="dlgConfirm" showEffect="fade" hideEffect="fade"
+                                  height="200" width="400" closable="true" closeOnEscape="true" modal="true">
+                            <h:form id="frmConfirmDialog">
+                            
+                            <h:panelGrid columns="1" cellpadding="5" >
+                                <h:outputText value="Se va a reactivar el/los usuarios" /> 
+                             </h:panelGrid>
+                            <h:panelGrid columns="2" cellpadding="5" >    
+                                <p:commandButton value="Si" 
+                                                 actionListener="#{reporteAportacionesBean.reactivarUsuarios}"  icon="ui-icon-check fa fa-check Fs14 white"
+                                                 oncomplete="PF('statusDialog').hide(); PF('dlgConfirm').hide()"
+                                                 onstart="PF('statusDialog').show()"
+                                                 update=":frmReporteAportaciones"/>
+
+                                <p:commandButton value="No" icon="ui-icon-close fa fa-close Fs14 white"
+                                             oncomplete="PF('dlgConfirm').hide()"/>
+                            </h:panelGrid>
+                            
+                            </h:form>
+                        </p:dialog>   
+                                
+                            </p:tab>
+
+
+                        </p:accordionPanel>
+
+                    </h:form>
+
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

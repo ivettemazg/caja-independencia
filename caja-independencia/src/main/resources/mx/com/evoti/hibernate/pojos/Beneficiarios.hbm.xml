@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 1/02/2017 05:08:42 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Beneficiarios" table="beneficiarios" >
+        <id name="benId" type="java.lang.Integer">
+            <column name="ben_id" />
+            <generator class="identity" />
+        </id>
+       
+        <property name="benNombre" type="string">
+            <column name="ben_nombre" length="50" />
+        </property>
+        <property name="benPaterno" type="string">
+            <column name="ben_paterno" length="50" />
+        </property>
+        <property name="benMaterno" type="string">
+            <column name="ben_materno" length="50" />
+        </property>
+        <property name="benParentesco" type="java.lang.Integer">
+            <column name="ben_parentesco" />
+        </property>
+        <property name="benPct" type="java.lang.Double">
+            <column name="ben_pct" precision="22" scale="0" />
+        </property>
+        <property name="benDireccion" type="string">
+            <column name="ben_direccion" length="100" />
+        </property>
+        <property name="benTelefono" type="string">
+            <column name="ben_telefono" length="20" />
+        </property>
+        <property name="benCelular" type="string">
+            <column name="ben_celular" length="20" />
+        </property>
+        <property name="benUsuId" type="java.lang.Integer">
+            <column name="ben_usu_id" />
+        </property>
+    </class>
+</hibernate-mapping>

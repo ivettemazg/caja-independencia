@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Cargos" table="cargos">
+        <id name="idCargo" type="java.lang.Integer">
+            <column name="id_cargo" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="carCredito" type="java.lang.Integer">
+            <column name="car_credito" />
+        </property>
+        <property name="carNumeroPago" type="java.lang.Integer">
+            <column name="car_numero_pago" />
+        </property>
+        <property name="carCatorcenas" type="java.lang.Integer">
+            <column name="car_catorcenas" />
+        </property>
+        <property name="carSaldo" type="java.lang.Double">
+            <column name="car_saldo" precision="22" scale="0" />
+        </property>
+        <property name="carAmortizacion" type="java.lang.Double">
+            <column name="car_amortizacion" precision="22" scale="0" />
+        </property>
+        <property name="carInteres" type="java.lang.Double">
+            <column name="car_interes" precision="22" scale="0" />
+        </property>
+        <property name="carPago" type="java.lang.Double">
+            <column name="car_pago" precision="22" scale="0" />
+        </property>
+        <property name="carFecha" type="date">
+            <column name="car_fecha" length="10" />
+        </property>
+        <property name="carSaldoActual" type="java.lang.Double">
+            <column name="car_saldo_actual" precision="22" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

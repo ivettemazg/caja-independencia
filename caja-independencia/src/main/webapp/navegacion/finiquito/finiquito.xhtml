@@ -1,0 +1,325 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                };
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="frmCreditoDetalle">
+            <f:event type="preRenderComponent" listener="#{finBean.init}"/>
+            <div class="layout-portlets-box">
+                <p:fieldset legend="Creditos" toggleable="true" toggleSpeed="500">
+
+                    <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
+                        <h:outputText value="#{finBean.usuarioBaja.usuClaveEmpleado}" />
+                        <h:outputText value="#{finBean.usuBajaNombreCompleto}" />
+                        
+                        <p:spacer height="10"/>
+                        
+                    </h:panelGrid>
+                    <ui:insert name="creditosFiniq" >
+                        <ui:include src="../common/creditos-adeudo-tbl.xhtml"/>
+                    </ui:insert>
+
+                    <p:contextMenu for="tblCreditoAdeudos" style="width : 200px" >  
+
+                        <p:menuitem value="Ajustar crédito" 
+                                    icon="fa fa-wrench" update=":frmDlgAjustar"
+                                    actionListener="#{finBean.initDlgAjuste()}"
+                                    onstart="PF('statusDialog').show()"
+                                    oncomplete="PF('statusDialog').hide(); PF('dlgAjustaCreditoW').show()"
+                                    />  
+                        <p:menuitem value="Transferir crédito" icon="fa fa-arrow-right"
+                                    actionListener="#{finBean.initDlgTransferir()}"
+                                    oncomplete="PF('dlgTransferirW').show(); PF('statusDialog').hide()"
+                                    onstart="PF('statusDialog').show()"
+                                    update=":frmDlgTransferir" 
+                                    />  
+                    </p:contextMenu> 
+
+                </p:fieldset>
+            </div>
+            <div class="layout-portlets-box">
+                <p:fieldset legend="Ahorros" toggleable="true" toggleSpeed="500" rendered="#{finBean.rdrTblMovimientos}">
+                    <ui:insert name="ahorrosOrigen1" >
+                        <ui:include src="../common/ahorros-tab-ajuste.xhtml"/>
+                    </ui:insert>
+                </p:fieldset>
+            </div>
+            <p:growl id="growlDevsAho" sticky="true" life="11000" />
+        </h:form>
+        
+        
+            <p:dialog id="dlgDevoluciones" widgetVar="dlgDevolucionesW" 
+          modal="true" closeOnEscape="true" closable="true" draggable="true" fitViewport="true">
+
+            <h:form id="frmDlgDev">
+                <h:panelGrid columns="1" cellpadding="5" >
+
+                        <p:outputLabel for="montoTotal" value="Total Ahorro " />  
+                        <p:inputText id="montoTotal" 
+                             value="#{finBean.movDevSelected.totalMovimiento}" readonly="true" />
+
+                        <p:outputLabel for="montoDev" value="Monto a devolver " />  
+                        <p:inputText id="montoDev" 
+                                     value="#{finBean.movDevSelected.devolucion}"  />
+
+                </h:panelGrid>
+                <h:panelGrid columns="2" cellpadding="5" >
+                        <p:outputLabel for = "fechaDev" value="Fecha devolución :  " />  
+                        <p:calendar value="#{finBean.movDevSelected.devolucionFecha}" navigator="true" 
+                            id="fechaDev" pattern="dd/MM/yyyy" locale="es" required="true" yearRange="c-3:c+3" />
+
+                        <p:commandButton value="Devolver"  actionListener="#{finBean.aplicaDevolucion}"
+                                         oncomplete="PF('dlgDevolucionesW').hide(); PF('statusDialog').hide()"
+                                         onstart="PF('statusDialog').show()"
+                                         update=":frmDlgAjustar:tblAhorros :frmDlgAjustar:ipMontoDeuda 
+                                         :frmDlgAjustar:ipFiniquito :frmDlgAjustar:msj :frmDlgAjustar:btnAjusta
+                                         :frmCreditoDetalle:growlDevsAho  :frmCreditoDetalle:tblAhorros">
+                        </p:commandButton>
+                </h:panelGrid>
+
+            </h:form>
+        </p:dialog>
+
+
+
+        <p:dialog id="dlgAjustaCredito" widgetVar="dlgAjustaCreditoW" width="850" height="380"
+                  minimizable="false" maximizable="false" modal="true" 
+                  header="Ajuste de créditos">
+            <h:form id="frmDlgAjustar">
+
+                <h:panelGrid id="pgDatosCredit" columns="2" cellpadding="7" cellspacing="7" >
+
+                    <p:outputLabel for="ipCveCredito" value="Clave credito :  " />  
+                    <h:outputText id="ipCveCredito" value="#{finBean.cveCredSeleccionado}" > 
+                    </h:outputText> 
+
+                </h:panelGrid>
+                <ui:insert name="dlgAhorrosFiniq" >
+                    <ui:include src="../common/ahorros-tabla.xhtml"/>
+                </ui:insert>
+
+                <p:spacer height="20"/>
+                <h:panelGrid id="pgDlgAjustar1" columns="2" cellpadding="2" cellspacing="5" >
+                    <p:outputLabel for="ipMontoDeuda" value="Monto Adeudo :  " />  
+                    <h:outputText id="ipMontoDeuda" value="#{finBean.adeudoAjustado}" > 
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+                    </h:outputText>  
+
+                    <p:outputLabel for="ipFiniquito" value="Descuento empresa :  " rendered ="#{finBean.rdrFiniquito}"/>  
+                    <p:inputNumber id="ipFiniquito" value="#{finBean.montoFiniquito}" 
+                                   rendered ="#{finBean.rdrFiniquito}" maxValue="#{finBean.adeudoAjustado}" 
+                                   decimalPlaces="2" required="true" 
+                                   requiredMessage="Debe meter un valor en Finiquito" /> 
+
+
+                    <p:outputLabel value="Fecha finiquito :  " rendered ="#{finBean.rdrFiniquito}"/>  
+                    <p:calendar value="#{finBean.fechaFiniquito}" navigator="true" rendered ="#{finBean.rdrFiniquito}"
+                                id="calFechaIngreso" pattern="dd/MM/yyyy" locale="es" required="true" 
+                                requiredMessage="Debe meter un valor en la fecha"/>
+
+                    <p:spacer height="20" />
+                </h:panelGrid>  
+                <h:panelGrid id="btnAjusta" columns="1" >
+                    <p:commandButton  value="Ajustar" rendered="#{finBean.rdrBtnAjustar}"
+                                      actionListener="#{finBean.ajustaCredito()}"
+                                      icon="fa fa-wrench Fs14 white"
+                                      update=":frmDlgAjustar:msj"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"/>
+
+
+
+                </h:panelGrid>
+
+                <p:messages id ="msj"/>
+            </h:form>
+
+        </p:dialog>
+        <p:dialog id="dlgTransferir" widgetVar="dlgTransferirW" width="900" height="400"
+                  minimizable="false" maximizable="false" modal="true" 
+                  header="Transferir">
+            <h:form id="frmDlgTransferir">
+                <h:panelGrid id="pgReasignaCredito" columns="1" cellpadding="7" cellspacing="7" >
+                    <h:panelGrid id="pgDatosCredit" columns="4" cellpadding="7" cellspacing="7" >
+
+                        <p:outputLabel for="ipCveCredito" value="Clave credito :  " />  
+                        <h:outputText id="ipCveCredito" value="#{finBean.cveCredSeleccionado}" > 
+                        </h:outputText> 
+
+                        <p:outputLabel for="ipMontoDeuda" value="Monto Adeudo :  " />  
+                        <h:outputText id="ipMontoDeuda" value="#{finBean.adeudoTotalCredito}" > 
+                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2"  />
+                        </h:outputText> 
+                    </h:panelGrid>
+                    <p:dataTable id="tblAvalesFiniq" value="#{finBean.avales}"
+                                 var="aval" style="width: 840px" rendered="#{finBean.rdrTblAvales}"
+                                 emptyMessage="No hay avales para este crédito o bien los avales ya fueron dados de baja"
+                                 editable="true">
+
+                        <p:ajax event="rowEdit" listener="#{finBean.onEditTransfiere}" 
+                                  onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                update=":frmDlgTransferir:tblAvalesFiniq 
+                                :frmDlgTransferir:msjDlgAjusteCredito" 
+                                />  
+
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header" >  
+                                <h:outputText value="Clave empleado"/>  
+                            </f:facet>  
+                            <h:outputText value="#{aval.avalCveEmpleado}" />  
+                        </p:column>  
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header" >  
+                                <h:outputText value="Nombre aval"/>  
+                            </f:facet>  
+                            <h:outputText value="#{aval.avalNombreCompleto}" />  
+                        </p:column>  
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Empresa"/>  
+                            </f:facet>  
+                            <h:outputText value="#{aval.empAbrev}" />  
+                        </p:column>
+
+                        <p:column headerText="Cantidad" style='position: relative'>  
+
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{aval.montoCredito}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:inputNumber value="#{aval.montoCredito}" label="Cantidad" 
+                                                   required="true" decimalPlaces="2" maxValue="#{finBean.adeudoTotalCredito}" >  
+                                    </p:inputNumber>  
+                                </f:facet>  
+                            </p:cellEditor> 
+
+
+                        </p:column>  
+
+                        <p:column headerText="Catorcenas" style='position: relative'>  
+
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{aval.catorcenas}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:inputNumber value="#{aval.catorcenas}" label="Catorcenas" 
+                                                   required="true" decimalPlaces="0" >  
+                                    </p:inputNumber>  
+                                </f:facet>  
+                            </p:cellEditor> 
+
+
+                        </p:column>  
+
+                        <p:column headerText="Fecha primer pago" style='position: relative'>  
+
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{aval.primerCatorcena}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:selectOneMenu value="#{aval.primerCatorcena}" required="true" >  
+                                        <f:selectItem itemLabel="Seleccione" itemValue="" /> 
+                                        <f:selectItems value="#{finBean.catorcenasSiguientes}" />  
+
+                                    </p:selectOneMenu> 
+                                </f:facet>  
+                            </p:cellEditor> 
+
+
+                        </p:column>  
+
+                        <p:column style="width:10%">  
+                            <p:rowEditor />  
+                        </p:column> 
+
+
+                    </p:dataTable>
+
+
+                    <h:panelGrid columns ="2"> 
+                        <p:commandButton id="cbAjusteCreditosAvales" value="Transferir" actionListener="#{finBean.transfiereCreditos()}"
+                                         rendered="#{finBean.rdrBtnTransferir}"
+                                         update=":frmDlgTransferir:msjDlgAjusteCredito"
+                                           onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                         />
+
+
+                        <p:outputLabel value="Fecha en que se manda a incobrable:  "  rendered="#{finBean.rdrBtnIncobrable}"/>  
+                        <p:calendar value="#{finBean.fechaIncobrable}" navigator="true" pattern="dd/MM/yyyy" 
+                                    rendered="#{finBean.rdrBtnIncobrable}" locale="es" required="true" />
+
+
+
+                        <p:commandButton id="cbIncobrable" value="Mandar a incobrable" actionListener="#{finBean.mandarAIncobrable()}"
+                                         rendered="#{finBean.rdrBtnIncobrable}"
+                                         update=":frmDlgTransferir:msjDlgAjusteCredito"
+                                           onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                         />
+
+                    </h:panelGrid> 
+                    <p:messages id="msjDlgAjusteCredito" />
+                </h:panelGrid>  
+
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

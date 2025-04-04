@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Bancos" table="bancos">
+        <id name="banId" type="java.lang.Integer">
+            <column name="ban_id" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="banConcepto" type="java.lang.Integer">
+            <column name="ban_concepto" not-null="true" />
+        </property>
+        <property name="banIdConceptoSistema" type="java.lang.Integer">
+            <column name="ban_id_concepto_sistema" not-null="true" />
+        </property>
+        <property name="banAjustado" type="java.lang.Integer">
+            <column name="ban_ajustado"  />
+        </property>
+        <property name="banMonto" type="double">
+            <column name="ban_monto" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="banEmpresa" type="int">
+            <column name="ban_empresa" />
+        </property>
+        <property name="banFechatransaccion" type="date">
+            <column name="ban_fechatransaccion" length="10"/>
+        </property>
+        <property name="banFechaRelacion" type="date">
+            <column name="ban_fecha_relacion" length="10"/>
+        </property>
+        <property name="banIdRelacion" type="java.lang.Long">
+            <column name="ban_id_relacion" />
+        </property>
+    </class>
+</hibernate-mapping>

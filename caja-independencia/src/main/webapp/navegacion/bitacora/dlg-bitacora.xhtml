@@ -1,0 +1,29 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ps="http://primefaces.org/spark"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog height="400" width ="500" widgetVar="dlgBitacora">
+        <h:form id="frmBitacora">
+            <p:panelGrid columns="1" style="border:0px !important; background:none; "  styleClass="FormContent"
+                         layout="grid" >
+
+                <p:outputLabel for="itaObservacion" value="#{bitaBean.lblDescripcion}" />
+                <h:outputText value="#{bitaBean.lblDescripcion}"/>
+                <p:inputTextarea id ="itaObservacion" rows="5" cols="30" counter="counter" maxlength="150" 
+                                 required="true" requiredMessage="#{bitaBean.requiredMessage}"
+                                 counterTemplate="{0} Caracteres restantes" autoResize="false"
+                                 value="#{bitaBean.observacion}" />
+                <h:outputText id="counter" /> 
+                <p:commandButton value="Aceptar" actionListener="#{bitaBean.guardaRegBitacora}" 
+                                 update="#{bitaBean.formActualizar}" 
+                                 ></p:commandButton>                              
+                <p:messages id="msj"/>
+            </p:panelGrid>
+        </h:form>
+    </p:dialog>
+
+</ui:composition>

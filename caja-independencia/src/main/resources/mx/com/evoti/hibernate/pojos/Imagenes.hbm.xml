@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Imagenes" table="imagenes">
+        <id name="imaId" type="java.lang.Integer">
+            <column name="ima_id" />
+            <generator class="identity"></generator>
+        </id>
+        <many-to-one name="solicitudes" class="mx.com.evoti.hibernate.pojos.Solicitudes" fetch="select">
+            <column name="ima_solicitud" />
+        </many-to-one>
+        <property name="imaImagen" type="string">
+            <column name="ima_imagen" length="500" />
+        </property>
+        <property name="imaTipoimagen" type="java.lang.Integer">
+            <column name="ima_tipoimagen" />
+        </property>
+        <property name="imaEstatus" type="java.lang.Integer">
+            <column name="ima_estatus" />
+        </property>
+        <property name="imaObservaciones" type="string">
+            <column name="ima_observaciones" length="500" />
+        </property>
+    </class>
+</hibernate-mapping>

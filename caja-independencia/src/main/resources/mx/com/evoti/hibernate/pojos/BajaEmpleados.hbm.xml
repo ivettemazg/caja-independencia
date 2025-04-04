@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.BajaEmpleados" table="baja_empleados">
+        <id name="baeId" type="java.lang.Integer">
+            <column name="bae_id" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="baeIdEmpleado" type="int">
+            <column name="bae_id_empleado" not-null="true" />
+        </property>
+        <property name="baeEstatus" type="java.lang.Integer">
+            <column name="bae_estatus" />
+        </property>
+        <property name="baeFechaAdministracion" type="date">
+            <column name="bae_fecha_administracion" length="10" />
+        </property>
+        <property name="baeMontoFiniquito" type="java.lang.Double">
+            <column name="bae_monto_finiquito" precision="22" scale="0" />
+        </property>
+        <property name="baeAhorros" type="java.lang.Double">
+            <column name="bae_ahorros" precision="22" scale="0" />
+        </property>
+        <property name="baeDeudaCreditos" type="java.lang.Double">
+            <column name="bae_deuda_creditos" precision="22" scale="0" />
+        </property>
+        <property name="baeClabe" type="string">
+            <column name="bae_clabe" length="50" />
+        </property>
+        <property name="baeCuenta" type="string">
+            <column name="bae_cuenta" length="50" />
+        </property>
+        <property name="baeBanco" type="string">
+            <column name="bae_banco" length="50" />
+        </property>
+        <property name="baeFechaCreacion" type="date">
+            <column name="bae_fecha_creacion" length="10" />
+        </property>
+        <property name="baeFechaPdf" type="date">
+            <column name="bae_fecha_pdf" length="10" />
+        </property>
+        <property name="baeFechaCorreo" type="date">
+            <column name="bae_fecha_correo" length="10" />
+        </property>
+        <property name="baeRutaArchivo" type="string">
+            <column name="bae_ruta_archivo" length="500" />
+        </property>
+        <property name="baeFechaBaja" type="date">
+            <column name="bae_fecha_baja" length="10" />
+        </property>
+        <property name="baeFechaDeposito" type="date">
+            <column name="bae_fecha_deposito" length="10" />
+        </property>
+    </class>
+</hibernate-mapping>

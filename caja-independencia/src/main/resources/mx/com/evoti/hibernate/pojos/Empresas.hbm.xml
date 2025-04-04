@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Empresas" table="empresas">
+        <id name="empId" type="int">
+            <column name="emp_id" />
+            <generator class="assigned"></generator>
+        </id>
+        <property name="empDescripcion" type="string">
+            <column name="emp_descripcion" length="50" />
+        </property>
+        <property name="empAbreviacion" type="string">
+            <column name="emp_abreviacion" length="20" />
+        </property>
+        <property name="empRfc" type="string">
+            <column name="emp_rfc" length="20" />
+        </property>
+        <property name="empTelefono" type="string">
+            <column name="emp_telefono" length="20" />
+        </property>
+        <property name="empDireccion" type="string">
+            <column name="emp_direccion" length="200" />
+        </property>
+        <set name="usuarios" table="usuarios" inverse="true" lazy="true" cascade="all" fetch="select">
+            <key>
+                <column name="usu_empresa" />
+            </key>
+            <one-to-many class="mx.com.evoti.hibernate.pojos.Usuarios" />
+        </set>
+    </class>
+</hibernate-mapping>

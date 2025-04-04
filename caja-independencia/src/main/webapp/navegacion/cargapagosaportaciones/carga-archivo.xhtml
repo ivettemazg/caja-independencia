@@ -1,0 +1,371 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                };
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Archivos subidos</div>
+                    </h3>
+                    <h:form id="cargaArchivosFrm">   
+                        <f:event type="preRenderComponent" rendered="true" listener="#{cargaPagosApoBean.init}"/>
+
+                        <p:panelGrid id="pnlGdCatorcenas" columns="3" style="border:0px !important; background:none; "  styleClass="FormContent"
+                                     layout="grid"
+                                     rendered="#{not cargaPagosApoBean.rdrPnlExcel}"
+                                     class="Container100 Responsive100">
+
+
+                            <p:outputLabel  value="Catorcena a consultar:" />
+                            <p:calendar id="fechaCatorc" value="#{cargaPagosApoBean.catorcena}" locale="es"
+                                        required="true" requiredMessage="Debe elegir una catorcena para continuar." showOn="button">
+                            </p:calendar>
+
+                            <p:commandButton value="Actualiza tabla" 
+                                             icon="ui-icon-refresh"
+                                             actionListener="#{cargaPagosApoBean.obtieneArchivosXCatorcena()}"
+                                             update=":cargaArchivosFrm:pnlGdHistorialArchivo,:cargaArchivosFrm:msjGeneral"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"
+                                             >
+                            </p:commandButton>
+
+                        </p:panelGrid>
+                        <p:messages id="msjGeneral" rendered="#{not cargaPagosApoBean.rdrPnlExcel}" ></p:messages>  
+
+                        <p:panelGrid id="pnlGdHistorialArchivo" columns ="1" rendered="#{not cargaPagosApoBean.rdrPnlExcel}"
+                                     style="border:0px !important; background:none; "  styleClass="FormContent"
+                                     layout="grid"
+                                     >
+
+                            <p:spacer height="20"/>
+                            <p:contextMenu for="tblHistorialArchivo" style="width : 200px">  
+
+                                <p:menuitem value="Ver detalle" icon="ui-icon-note" 
+                                            process="pnlGdHistorialArchivo"
+                                            actionListener="#{cargaPagosApoBean.abreDetalleArchivo}"
+                                            update=":cargaArchivosFrm:tblHistorialArchivo" style="width : auto"
+                                            disabled="false"
+                                            onstart="PF('statusDialog').show()"
+                                            oncomplete="PF('statusDialog').hide()"/>                               
+                            </p:contextMenu> 
+                            <p:dataTable id="tblHistorialArchivo" var="archivo" value="#{cargaPagosApoBean.archivosLst}"  
+                                         emptyMessage="No hay archivos cargados en esta catorcena." 
+                                         rowKey="#{archivo.arhId}" selection="#{cargaPagosApoBean.archivoSeleccionado}"
+                                         selectionMode="single"
+                                         rowStyleClass="#{archivo.arhEstatus eq 1 ? null:'colorArchivoAsignado'}"
+
+                                         >  
+
+                                <p:column style='position: relative; width: 45px !important'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="No. archivo"/>  
+                                    </f:facet>  
+
+                                    <h:outputText value="#{archivo.arhId}" />  
+                                </p:column>  
+
+                                <p:column style='position: relative'>
+                                    <f:facet name="header">  
+                                        <h:outputText value="Nombre archivo"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{archivo.arhNombreArchivo}" />  
+                                </p:column> 
+
+                                <p:column style='position: relative; width: 100px !important'>
+                                    <f:facet name="header">  
+                                        <h:outputText value="Tipo archivo"/>  
+                                    </f:facet>  
+                                    <h:outputText value="#{archivo.arhTipoArchivo eq 1 ? 'PAGOS' : 'APORTACIÓN'}" />  
+                                </p:column>  
+
+                                <p:column style='position: relative; width: 65px !important'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Empresa"/>  
+                                    </f:facet>
+                                    <h:outputText value="#{archivo.empAbreviacion}" />  
+                                </p:column>  
+                                <p:column style='position: relative; width: 60px !important'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="No. registros"/>  
+                                    </f:facet>
+                                    <h:outputText value="#{archivo.arhRegistros}" />  
+                                </p:column>  
+
+                                <p:column style='position: relative; width: 80px !important'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Fecha de carga"/>  
+                                    </f:facet>
+                                    <h:outputText value="#{archivo.arhFechaSubida}" />  
+                                </p:column>  
+                                <p:column style='position: relative; width: 80px !important'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Catorcena"/>  
+                                    </f:facet>
+                                    <h:outputText value="#{archivo.arhFechaCatorcena}" />  
+                                </p:column>  
+
+                                <p:column style='position: relative; width: 130px !important'>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Estatus"/>  
+                                    </f:facet>
+                                    <h:outputText value="#{archivo.arhEstatus eq 1 ? 'PENDIENTE DE ASIGNAR':'ASIGNADO'}" />  
+                                </p:column>  
+
+
+                            </p:dataTable> 
+
+                            <p:spacer height="20"></p:spacer>
+                            <p:commandButton value="Cargar archivo" rendered="#{not cargaPagosApoBean.rdrPnlExcel}"
+                                             actionListener="#{cargaPagosApoBean.rendereaPnlExcel(true)}"
+                                             process="@this"
+                                             update=":cargaArchivosFrm"
+                                             icon="ui-icon-arrowthick-1-e"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"
+                                             >
+                            </p:commandButton>
+
+
+                            <p:dialog id="dlgPagosDto" header="Tabla de pagos" 
+                                      widgetVar="dlgPagosDto" width="1000" height="500" closable="true" closeOnEscape="false"
+                                      dynamic="true" resizable="true" draggable="true" 
+                                      >
+
+                                <p:dataTable id="tblPagosDto" var="pago" value="#{cargaPagosApoBean.pagos}" style="height:450px"
+                                             scrollHeight="350" emptyMessage="El archivo no tiene pagos que mostrar." 
+                                             scrollable="true"
+                                             paginatorPosition="bottom"
+                                             paginator="true" rows="100"
+                                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+                                             {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+                                             rowsPerPageTemplate="50,100"
+                                             rowStyleClass="#{pago.pagEstColor}"
+                                             filterEvent="enter"
+                                             filteredValue="#{cargaPagosApoBean.lstPagosFiltrados}"
+                                             >  
+                                    <f:facet name="header">                       
+                                        <h:outputText value="#{cargaPagosApoBean.archivoSeleccionado.arhNombreArchivo}" />                            
+                                    </f:facet>
+                                    <p:column filterBy="pagClaveEmpleado" style='position: relative; width: 75px !important'>  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Clave empleado"/>  
+                                        </f:facet>  
+
+                                        <h:outputText value="#{pago.pagClaveEmpleado}" />  
+                                    </p:column>  
+                                    <p:column filterBy="pagNombreUsuario" style='position: relative; width: 150px !important'
+                                              filterMatchMode="contains">  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Nombre empleado"/>  
+                                        </f:facet>  
+
+                                        <h:outputText value="#{pago.pagNombreUsuario}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative; width: 45px !important'>
+                                        <f:facet name="header">  
+                                            <h:outputText value="Empresa"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cargaPagosApoBean.archivoSeleccionado.empAbreviacion}" />  
+                                    </p:column>  
+
+                                    <p:column filterBy="pagEstatusTexto" style='position: relative; width: 120px !important'
+                                              filterMatchMode="contains">  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Estatus pago"/>  
+                                        </f:facet>
+                                        <h:outputText value="#{pago.pagEstDescripcion}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative; width: 70px !important'>  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Monto pago"/>  
+                                        </f:facet>
+                                        <h:outputText value="#{pago.pagMonto}" >
+                                            <f:convertNumber currencySymbol="$" type="currency"/>
+                                        </h:outputText>  
+                                    </p:column>  
+                                    <p:column style='position: relative; width: 80px !important'>  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Fecha"/>  
+                                        </f:facet>
+                                        <h:outputText value="#{pago.pagFecha}" />  
+                                    </p:column>  
+
+                                </p:dataTable> 
+
+
+                            </p:dialog>
+
+
+                            <p:dialog id="dlgAportacionesDto" header="Tabla de aportaciones" 
+                                      widgetVar="dlgApoDto" width="1000" height="500" closable="true" closeOnEscape="false"
+                                      dynamic="true" resizable="true" draggable="true" 
+                                      >
+                              
+
+                                    <p:dataTable id="tblAportacionesDto" var="apo" value="#{cargaPagosApoBean.lstMovimientos}"
+                                                emptyMessage="El archivo no tiene aportaciones que mostrar."  
+                                                scrollHeight="80%"
+                                                scrollable="true"
+                                                paginatorPosition="bottom"
+                                                paginator="true" rows="100"  
+                                                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                                rowsPerPageTemplate="50,100"
+
+                                                 >  
+                                        <f:facet name="header">                       
+                                            <h:outputText value="#{cargaPagosApoBean.archivoSeleccionado.arhNombreArchivo}" />                            
+                                        </f:facet>
+                                        <p:column filterBy="apoClaveEmpleado" style='position: relative; width: 75px !important'>  
+                                            <f:facet name="header">  
+                                                <h:outputText value="Clave empleado"/>  
+                                            </f:facet>  
+
+                                            <h:outputText value="#{apo.movClaveEmpleado}" />  
+                                        </p:column>  
+                                        <p:column filterBy="apoNombreEmpleado" style='position: relative'
+                                                  filterMatchMode="contains">  
+                                            <f:facet name="header">  
+                                                <h:outputText value="Nombre empleado"/>  
+                                            </f:facet>  
+
+                                            <h:outputText value="#{apo.movNombreEmpleado}" />  
+                                        </p:column>  
+
+                                        <p:column style='position: relative; width: 45px !important'>
+                                            <f:facet name="header">  
+                                                <h:outputText value="Empresa"/>  
+                                            </f:facet>  
+                                            <h:outputText value="#{cargaPagosApoBean.archivoSeleccionado.empAbreviacion}" />  
+                                        </p:column>  
+
+                                        <p:column style='position: relative; width: 50px !important'>  
+                                            <f:facet name="header">  
+                                                <h:outputText value="Monto"/>  
+                                            </f:facet>
+                                            <h:outputText value="#{apo.movDeposito}" >  
+                                                <f:convertNumber currencySymbol="$" type="currency"/>
+                                            </h:outputText>  
+                                        </p:column>  
+                                        <p:column style='position: relative; width: 80px !important'>  
+                                            <f:facet name="header">  
+                                                <h:outputText value="Fecha"/>  
+                                            </f:facet>
+                                            <h:outputText value="#{apo.movFecha}" />  
+                                        </p:column>  
+                                        <p:column style='position: relative; width: 120px !important'>  
+                                            <f:facet name="header">  
+                                                <h:outputText value="Tipo"/>  
+                                            </f:facet>
+                                            <h:outputText value="#{apo.movTipo}" />  
+                                        </p:column>  
+
+                                    </p:dataTable> 
+                               
+                            </p:dialog>
+
+                        </p:panelGrid>
+
+
+                        <h:panelGrid id="pnlGdArchivoExcel" columns="2" rendered="#{cargaPagosApoBean.rdrPnlExcel}"
+                                     style="border:0px !important; background:none; "  styleClass="FormContent"
+                                     >
+                            <p:outputLabel value="Tipo archivo" style="border:0px !important; background:none; " for="sorPagApo" id="olTipoArchivo" />
+                            <p:selectOneRadio id="sorPagApo" value="#{cargaPagosApoBean.tipoArchivo}" required="true" label="olTipoArchivo" 
+                                              requiredMessage="Debe elegir un tipo de archivo." >
+                                <f:selectItem itemLabel="Pagos créditos" itemValue="1"   />
+                                <f:selectItem itemLabel="Aportaciones" itemValue="2" />
+                                <p:ajax process="@this" update=":cargaArchivosFrm:pnlGdArchivoExcel, :cargaArchivosFrm:pgCargaArchivo" 
+                                        listener="#{cargaPagosApoBean.habilitaFUpld}"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"/>
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                        <p:panelGrid id="pgCargaArchivo" columns="1" rendered="#{cargaPagosApoBean.rdrPnlExcel}"
+                                     style="border:0px !important; background:none; "  styleClass="FormContent"
+                                     layout="grid">
+                            <p:fileUpload  fileUploadListener="#{cargaPagosApoBean.hfuExcel}" mode="advanced" dragDropSupport="false" 
+                                           invalidSizeMessage="El archivo es demasiado pesado" auto="true"
+                                           multiple="false" sizeLimit="10000000" invalidFileMessage="Sólo se permiten archivos Excel" 
+                                           allowTypes="/(\.|\/)(xlsx)$/"   
+                                           label="Abrir archivo"  update="messages"
+                                           disabled="#{cargaPagosApoBean.disblFUBtn}"
+                                           onstart="PF('statusDialog').show()"
+                                           oncomplete="PF('statusDialog').hide()"
+                                           />  
+                            <p:messages id="messages" showDetail="false" rendered="#{cargaPagosApoBean.rdrPnlExcel}"/>
+
+
+                        </p:panelGrid>
+                        <p:panelGrid columns="1" style="border:0px !important; background:none; "  styleClass="FormContent"
+                                     layout="grid">
+
+                            <p:spacer height="30"/>
+                            <p:commandButton value="Regresar" rendered="#{cargaPagosApoBean.rdrPnlExcel}"
+                                             actionListener="#{cargaPagosApoBean.rendereaPnlExcel(false)}"
+                                             process="@this"
+                                             update=":cargaArchivosFrm"
+                                             icon="ui-icon-arrowthick-1-w"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"
+                                             >
+                            </p:commandButton>
+                        </p:panelGrid>
+
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

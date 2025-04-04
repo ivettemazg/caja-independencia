@@ -1,0 +1,160 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:event type="preRenderComponent" listener="#{valSolDetBean.init}"/>
+        <div class="layout-portlets-box">
+            <p:fieldset legend="Detalle Solicitud" toggleable="true" toggleSpeed="500">
+                <ui:insert name="valSolPpal" >
+                    <ui:include src="valsol-principal.xhtml"/>
+                </ui:insert>
+            </p:fieldset>
+        </div>
+
+        <div class="layout-portlets-box">
+            <p:fieldset legend="Datos empleado" toggleable="true" toggleSpeed="500">
+                <ui:insert name="valSolPerfil" >
+                    <ui:include src="../usuariocomun/perfil.xhtml"/>
+                </ui:insert>
+            </p:fieldset>
+        </div>
+
+        <div class="layout-portlets-box">
+            <p:fieldset legend="Créditos del usuario" toggleable="true" toggleSpeed="500">
+                <ui:insert name="valSolCreditosHistorial" >
+                    <ui:include src="valsol-creditos-historial.xhtml"/>
+                </ui:insert>
+            </p:fieldset>
+        </div>
+        
+       <div class="layout-portlets-box">
+            <ui:insert name="totalAhorros" >
+                <ui:include src="valsol-ahorros.xhtml"/>
+            </ui:insert>
+       </div>
+        
+        <div class="layout-portlets-box">
+            <p:fieldset legend="Datos de avales" toggleable="true" toggleSpeed="500">
+                <ui:insert name="valSolAvales" >
+                    <ui:include src="../common/avales-tabla.xhtml"/>
+                </ui:insert>
+            </p:fieldset>
+        </div>
+        
+        <div class="layout-portlets-box">
+            <p:fieldset legend="Documentación" toggleable="true" toggleSpeed="500">
+                <ui:insert name="valSolDoctos" >
+                    <ui:include src="valsol-documentos.xhtml"/>
+                </ui:insert>
+            </p:fieldset>
+        </div>
+        
+        
+        
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent"  >
+                    <h:form id="frmBotonesValidSol">
+                        <p:commandButton 
+                            value="Autorizar Solicitud"
+                            actionListener="#{valSolDetBean.aprobarSolicitud}"
+                            process="@this"
+                            icon="fa fa-check Fs16 white" 
+                            update=":frmBotonesValidSol:dlgMessageAprov"
+                            onstart="PF('statusDialog').show()"
+                            oncomplete="PF('statusDialog').hide()"
+                            >
+                        </p:commandButton>
+                        <p:commandButton 
+                            value="Rechazar Solicitud"
+                            actionListener="#{valSolDetBean.abrirDialogMotivRechazo}"
+                            process="@this"
+                            icon="fa fa-times Fs16 white" 
+                            update=":frmBotonesValidSol"
+                            >
+                        </p:commandButton>
+                        <p:growl id="growl" sticky="true" showDetail="true"
+                                 ></p:growl>
+
+                        <p:dialog id="dlgMotivRechazoSol" widgetVar="dlgMotivRechazoSol" modal="true" >
+                            <h:panelGrid columns="1" cellpadding="5" >
+                                <h4>Describa el motivo del rechazo</h4>  
+                                <p:inputTextarea rows="5" cols="30" counter="counter" maxlength="150"       
+                                                 counterTemplate="{0} Caracteres restantes" autoResize="false"
+                                                 value="#{valSolDetBean.motivoRechazo}" 
+                                                 required="true"
+                                                 requiredMessage="Por favor indique el motivo del rechazo de la solicitud"/>
+                                <h:outputText id="counter" /> 
+                                <p:commandButton value="Aceptar"  actionListener="#{valSolDetBean.rechazarSolicitud}"
+                                                 oncomplete="PF('dlgMotivRechazoSol').hide(); PF('statusDialog').hide()"
+                                                 onstart="PF('statusDialog').show()"></p:commandButton>
+                            </h:panelGrid>
+                        </p:dialog>
+
+                        <p:dialog widgetVar="dlgMessageAprovW" modal="true" closable="true"  >
+                            <p:ajax event="close" listener="#{valSolDetBean.goToValidaSolicitudes()}" />
+                            <p:messages id="dlgMessageAprov" for="msjAutorizacion"></p:messages>
+                        </p:dialog>
+
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+        <p:messages/>
+
+         <ui:insert name="amoCred" >
+                <ui:include src="amortizacion.xhtml"/>
+        </ui:insert>
+        
+    </ui:define>
+
+</ui:composition>

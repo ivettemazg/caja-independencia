@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.UsuariosResp" table="usuarios_resp">
+        <id name="usuId" type="java.lang.Integer">
+            <column name="usu_id" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="usuClaveEmpleado" type="java.lang.Integer">
+            <column name="usu_clave_empleado" />
+        </property>
+        <property name="usuNombre" type="string">
+            <column name="usu_nombre" length="50" />
+        </property>
+        <property name="usuPaterno" type="string">
+            <column name="usu_paterno" length="50" />
+        </property>
+        <property name="usuEdoCivil" type="string">
+            <column name="usu_edo_civil" length="20" />
+        </property>
+        <property name="usuCorreo" type="string">
+            <column name="usu_correo" length="50" />
+        </property>
+        <property name="usuEstado" type="string">
+            <column name="usu_estado" length="2" />
+        </property>
+        <property name="usuRfc" type="string">
+            <column name="usu_rfc" length="15" />
+        </property>
+        <property name="usuEmpresa" type="string">
+            <column name="usu_empresa" length="1" />
+        </property>
+        <property name="usuPuesto" type="string">
+            <column name="usu_puesto" length="50" />
+        </property>
+        <property name="usuTelefono" type="string">
+            <column name="usu_telefono" length="20" />
+        </property>
+        <property name="usuDepartamento" type="string">
+            <column name="usu_departamento" length="50" />
+        </property>
+        <property name="usuAreaTrabajo" type="string">
+            <column name="usu_area_trabajo" length="50" />
+        </property>
+        <property name="usuEstacion" type="string">
+            <column name="usu_estacion" length="50" />
+        </property>
+        <property name="usuFechaIngreso" type="date">
+            <column name="usu_fecha_ingreso" length="10" />
+        </property>
+        <property name="usuFechaNacimiento" type="date">
+            <column name="usu_fecha_nacimiento" length="10" />
+        </property>
+        <property name="usuSexo" type="string">
+            <column name="usu_sexo" length="1" />
+        </property>
+        <property name="usuIdentificacion" type="string">
+            <column name="usu_identificacion" length="30" />
+        </property>
+        <property name="usuCelular" type="string">
+            <column name="usu_celular" length="20" />
+        </property>
+        <property name="usuMunicipio" type="string">
+            <column name="usu_municipio" length="50" />
+        </property>
+        <property name="usuCp" type="string">
+            <column name="usu_cp" length="5" />
+        </property>
+        <property name="usuColonia" type="string">
+            <column name="usu_colonia" length="50" />
+        </property>
+        <property name="usuCalle" type="string">
+            <column name="usu_calle" length="50" />
+        </property>
+        <property name="usuNumext" type="string">
+            <column name="usu_numext" length="10" />
+        </property>
+        <property name="usuSalarioNeto" type="java.lang.Double">
+            <column name="usu_salario_neto" precision="22" scale="0" />
+        </property>
+        <property name="usuMaterno" type="string">
+            <column name="usu_materno" length="50" />
+        </property>
+        <property name="usuPassword" type="string">
+            <column name="usu_password" length="200" />
+        </property>
+        <property name="usuPrimeravez" type="java.lang.Integer">
+            <column name="usu_primeravez" />
+        </property>
+        <property name="usuTemporal" type="string">
+            <column name="usu_temporal" length="50" />
+        </property>
+        <property name="usuFechaIngresoEmpresa" type="date">
+            <column name="usu_fecha_ingreso_empresa" length="10" />
+        </property>
+    </class>
+</hibernate-mapping>

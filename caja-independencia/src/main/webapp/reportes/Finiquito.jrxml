@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Finiquito" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#E6DAC3"/>
+		</conditionalStyle>
+	</style>
+	<field name="fechaBaja" class="java.util.Date"/>
+	<field name="nombreCompleto" class="java.lang.String"/>
+	<field name="empresa" class="java.lang.String"/>
+	<field name="claveEmpleado" class="java.lang.String"/>
+	<field name="categoria" class="java.lang.String"/>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="estacion" class="java.lang.String"/>
+	<field name="banco" class="java.lang.String"/>
+	<field name="numeroCuenta" class="java.lang.String"/>
+	<field name="clabeInterbancaria" class="java.lang.String"/>
+	<field name="logo" class="java.io.InputStream"/>
+	<group name="Group1">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/15)]]></groupExpression>
+		<groupHeader>
+			<band height="79">
+				<staticText>
+					<reportElement x="3" y="11" width="289" height="13"/>
+					<textElement>
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SR. JUAN BERNARDO CARMONA ÁVILA Y/O]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="3" y="24" width="289" height="13"/>
+					<textElement>
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SR. JEFFREY YAFTE DEL TORO RUIZ ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="3" y="35" width="289" height="13"/>
+					<textElement>
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PRESIDENTE /TESORERO DE LA ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="3" y="48" width="289" height="13"/>
+					<textElement>
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CAJA DE AHORRO DEL SINDICATO INDEPENDENCIA.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="3" y="61" width="289" height="13"/>
+					<textElement>
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PRESENTE: ]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="6"/>
+		</groupFooter>
+	</group>
+	<group name="Group2">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/5)]]></groupExpression>
+		<groupHeader>
+			<band height="407">
+				<textField>
+					<reportElement x="0" y="11" width="552" height="55"/>
+					<textElement textAlignment="Justified"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Por medio del presente solicito el reembolso de mis aportaciones a la Caja de Ahorro, ya que a partir de " +new SimpleDateFormat("EEEE dd,  MMMMM  yyyy",new Locale("es")).format($F{fechaBaja})+" dejo de pertenecer al Sindicato Nacional de Trabajadores al Servicio de las Líneas Aéreas, Transportes, Servicios, Similares y Conexos Independencia."]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="66" width="552" height="20"/>
+					<textElement/>
+					<text><![CDATA[Así mismo le hago llegar la información que se requiere para la devolución de mis aportaciones:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="3" y="96" width="549" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Nombre completo: "+$F{nombreCompleto}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="3" y="116" width="549" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Empresa: "+$F{empresa}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="3" y="136" width="549" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Clave de Empleado: "+$F{claveEmpleado}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="3" y="156" width="549" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Categoria: "+$F{categoria}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="3" y="176" width="549" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Departamento: "+$F{departamento}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="3" y="196" width="549" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Estacion: "+$F{estacion}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="3" y="216" width="549" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Banco: "+$F{banco}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="3" y="236" width="549" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Numero de cuenta: "+$F{numeroCuenta}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="3" y="256" width="549" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Clabe Interbancaria: "+$F{clabeInterbancaria}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="3" y="286" width="289" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Agradeciendo la atención, quedo de usted.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="146" y="318" width="289" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[A T E N T A M E N T E]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="146" y="348" width="289" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[________________________________________________]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="115" y="368" width="338" height="20"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{nombreCompleto}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="127" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="1" width="164" height="126"/>
+				<imageExpression class="java.io.InputStream"><![CDATA[$F{logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement style="Title" x="146" y="7" width="409" height="62"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="26" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[Caja de Ahorro del Sindicato]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="SubTitle" x="219" y="69" width="213" height="22" forecolor="#0000FF"/>
+				<textElement>
+					<font fontName="SansSerif" size="13" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[I N D E P E N D E N C I A]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="295" y="0" width="260" height="19"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA["México D. F. a "+new SimpleDateFormat("EEEE dd,  MMMMM  yyyy",new Locale("es")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<frame>
+				<reportElement style="Row" mode="Opaque" x="0" y="0" width="555" height="15"/>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="35" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="33" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="-21" y="1" width="597" height="24" forecolor="#D0B48E" backcolor="#F2EBDF"/>
+				<staticText>
+					<reportElement x="24" y="2" width="549" height="22"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Nicolas Leon Retorno 4 No. 4, Colonia Jardin Balbuena. México D. F., C. P. 15900, Telefono: 57 64 92 40, LADA 01 800 706 5000, correo: sindepen@prodigy.net.mx]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

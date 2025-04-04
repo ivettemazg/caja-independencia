@@ -1,0 +1,226 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <div class="layout-portlets-box">
+        <div class="Container100 Responsive100">
+            <div class="ContainerIndent">
+
+                <h:form id="frmPdtsDeposito">  
+
+                    <f:event type="preRenderComponent" rendered="true" listener="#{fondeoBean.getSolicitudesFirmDoctos}"/>
+                  
+
+
+                    <p:dataTable id="tblPendtDeposito" var="solicitudes" value="#{fondeoBean.firmadas}"
+                                 scrollable="true" scrollHeight="90%" 
+                                 selection="#{fondeoBean.firmadaSelected}" 
+                                 rowKey="#{solicitudes.solId}"
+                                 selectionMode="single"
+                                 paginator="true" rows="25"  
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                 rowsPerPageTemplate="25, 35, 45"
+                                 filterEvent="enter" paginatorPosition="bottom" reflow="true"
+                                 filteredValue="#{fondeoBean.firmadasFltr}"
+                                 emptyMessage="No hay solicitudes por validar"
+                                 style="min-height:400px">  
+
+                        <p:column style='position: relative' filterBy="#{solicitudes.solId}"  filterMatchMode="contains"  width="5%" >  
+                            <f:facet name="header">  
+                                <h:outputText value="Folio"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solId}" />  
+                        </p:column>
+                        <p:column style='position: relative'  width="5%">  
+                            <f:facet name="header">  
+                                <h:outputText value="Empresa"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.empAbreviacion}" />  
+                        </p:column>
+
+                        <p:column style='position: relative' filterBy="#{solicitudes.solClaveEmpleado}"  filterMatchMode="contains">  
+                            <f:facet name="header">  
+                                <h:outputText value="Clave de empleado"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solClaveEmpleado}" />  
+                        </p:column>
+                        <p:column style='position: relative' filterBy="#{solicitudes.proDescripcion}"  filterMatchMode="contains">  
+                            <f:facet name="header">  
+                                <h:outputText value="Tipo solicitud"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.proDescripcion}" />  
+                        </p:column>
+                        <p:column style='position: relative' filterBy="#{solicitudes.usuNombreCompleto}"  filterMatchMode="contains">  
+                            <f:facet name="header">  
+                                <h:outputText value="Nombre completo"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.usuNombreCompleto}" />  
+                        </p:column>  
+
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Monto solicitado"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solMontoSolicitado}" >
+                                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" pattern="###,###.00"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Banco"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solBanco}" />  
+                        </p:column>
+                        <p:column style='position: relative'  width="10%">  
+                            <f:facet name="header">  
+                                <h:outputText value="Número cuenta"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solNumeroCuenta}" />  
+                        </p:column>
+                        <p:column style='position: relative' width="15%" >  
+                            <f:facet name="header">  
+                                <h:outputText value="Clabe"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solClabeInterbancaria}" />  
+                        </p:column>
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Tarjetahabiente"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solNombreTarjetahabiente}" />  
+                        </p:column>
+                        <p:column style='position: relative' >  
+                            <f:facet name="header">  
+                                <h:outputText value="Fecha envío documentos"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solFechaEnviodocumentos}">  
+                             <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText> 
+                        </p:column>
+                    </p:dataTable>  
+                    
+                      <p:contextMenu for="tblPendtDeposito" style="width : 200px" >  
+
+                        <p:menuitem value="Marcar depósito"  oncomplete="PF('dlgMarcaDeposito').show()"
+                                    icon ="fa fa-check-circle"
+                                    actionListener="#{fondeoBean.inicializaFechaDepositoCredito()}"
+                                    update=":frmDepositoDlg"
+                                    />  
+                        <p:menuitem value="Estado de cuenta"  
+                                    icon="fa fa-image"
+                                    actionListener="#{fondeoBean.obtenerEstadoCta()}"
+                                    onstart="PF('statusDialog').show()"
+                                    oncomplete="PF('statusDialog').hide()"
+                                    update=":frmDlgVisorEdoCta"
+                                    />  
+                        <p:menuitem value="Documentos firmados" icon="fa fa-image"
+                                    update =":frmDlgVisorDocFirms"
+                                    actionListener="#{fondeoBean.obtenerDoctoFirmado()}"
+                                    onstart="PF('statusDialog').show()"
+                                    oncomplete="PF('statusDialog').hide()"
+                                    />  
+                        <p:menuitem value="Cancelar crédito" icon="fa fa-times-circle"
+                                   oncomplete="PF('dlgRechazoDepositoCredito').show()"
+                                   update=":frmRechazoCred"
+                                   
+                                    />  
+
+                    </p:contextMenu>
+                     <p:growl/>
+                </h:form>
+
+                <p:dialog id="dlgMarcaDeposito" widgetVar="dlgMarcaDeposito" width="600" height="150"
+                          minimizable="false" maximizable="false" modal="true" header="Introduzca la fecha de depósito">
+
+                    <h:form id="frmDepositoDlg">
+                        <p:panelGrid id="pgMarcaDeposito" columns="2" style="border:0px !important; background:none; "  styleClass="FormContent"
+                                     layout="grid"  >
+                            <p:outputLabel value="Fecha de deposito:  " />  
+                            <p:calendar id="calFechaDeposito" value="#{fondeoBean.fechaDepositoCredito}" 
+                                        showOn="button" 
+                                        required="true" requiredMessage="La fecha de depósito es un campo obligatorio"
+                                        pattern="dd/MM/yyyy" locale="es" />
+
+                          
+
+                            <p:commandButton value="Marcar depósito" actionListener="#{fondeoBean.marcaDeposito()}"
+                                             process="@form" 
+                                             update=":frmPdtsDeposito" ajax="true"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()">
+                            </p:commandButton>
+
+                        </p:panelGrid>
+                       
+                    </h:form>
+                </p:dialog>
+                
+                
+                  <p:dialog id="dlgVisorEdoCta" widgetVar="dlgEdoCtaW" width="900" height="500"
+                          minimizable="false" maximizable="false" modal="true">
+                      <p:ajax event="close" listener="#{fondeoBean.eliminaEstadoCuenta()}" />
+                      <h:form id="frmDlgVisorEdoCta" style="height: 100%">
+                        
+                        <h:panelGrid id="pgVisorPdf" class="Container100 Responsive100" columns="1"
+                                     style="height: 100%"
+                                     >
+
+                            <object type="application/pdf" data="../../#{fondeoBean.estadoCta.imaImagen}?pfdrid_c=true" height="90%" width="100%"
+                                    internalinstanceid="6" >
+                                Su browser no puede mostrar el pdf, <a href="../../#{fondeoBean.estadoCta.imaImagen}">click</a> para descargarlo.
+                            </object>
+
+
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+                
+                 <p:dialog id="dlgVisorDocFirms" widgetVar="dlgVisorDocFirms" width="900" height="500"
+                          minimizable="false" maximizable="false" modal="true">
+                     <p:ajax event="close" listener="#{fondeoBean.eliminaImagen()}" />
+                    <h:form id="frmDlgVisorDocFirms" style="height: 100%">
+                        
+                        <h:panelGrid id="pgVisorPdf" class="Container100 Responsive100" columns="1"
+                                     style="height: 100%"
+                                     >
+
+                            <object type="application/pdf" data="../../#{fondeoBean.doctoFirmado.imaImagen}?pfdrid_c=true" height="90%" width="100%"
+                                    internalinstanceid="6" >
+                                Su browser no puede mostrar el pdf, <a href="../../#{fondeoBean.doctoFirmado.imaImagen}">click</a> para descargarlo.
+                            </object>
+
+
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+                
+                
+                 <p:dialog id="dlgRechazoDepositoCredito" widgetVar="dlgRechazoDepositoCredito" modal="true" >
+                   
+                    <h:form id="frmRechazoCred">
+                        <h:panelGrid columns="1" cellpadding="5" >
+                            <h4>Describa el motivo del rechazo</h4>  
+                            <p:inputTextarea rows="5" cols="30" counter="counter" maxlength="150"       
+                                             counterTemplate="{0} Caracteres restantes" autoResize="false"
+                                             value="#{fondeoBean.motivoCancelacionCredito}"
+                                             required="true"
+                                             requiredMessage="Por favor indique el motivo del rechazo de la solicitud"/>
+                            <h:outputText id="counter" /> 
+                            <p:commandButton value="Aceptar"  actionListener="#{fondeoBean.cancelarCredito()}"
+                                             oncomplete="PF('dlgRechazoDepositoCredito').hide(); PF('statusDialog').hide()"
+                                             onstart="PF('statusDialog').show()"
+                                             update=":frmPdtsDeposito "></p:commandButton>
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+
+            </div>
+        </div>
+    </div>
+
+
+</ui:composition>

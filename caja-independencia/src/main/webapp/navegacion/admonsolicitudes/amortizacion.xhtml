@@ -1,0 +1,85 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                >
+    <p:dialog id="dlgAmortizacion" header="Amortización" widgetVar="dlgAmortizacionW" width="1100" 
+              height="500" closable="true" closeOnEscape="true" modal="true" >
+        
+        
+        <h:form id="frmAmortizacion" enctype="multipart/form-data" >  
+            <p:dataTable id="tblAmortizacion" var="amo" 
+                         value="#{amoRepEmpBean.amortizacion}"                                 
+                         scrollable="true"
+                         scrollHeight="400" emptyMessage="Usted no tiene pagos que mostrar para este crédito." 
+                         rowKey="#{amo.amoId}"  
+                         rowStyleClass="#{amo.amoEstColor}"
+                         > 
+
+                <p:column style='position: relative' >  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Pago"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{amo.amoNumeroPago}" />  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Capital"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoCapital}" >
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>  
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Amortizacion"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoAmortizacion}" >
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>  
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Interés"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoInteres}" >
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>  
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Monto pago"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoMontoPago}" >
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>  
+                </p:column> 
+
+                <p:column style='position: relative' >  
+                    <f:facet name="header">  
+                        <h:outputText value="Fecha"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoFechaPago}" >  
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>  
+                </p:column> 
+                <p:column style='position: relative' >  
+                    <f:facet name="header">  
+                        <h:outputText value="Estatus"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoEstatus}" />
+                </p:column> 
+
+            </p:dataTable> 
+
+            <p:growl id="dlgAmoRep"/>
+        </h:form>
+
+    </p:dialog>
+     
+
+</ui:composition>
+
+

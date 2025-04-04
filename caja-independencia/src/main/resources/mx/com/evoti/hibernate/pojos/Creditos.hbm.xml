@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Creditos" table="creditos">
+        <id name="creId" type="int">
+            <column name="cre_id" />
+            <generator class="assigned"></generator>
+        </id>
+        <property name="creClaveCredito" type="string">
+            <column name="cre_clave_credito" length="30" />
+        </property>
+        <property name="crePrestamos" type="java.lang.Double">
+            <column name="cre_prestamos" precision="22" scale="0" />
+        </property>
+        <property name="crePagos" type="java.lang.Integer">
+            <column name="cre_pagos" />
+        </property>
+        <property name="creFechaInicio" type="date">
+            <column name="cre_fecha_inicio" length="10" />
+        </property>
+        <property name="creFechaTermino" type="date">
+            <column name="cre_fecha_termino" length="10" />
+        </property>
+        <property name="creProspecto" type="java.lang.Integer">
+            <column name="cre_prospecto" />
+        </property>
+        <property name="creClaveEmpleado" type="java.lang.Integer">
+            <column name="cre_clave_empleado" />
+        </property>
+        <property name="creFondeo" type="string">
+            <column name="cre_fondeo" length="20" />
+        </property>
+        <property name="creFondeador" type="string">
+            <column name="cre_fondeador" length="40" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                };
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+            <f:event type="preRenderComponent" listener="#{detSolBean.init}"/>
+            
+             <div class="layout-portlets-box">
+                <p:panelGrid id="pnlNotas" columns="1" columnClasses="label, value" style="border:0px !important; background:none; "  styleClass="FormContent"
+                               layout="grid">  
+                    <h:outputText value="Favor de llenar sus Datos bancarios, Avales y Documentos.
+                                  Al terminar de introducir todos los datos requeridos, la solicitud se 
+                                  enviará automáticamente al administrador de la caja para ser revisada." />  
+                    
+                </p:panelGrid>
+            </div>
+            
+            <div class="layout-portlets-box">
+                <ui:insert name="bancarios" >
+                                  <ui:include src="datos-bancarios.xhtml"/>
+                </ui:insert>
+            </div>
+            <div class="layout-portlets-box">
+                <ui:insert name="avales" >
+                                  <ui:include src="avales-sol.xhtml"/>
+                </ui:insert>
+
+                <h:panelGrid style="width: 1000px; ">
+                                <p:spacer height="50"/>
+                                
+
+                </h:panelGrid>
+            </div>
+            <div class="layout-portlets-box">
+                <ui:insert name="doctos" >
+                                  <ui:include src="documentos-sol.xhtml"/>
+                </ui:insert>
+            </div>
+            <div class="layout-portlets-box">
+                <ui:insert name="perfil" >
+                                  <ui:include src="perfil.xhtml"/>
+                </ui:insert>
+               
+            </div>       
+        
+                    
+    </ui:define>
+    </ui:composition>
+

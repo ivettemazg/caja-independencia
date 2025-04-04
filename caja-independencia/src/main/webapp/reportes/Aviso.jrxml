@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Aviso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="10"/>
+	<property name="ireport.y" value="2049"/>
+	<field name="claveCredito" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="montoSolicitado" class="java.lang.String"/>
+	<field name="nombreEmpresa" class="java.lang.String"/>
+	<group name="Group1">
+		<groupHeader>
+			<band height="713">
+				<staticText>
+					<reportElement x="0" y="-22" width="555" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[AVISO DE PRIVACIDAD CAJA DE AHORRO DEL S.N.T.S.L.A.T.S.S.C. INDEPENDENCIA A. C.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="3" width="280" height="269"/>
+					<textElement textAlignment="Justified" verticalAlignment="Top">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. ("Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C."), es una sociedad Mexicana con domicilio en Dr. Nicolás León retorno 4 Nº4 Int. ; Col. JARDÍN BALBUENA; C.P. 15900; Del. VENUSTIANO CARRANZA; DISTRITO FEDERAL, es responsable de recabar tanto los datos e información personales de usted como nuestro Cliente (el "Cliente"), del uso que se le dé a los mismos y de su protección y almacenamiento en nuestras bases de datos (los "Datos Personales").
+
+Por lo anterior, este aviso de privacidad (el "Aviso"), ha sido elaborado para dar cumplimiento a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares en vigor (la "Ley") y tiene como fin informarle el tipo de Datos Personales que recabamos de Usted, cómo los usamos, manejamos y aprovechamos, y con quién los compartimos. Sus Datos Personales serán utilizados para proveer los servicios y productos que ha solicitado (incluyendo el Crédito), informarle sobre cambios en los mismos y evaluar la calidad del servicio que le brindamos.
+
+Para lo antes mencionado, como Cliente de alguno de los servicios o productos de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. requerimos obtener los siguientes datos personales, de los cuáles ninguno es de carácter sensible como se describe dicho concepto en la Ley, entre los que se encuentran: (i) nombre, dirección, fecha de nacimiento, correo electrónico, número telefónico; (ii) empleo, patrón, antigüedad, salario del empleo; (iii) datos patrimoniales como cuentas bancarias, créditos, entre otros; (iv) referencias personales; y (v) comprobantes oficiales que acrediten su identidad y la información que Usted declara, así como su RFC.
+
+Los Datos Personales proporcionados los usara Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. y sus empleados para confirmar la identidad del Cliente, entender y atender sus necesidades de carácter legal, otorgar seguridad y certeza jurídicas a los hechos y actos que celebra, cumplir con los requerimientos legales que le son aplicables y verificar la información que nos proporciona. El Cliente tiene derecho de acceder,]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="298" y="3" width="257" height="269"/>
+					<textElement textAlignment="Justified">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[rectificar y cancelar sus Datos Personales proporcionados a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., así como de oponerse al tratamiento de los mismos o revocar el consentimiento que para tal fin haya otorgado a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., a través de los procedimientos que hemos implementado.
+
+Para conocer (i) las dudas relativas al uso requisitos y plazos de los procedimientos relacionados con sus Datos Personales, y/o (ii) las solicitudes para ejercer sus derechos al acceso, rectificación, cancelación y oposición relativos al uso y almacenamiento de sus Datos
+Personales que estén en posesión de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. se puede poner en contacto con nuestro departamento de Datos Personales en: "Presentando su solicitud personalmente en nuestro domicilio dirigida a la persona encargada de la privacidad en esta oficina.
+
+-	Enviando correo electrónico a la siguiente dirección electrónica: contacto@cajaindependencia.com
+-	Llamando al número telefónico Área Metropolitana: (55)57649240.
+-	Página de Internet: http://www.cajaindependencia.com/
+
+Comunicaremos las modificaciones a este Aviso a través de correo electrónico proporcionado y/o de la página de Internet de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., en la cual, también publicaremos nuestras políticas de privacidad y las finalidades del tratamiento de sus Datos Personales relacionados principalmente con nuestra relación comercial.
+
+Fecha última actualización 11 de agosto de 2011.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="277" width="555" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[CONTRATO DE APERTURA DE CRÉDITO SIMPLE CON INTERÉS.]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="301" width="280" height="107"/>
+					<textElement textAlignment="Justified">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["CONTRATO DE APERTURA DE CRÉDITO SIMPLE CON INTERÉS NÚMERO "+$F{claveCredito}+" DE FECHA "+new SimpleDateFormat("EEEE dd,  MMMMM  yyyy",new Locale("es")).format(new java.util.Date())+" (EL CONTRATO) QUE CELEBRAN: (I) Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. COMO ACREEDORA, (CAJA DE AHORRO DEL S.N.T.S.L.A.T.S.S.C. INDEPENDENCIA A. C. O LA ACREEDORA) DEBIDAMENTE REPRESENTADA POR SUS APODERADOS LEGALES JUAN BERNARDO CARMONA AVILA Y/O JEFFREY YAFTE DEL TORO RUIZ; (II) "+$F{nombre}+" POR SU PROPIO DERECHO (EL CLIENTE Y JUNTO CON CAJA DE AHORRO DEL S.N.T.S.L.A.T.S.S.C. INDEPENDENCIA A. C., LAS PARTES); Y, PARA LOS EFECTOS QUE MÁS ADELANTE SE ESTABLECEN, (III) "+$F{nombreEmpresa}+", AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS:"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="408" width="280" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[D E C L A R A C I O N E S]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="428" width="280" height="74"/>
+					<textElement textAlignment="Justified">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[I. Declara el Cliente, por su propio derecho, que:
+a) Es una persona física, mayor de edad, en pleno ejercicio y goce de sus facultades para la celebración del presente Contrato;
+b) Sus datos, información y documentación proporcionados en la carátula de solicitud de crédito (la "Solicitud"), que forma parte integrante del presente contrato son verídicos, y, en caso de que cualquiera de los datos proporcionados en la misma cambien, se obliga a notificar por escrito a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. con 10 (diez) días naturales de anticipación;]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="298" y="301" width="257" height="412"/>
+					<textElement textAlignment="Justified">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[c) Que su representante legal, se encuentra debidamente facultado para representarla para la firma de este Contrato, facultades que acredita con la escritura pública número 41,911 de fecha 02 de septiembre del 2011 otorgada ante la fe de la licenciada Guadalupe Rojas Icaza, Notario Público interior número 27 del Estado de México cuyo primer testimonio se encuentra en trámite de inscripción en el Registro Público de la Propiedad y del Comercio del Distrito Federal y que dichas facultades no le han sido modificadas ni limitadas a la fecha del presente;
+d) Se encuentra debidamente autorizada conforme a sus estatutos para celebrar este tipo de contratos de conformidad con lo establecido en la Ley General de Organizaciones y Actividades Auxiliares del Crédito, por lo que: (i) no requiere de autorización de la Secretaría de Hacienda y Crédito Público; y (ii) no está sujeta a la supervisión y vigilancia de la Comisión Nacional Bancaria y de Valores;
+e) Previo a la celebración del presente, ha informado al Cliente de las características principales del Crédito que se acuerda mediante la firma del presente Contrato, mismas que se describen aquí y en la Solicitud, conforme a lo dispuesto por la ley en la materia; y
+f) Autorizó el Crédito en favor del Cliente, mediante revisión y análisis de la Solicitud y de la demás información y documentación que fue proporcionada y presentada por el Cliente.
+
+III. Declara el Patrón, por conducto de su representante legal, que:
+a) Comparece a la celebración del presente Contrato para los efectos que más adelante se establecen;
+b) Es actualmente patrón del Cliente y le otorga de manera periódica un salario;
+c) Otorga su consentimiento a los términos del presente mediante su firma de conformidad en el Mandato de Pago y Poder Irrevocable que se agrega como Anexo "B" al presente.
+
+IV. Declaran las Partes, que:
+a) Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. ha explicado al Cliente, con anterioridad a la firma del presente, la periodicidad de pagos, contenido, alcance, términos y condiciones del presente Contrato y del Crédito que bajo el mismo se otorga, así como los intereses y comisiones que el mismo implica;
+b) La Solicitud y los anexos forman parte integrante del presente Contrato.
+c) Entienden y aceptan todos los términos y condiciones del presente.
+d) Las declaraciones anteriores son ciertas así como toda la información contenida en el presente, la Solicitud y sus anexos.]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="-1" y="502" width="280" height="38"/>
+					<textElement textAlignment="Justified">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["c) Precisa en la Solicitud y en el presente su deseo de obtener de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. un crédito simple, en Pesos moneda nacional equivalente a la cantidad de "+$F{montoSolicitado}+" (el Credito) de conformidad con los términos y condiciones de ambos y"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="-1" y="540" width="280" height="163"/>
+					<textElement textAlignment="Justified">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[d) Recibe de manera Catorcenales del Patrón el monto que se estipula en la Solicitud por concepto de sueldo, honorario, salario, comisión o cualquier tipo de contraprestación, misma que desea comprometer a efecto de que el Patrón realice el pago del Crédito a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. con la periodicidad y en las fechas establecidas en la Tabla de Amortizaciones que se agrega al presente como Anexo "A".
+
+II. Declara Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., por conducto de su representante legal, que:
+a) Es una Asociación Civil, persona moral sin fines de lucro, entidad no regulada, debidamente constituida y existente de con las disposiciones legales de los Estados Unidos Mexicanos ("México") según consta en escritura pública número 41 911 de fecha 02 de septiembre del 2011 otorgada ante la fe de la licenciada Guadalupe Rojas de Icaza, Notario Público interior número 27 del Estado de
+México, y en trámite de inscripción en el Registro Público de Comercio de esa misma ciudad.
+b) Se encuentra inscrita en el Registro Federal de Contribuyentes con la clave: CAS110902R6A;]]></text>
+				</staticText>
+			</band>
+			<band height="713">
+				<frame>
+					<reportElement mode="Opaque" x="-10" y="-10" width="595" height="65" backcolor="#006699"/>
+					<staticText>
+						<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF"/>
+						<textElement>
+							<font size="14" isBold="true"/>
+						</textElement>
+						<text><![CDATA[CAJA DE AHORRO DEL S.N.T.S.L.A.T.S.S.C. INDEPENDENCIA A. C.]]></text>
+					</staticText>
+				</frame>
+				<staticText>
+					<reportElement x="0" y="59" width="280" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[C L Á U S U L A S]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="79" width="280" height="593"/>
+					<textElement textAlignment="Justified">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[1. OBJETO DEL CONTRATO. Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. deberá otorgar, transferir y entregar el Crédito a favor del Cliente por la cantidad que aparece en la Solicitud. El Cliente recibe y está de acuerdo con el monto del Crédito obligándose a cumplir en los términos y condiciones convenidos en este Contrato y a restituir a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. el importe del Crédito más los impuestos, intereses, comisiones, costos y gastos que se estipulan en la Solicitud y los que se generen hasta el día de la liquidación total del Crédito, de conformidad con las fechas y montos de la Tabla de Amortizaciones que se agrega al presente como Anexo "A".
+Más aún, se hace constar que, en este acto y de conformidad con el Mandato de Pago y Poder Irrevocable que se agrega como Anexo "B" al presente, el Cliente en este acto, se obliga a instruir al patrón y a que éste acuerde de conformidad, el pago de las Parcialidades a partir de la fecha y con la periodicidad que se estipula en el mencionado Anexo "A".
+
+2. VIGENCIA. La vigencia del Contrato iniciará a partir de su fecha de celebración y terminará en la fecha de pago de la última Parcialidad o, en el día en que sean cumplidas, en su totalidad, las obligaciones que contrae el Cliente conforme lo que aquí se establece.
+
+3. DISPOSICIÓN DEL CRÉDITO / SOLICITUD DE CRÉDITO ADICIONAL.El Cliente recibirá para su completa disposición el monto del Crédito solicitado dentro de los seis días hábiles siguientes a la firma del Contrato a su absoluta conformidad mediante transferencia electrónica en la cuenta bancaria de la institución financiera a la que se hizo mención en la Solicitud como "Cuenta para Depósito del Crédito Solicitado" y por virtud de este Contrato, el Cliente extiende el recibo más amplio y suficiente que en derecho proceda respecto de la disposición del Crédito.
+El Cliente tendrá derecho a solicitar a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., el otorgamiento de un crédito adicional (el "Crédito Adicional") siempre y cuando: (i) esté en puntual cumplimiento de las disposiciones del presente; (ii) haya cubierto el 50% del primer Crédito con todos sus accesorios; y (iii) teniendo en cuenta que el monto máximo que se podrá otorgar por concepto de Crédito Adicional equivaldrá a un 50% del Crédito original otorgado bajo el presente.
+En caso de que se acuerde otorgar un Crédito Adicional, salvo que las partes acuerden firmar un nuevo contrato con disposiciones distintas, se aumentará el Monto del Crédito otorgado y consecuentemente el Monto Total a Pagar bajo el presente y se ajustarán y sumarán los mismos accesorios (intereses, comisiones, costos).
+
+4. PAGARÉ.El Cliente, en este acto suscribe a favor de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., un pagaré por el Monto Total a Pagar mismo que será exigible a la fecha en que sea debida la primer Parcialidad y podrá ser igualmente firmado por la persona que funja como Aval y que se menciona en la Solicitud. El Pagaré a su vez, documenta la disposición que realiza el Cliente sobre el importe del Crédito (en lo sucesivo el "Pagaré"). Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. devolverá el Pagaré al Cliente, una vez realizado el pago total del Crédito a entera satisfacción de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., dentro de los 30 días naturales siguientes a que el Cliente se lo solicite a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. por escrito.
+
+5. OBLIGACIONES DE PAGO DEL CLIENTE.
+- El Cliente se obliga a pagar a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., independientemente de que cese su relación laboral con el Patrón las Parcialidades que correspondan al plazo del Crédito señalado en la Solicitud de conformidad con el calendario de la Tabla de Amortizaciones, que incluyen:
+a) El monto principal del Crédito;
+b) Los intereses ordinarios equivalentes a 18% anual sobre saldos insolutos;
+c) Las Comisiones que se estipulan más adelante;
+d) Los intereses moratorios equivalentes a 36% anual, tomando en cuenta que la tasa anual se calcula sobre el monto de capital  vencido no pagado del mes correspondiente (salvo el caso de vencimiento anticipado del crédito que el cálculo será por todo el saldo insoluto), el mismo se divide entre 365 para dar la tasa diaria, la tasa diaria se multiplica por el número de días del periodo de mora, para obtener la tasa del periodo, la tasa del periodo se multiplica por el saldo insoluto.
+e) La "Pena Convencional" más IVA que será exigible y acumulable por cada Parcialidad vencida y será equivalente a sumar el monto de intereses ordinarios correspondiente a la Parcialidad vencida conforme a la Tabla de Amortizaciones del Anexo "A" multiplicado por dos más $ 200.00 Pesos.
+- En caso de que cese la relación laboral, el Cliente se obliga incondicionalmente a cubrir de inmediato la totalidad de los montos que continúen pendientes de pago a partir de dicha terminación (incluyendo principal, intereses y comisiones).
+El Monto Total a Pagar por la celebración del contrato asciende a $ 40,000.00]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="298" y="59" width="257" height="654"/>
+					<textElement textAlignment="Justified">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[6. LUGAR Y FORMA DE PAGO.Todos los pagos deberán de realizarse por el Cliente mediante amortizaciones fijas Catorcenales consecutivas cada una por las cantidades y en las fechas que aparecen en la Tabla de Amortizaciones; dichos pagos, se podrán realizar a juicio de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., ya sea:
+- Directamente por el Cliente en la cuenta a nombre de: Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., número: 0186041248; CLABE: 012180001860412486 aperturada en el Banco Nacional de México Banamex, en la fecha que corresponda el pago (la "Cuenta para pago de Parcialidades Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C."), o a cualquier otra cuenta que designe Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. por escrito en cualquier momento;
+- Mediante instrucción irrevocable que Cliente emita en el Mandato de Pago y Poder Irrevocable del Anexo "B" en el cual el Cliente instruye en forma irrevocable a su Patrón (en lo sucesivo el "Patrón"), para que éste a cuenta y ruego del Cliente y del sueldo que éste percibe, entere y entregue todas y cada una de las Parcialidades correspondientes al importe total del Crédito a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. y, en caso de que la relación laboral termine, retenga los montos a pagar al Cliente por concepto de liquidación o por cualquier otro que corresponda para cubrir, hasta donde alcance, el monto restante del Crédito; o
+- Mediante Autorización de Domiciliación de Pagos y Cargo Automático que se firma y completa simultáneamente al presente conforme a lo estipulado en el Anexo "E".
+
+En virtud de lo anterior, el Cliente asume las siguientes obligaciones:
+
+a) Proporcionar a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. información verídica en cuanto al monto de sus ingresos. Si se presentara cualquier diferencia, en virtud de que por la insuficiencia del ingreso del Cliente, el Patrón no haya entregado a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. la cantidad respectiva de la Parcialidad o no hubieren fondos suficientes en su cuenta domiciliada el Cliente se obliga a cubrir dicha diferencia de manera inmediata a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. conforme a lo dispuesto más adelante en esta misma Cláusula.
+b) Comprobar a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., en cualquier momento, los pagos realizados a través de su nómina, para lo cual deberá conservar los recibos de nómina que registren las retenciones realizadas por el Patrón, ya que los mismos serán el único medio para demostrar a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. los pagos realizados por el Cliente.
+c) Informar de manera inmediata a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. cuando la relación de trabajo existente con el Patrón se termine por cualquier causa, incluyendo sin limitar, despido, renuncia o jubilación, separación por licencia o interinato. En éste supuesto, el Cliente autoriza expresamente, en el Mandato de Pago y Poder Irrevocable, al Patrón a retener de su liquidación o finiquito, el importe correspondiente al saldo e intereses insolutos a la fecha de la terminación de la relación laboral o separación, a fin de que dicho importe sea entregado a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. para liquidar el Crédito existente, y en caso de que aún quede un saldo pendiente de pago y no haya fondos suficientes en la cuenta domiciliada o el Patrón haga caso omiso al Mandato, entonces la totalidad del crédito será exigible inmediatamente por esa causa;
+d) En el supuesto de que el Cliente sea pensionado, la cuenta bancaria de la Domiciliación deberá ser la misma en la que reciba el pago de su pensión.
+e) El Cliente autoriza a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. para que Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. proporcione a una institución financiera los datos correspondientes al importe de los cargos a efectuar en la cuenta del Cliente, para su posterior abono en la Cuenta para pago de Parcialidades a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. que ésta le indique a dicha institución. Queda entendido que la presente autorización subsistirá hasta en tanto el Cliente comunique a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. lo contrario y en el entendido de que en éste supuesto, el Cliente se obliga a realizar los pagos correspondientes al Crédito, conforme a lo dispuesto más adelante.
+
+7. COSTO ANUAL TOTAL ("CAT"). El Cliente manifiesta que se le ha explicado y ha entendido el significado y composición del CAT, que para este Contrato es equivalente al porcentaje indicado en la Solicitud. Este CAT solo es comparable con el CAT de otros créditos denominados en moneda nacional y es para fines informativos y de comparación exclusivamente.]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="673" width="279" height="40"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["-En caso de que cese la relación laboral, el Cliente se obliga incondicionalmente a cubrir de inmediato la totalidad de los montos que continúen pendientes de pago a partir de dicha terminación (incluyendo principal, intereses y comisiones). El Monto Total a Pagar por la celebración del contrato asciende a \$" + $F{montoSolicitado}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="713">
+				<frame>
+					<reportElement mode="Opaque" x="0" y="0" width="595" height="65" backcolor="#006699"/>
+					<staticText>
+						<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF"/>
+						<textElement>
+							<font size="14" isBold="true"/>
+						</textElement>
+						<text><![CDATA[CAJA DE AHORRO DEL S.N.T.S.L.A.T.S.S.C. INDEPENDENCIA A. C.]]></text>
+					</staticText>
+				</frame>
+				<staticText>
+					<reportElement x="0" y="70" width="280" height="643"/>
+					<textElement textAlignment="Justified">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[8. ESTADOS DE CUENTA. El Cliente deber recibir mensualmente en el correo electrónico indicado en la Solicitud, y es su responsabilidad tenerlo activo y vigente, su estado de cuenta en relación con el presente Crédito. Más aún, en todo momento tendrá acceso a su estado de cuenta, en forma gratuita a través de los siguientes medios:
+a) En la dirección de la Unidad Especial de Atención a Usuarios Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. ubicada en el domicilio al que se hace referencia en el presente; y
+b) Vía telefónica en la línea de atención a clientes Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., para que le sea entregado en la dirección de correo electrónico proporcionada.
+El Cliente contará con 30 días naturales, a partir de la recepción del estado de cuenta, para formular, por escrito, cualquier aclaración, inconformidad, reclamación o queja con respecto a la información contenida en el mismo, ante el área de Atención a Clientes, cuyos datos de contacto se establecen en la Cláusula 16 en caso contrario, se entenderá que dicha información es aceptada. La aclaración, inconformidad, reclamación o queja será atendida dentro de los 30 Días Hábiles siguientes a la fecha en que sea presentada.
+
+9. APLICACIÓN Y PRELACIÓN DE PAGOS. Los pagos que realice el Cliente, se aplicarán en el siguiente orden y prelación:
+a) Pago de impuestos;
+b) Accesorios que se generen al amparo de este Contrato, incluyendo sin limitar comisiones y gastos de cobranza correspondientes;
+c) Pago de Pena Convencional e intereses moratorios;
+d) Pago de intereses ordinarios; y
+e) Pago del principal dispuesto.
+
+10. PAGOS ANTICIPADOS Y LIQUIDACIÓN ANTICIPADA. El Cliente podrá efectuar pagos anticipados parciales o totales del Crédito,  Siempre y cuando se encuentre al corriente en el cumplimiento de todas sus obligaciones derivadas del Contrato y así lo solicite previamente a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. vía telefónica en la línea de atención a clientes o por correo electrónico.
+a) Pagos parciales: (i) El pago anticipado deberá ser cuando menos el equivalente a una Parcialidad; (ii) El pago anticipado se aplicará cubriendo las últimas Parcialidades por vencer, disminuyendo así el plazo del Crédito; y (iii) el Cliente proporcionará a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. prueba de la realización del pago mencionado para que se tome en cuenta.
+b) Liquidación total: Una vez hecha la solicitud de pago total a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. el Cliente deberá pagar la totalidad de las Parcialidades restantes y los accesorios e intereses acumulados y entregar prueba suficiente de dicho pago a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. a más tardar dentro de los 5 días hábiles antes de la fecha en que sea exigible la Parcialidad inmediata posterior, en caso de que llegue la fecha de pago de la Parcialidad a la que se ha hecho mención y el Cliente no ha realizado el pago entonces se tendrá por cancelada la solicitud de pago total y se continuará con el Crédito en los mismos términos y condiciones.
+Una vez liquidado el Crédito, quedará sin efectos el Mandato de Pago y el Poder Irrevocable, la Domiciliación y Autorización de Cargo Automático Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. pondrá a disposición del Cliente la constancia de la terminación del Contrato, y hará entrega del Pagaré conforme a la Cláusula 4.
+Los pagos anticipados parciales o totales que realice el Cliente, no generarán gasto o comisión alguna.
+En ambos casos (pagos anticipados y/o liquidación total), las cantidades que el Cliente deba pagar conforme a la presente Cláusula, deberán ser depositadas directamente en la Cuenta para pago de Parcialidades Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. estipulada en el presente. El Cliente deberá conservar el comprobante de pago para cualquier duda o aclaración y en caso de pagos anticipados, además deberá conservar el formato de pago correspondiente.
+
+11. COMISIONES: La Comisión Por Apertura y Disposición Inicial de Crédito será aplicable al otorgamiento del Crédito.
+Un pago único equivalente a 3 % sobre el Crédito otorgado, incluye: (i) seguro de vida sobre saldos insolutos en el que se estipulará que el beneficiario de dicho seguro es Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. en tanto el Crédito no haya sido totalmente cubierto; (ii) revisión en el buró de crédito; (iii) gastos de apertura; e (iv) IVA y será exigible al momento que el Cliente disponga del Crédito. No hay comisión por prepago.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="298" y="70" width="257" height="643"/>
+					<textElement textAlignment="Justified">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[12. OBLIGACIONES ADICIONALES DEL CLIENTE. El Cliente se obliga a efectuar cualquier pago relativo al Crédito de conformidad con lo establecido en las Cláusulas 5, 6, 10 y 11 del Contrato, por lo que no deberá entregar por ninguna causa y por ningún motivo dinero en efectivo, cheques, pagarés, bienes, valores o documentos, que no se encuentren señalados en el Contrato, al personal de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. En caso de incumplimiento a esta disposición, el Cliente será el único y absoluto responsable de dichas entregas.
+
+13. VENCIMIENTO ANTICIPADO. Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. podrá, sin necesidad de declaración judicial previa, dar por vencido anticipadamente el plazo para el pago del Crédito y sus accesorios legales y convencionales, en los siguientes casos:
+a) El Crédito no sea puntualmente pagado en los términos del Contrato;
+b) Si el Cliente incumple con cualquiera de las obligaciones a su cargo derivadas del Contrato;
+c) Si las declaraciones, información y/o documentación entregada por el Cliente a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. en el Contrato y/o la Solicitud; resulte ser falsa;
+d) Si se da por terminada la relación laboral con el Patrón;
+e) Si no hay fondos en la cuenta domiciliada; y
+f) En los demás casos previstos en el Contrato o por las leyes aplicables. En consecuencia de lo anterior, el Cliente pagará a favor de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C.: (i) el saldo insoluto por principal, así como por accesorios del Crédito; y (ii) cualquier otro importe que el Cliente adeude a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. conforme al Contrato.
+Siempre y cuando no adeude cantidad alguna a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., el Cliente podrá solicitarle por escrito vía correo electrónico, en cualquier momento, que se dé por terminado el presente Contrato y a tal efecto Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. le entregará la constancia respectiva en los 30 días naturales siguientes, en este caso se le informará al Patrón para que se abstenga de continuar ejerciendo el Mandato de Pago.
+
+14. CASO FORTUITO O FUERZA MAYOR. El Cliente se obliga ante Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. al debido cumplimiento de las obligaciones a su cargo derivadas del Contrato, incluso en presencia de hechos o eventos de caso fortuito y/o de fuerza mayor.
+
+15 .TRANSMISIÓN. De acuerdo a lo establecido en el artículo 299 de la Ley General de Títulos y Operaciones de Crédito, el Cliente faculta expresamente a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. a ceder o descontar los derechos derivados del presente Contrato, en el entendido de que el Cliente en este acto renuncia expresamente al derecho establecido en su favor en el párrafo segundo del mencionado artículo 299 de la Ley General de Títulos y Operaciones de Crédito para el caso de que Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. ceda o descuente el Crédito.
+El Cliente no podrá bajo ningún concepto ceder o transferir de cualquier forma todas o parte de sus derechos y obligaciones conforme a este Contrato, sin el consentimiento previo y por escrito de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. para dicho fin, el cual será otorgado o negado por Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. a su sola y exclusiva discreción y sin responsabilidad alguna al respecto.
+
+16. SERVICIO Y ATENCIÓN AL CLIENTE. Cualquier inconformidad, queja, solicitud, aclaración o consulta del Cliente, podrá presentarla vía correo electrónico o al domicilio de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. que se menciona en el presente mediante una solicitud de aclaración. Se acusará recibo de dicha solicitud. En un plazo máximo de 45 días naturales, Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. enviará al Cliente el dictamen correspondiente a la aclaración. Asimismo, el Cliente podrá dirigir cualquier consulta o inconformidad a través de cualquiera de las opciones que se mencionan a continuación: o Teléfono sin costo: Área Metropolitana: (55)57649240; o Domicilio: Unidad Especial de Atención a Usuarios Caja de Ahorro del S.N.T.S.L.A.T.S.S.C.
+Independencia A. C.: Dr. Nicolás León retorno 4 Nº4 Int. ; Col. JARDÍN BALBUENA; C.P. 15900; Del. VENUSTIANO CARRANZA; DISTRITO FEDERAL; o Correo electrónico: info@cajadeahorrosi.com o Página de Internet: http://cajadeahorrodelsindicatoindependencia.mx/ El Cliente también podrá dirigir sus dudas, consultas o inconformidad a la Comisión Nacional para la Protección y Defensa de los Usuarios de Servicios Financieros ("CONDUSEF"), cuyos datos se proporcionan a continuación: Unidades Especializadas de Atención a Usuarios:
+O a la Procuraduría Federal del Consumidor ("PROFECO"): Del interior de la República 01-800-468-87-22, Área Metropolitana 55 68 87 22. Página de internet: www.profeco.gob.mx]]></text>
+				</staticText>
+			</band>
+			<band height="713">
+				<frame>
+					<reportElement mode="Opaque" x="-21" y="2" width="595" height="65" backcolor="#006699"/>
+					<staticText>
+						<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF"/>
+						<textElement>
+							<font size="14" isBold="true"/>
+						</textElement>
+						<text><![CDATA[CAJA DE AHORRO DEL S.N.T.S.L.A.T.S.S.C. INDEPENDENCIA A. C.]]></text>
+					</staticText>
+				</frame>
+				<staticText>
+					<reportElement x="-1" y="72" width="280" height="371"/>
+					<textElement textAlignment="Justified">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Teléfono: Del interior de la República 01-800-999-80-80, Área Metropolitana 53400999 o Página de Internet: www.condusef.gob.mx
+O a la Procuraduría Federal del Consumidor ("PROFECO"): Del interior de la República 01-800-468-87-22, Área Metropolitana 55 68 87 22. Página de internet: www.profeco.gob.mx
+
+17. MODIFICACIÓN DEL CONTRATO. Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. dará aviso al Cliente de cualquier modificación al presente Contrato con 30 días naturales de anticipación, por escrito vía correo electrónico, en su domicilio, o bien, por cualquier otro medio que, en su caso, establezcan las disposiciones aplicables. En adición a lo anterior, Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. en la emisión de estados de cuenta, incluirá un aviso sobre las modificaciones a realizar al presente contrato. El cliente podrá dar por terminada la relación contractual en caso de no estar de acuerdo con las modificaciones efectuadas 60 días naturales posteriores al aviso de modificación, siempre y cuando este último haya liquidado totalmente el pago del Crédito, intereses, y demás gastos que se generen en virtud de este Contrato. En caso de que por tal motivo, el Cliente decida terminar el Contrato no se originarán gastos administrativos a su cargo. Una vez terminado el Contrato y liquidado el Crédito, quedará sin efectos el Mandato de Pago y Poder Irrevocable, y Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. pondrá a disposición del Cliente la constancia de la terminación del Contrato, o un estado de cuenta que dé constancia del fin de la relación contractual, y de la inexistencia de adeudos entre las Partes; y hará entrega del Pagaré conforme a la Cláusula 4.
+
+18. DOMICILIOS Y DATOS GENERALES. El Cliente se obliga a notificar por escrito a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. de cualquier cambio en sus datos generales o información proporcionada en la Solicitud en los 10 días naturales a partir de que dicho cambio suceda.
+En tanto no se comunique por escrito el cambio de domicilio, cualquier diligencia, actuación, notificación, emplazamiento, requerimiento o comunicación, surtirá efectos legales en los domicilios:
+"Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C.: Dr. Nicolás León retorno 4 Nº4 Int. ; Col. JARDÍN BALBUENA; C.P. 15900; Del. VENUSTIANO CARRANZA; DISTRITO FEDERAL;
+"El Cliente: el que se indica en la Solicitud;
+"El Patrón: el que se indica en la Solicitud.
+
+19. DECLARACIÓN. El Cliente en este acto manifiesta expresamente que Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. le hizo saber, previo a la firma de este Contrato, su contenido y alcance, así como que al momento de la firma del Contrato le es entregado al Cliente una copia del Contrato.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="298" y="72" width="257" height="109"/>
+					<textElement textAlignment="Justified">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[20. LEYES Y COMPETENCIA. Para la interpretación y cumplimiento del Contrato, las partes se someten a las leyes de México en lo que resulten aplicables. La Comisión Nacional para la Protección y Defensa de los Usuarios de Servicios Financieros o en su defecto la Procuraduría Federal del Consumidor será competente en la vía administrativa para resolver cualquier controversia que se suscite sobre la interpretación o cumplimiento del Contrato.
+Sin perjuicio de lo anterior, las Partes se someten de manera expresa a la jurisdicción de los Tribunales competentes de la Ciudad de México, Distrito Federal, o en su caso, a elección del actor, a la jurisdicción de los Tribunales competentes del domicilio del Cliente, por consiguiente, renuncian a cualquier otra jurisdicción que por razón de su domicilio o cualquier otra causa les corresponda o pudiere corresponderles, ya sea en lo presente o futuro.]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="298" y="186" width="256" height="32"/>
+					<textElement textAlignment="Justified">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Las Partes reconocen el alcance y efectos del Contrato, obligándose en todos y cada uno de los términos asentados por lo tanto, lo firman en México, D.F el "+new SimpleDateFormat("EEEE dd,  MMMMM  yyyy",new Locale("es")).format(new java.util.Date())]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="299" y="228" width="116" height="40"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Cliente]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="425" y="228" width="119" height="40"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. / Acreedora:]]></text>
+				</staticText>
+				<line>
+					<reportElement x="302" y="307" width="113" height="1"/>
+				</line>
+				<line>
+					<reportElement x="431" y="308" width="113" height="1"/>
+				</line>
+				<textField>
+					<reportElement x="302" y="308" width="113" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{nombre}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="431" y="309" width="113" height="41"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Juan Bernardo Carmona Ávila o
+Jeffrey Yafte Del Toro Ruiz
+Apoderados Legales. (Firma).]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="302" y="365" width="252" height="96"/>
+					<textElement textAlignment="Justified">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[AUTORIZACIONES ADICIONALES. El Cliente autoriza expresamente a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. para que la información proporcionada en el presente Contrato, así como en la Solicitud pueda ser: (i) tratada como Dato Personal según se establece en el Aviso de privacidad Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C.; y (ii) utilizada para fines mercadotécnicos o publicitarios, así como para recibir todo tipo de publicidad. En este acto el Cliente manifiesta expresamente que conoce el alcance y contenido de la presente autorización y declara que de ninguna manera ha sido condicionado por Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. para consentir en la misma.]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="302" y="473" width="253" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["México D.F a "+new SimpleDateFormat("EEEE dd,  MMMMM  yyyy",new Locale("es")).format(new java.util.Date())]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="302" y="507" width="253" height="26"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Cliente]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="302" y="552" width="252" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{nombre}+"(Firma)"]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="302" y="551" width="252" height="1"/>
+				</line>
+				<staticText>
+					<reportElement x="309" y="328" width="106" height="12"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Firma]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="65" backcolor="#006699"/>
+				<staticText>
+					<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CAJA DE AHORRO DEL S.N.T.S.L.A.T.S.S.C. INDEPENDENCIA A. C.]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-1" y="0" width="416" height="17"/>
+				<textElement>
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Contrato de Apertura de Crédito Simple con Interés número "+$F{claveCredito}+" de fecha "+new SimpleDateFormat("EEEE dd,  MMMMM  yyyy",new Locale("es")).format(new java.util.Date())+" (el “Contrato”) celebrado entre: (i) Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. como acreedora, (“Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C.” o la “Acreedora”); y (ii) "+$F{nombre}+" (el “Cliente”)."]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

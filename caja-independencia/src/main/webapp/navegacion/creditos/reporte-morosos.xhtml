@@ -1,0 +1,253 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Reporte Morosos</div>
+                    </h3>
+
+
+                    <div class="Container100 ">
+                        <div class="ContainerIndent">
+                            <h:form id="frmRepMorosos">
+
+                                <p:panelGrid columns="2"  style="border:0px !important; background:none; "  styleClass="FormContent"
+                                             layout="grid" >
+                                    <p:outputLabel value="Seleccione la fecha de corte para el reporte:  " />  
+                                    <p:calendar  navigator="true" required="true" requiredMessage="Requiere introducir una fecha de corte"
+                                                 id="calFechaCorte" value="#{reporteMorososBean.fechaCorte}" pattern="dd-MM-yyyy" locale="es" />
+                                    <p:commandButton value="Genera Reporte" 
+                                                     actionListener="#{reporteMorososBean.getReporte}" 
+                                                     update=":frmRepMorosos" 
+                                                     onstart="PF('statusDialog').show()"
+                                                     oncomplete="PF('statusDialog').hide()"
+                                                     ></p:commandButton>
+
+                                </p:panelGrid> 
+                                <p:messages />
+                                <p:dataTable id="tblReporteMorosos" var="cre" value="#{reporteMorososBean.creditos}"  
+                                             rendered="#{reporteMorososBean.rendererTablaMorosos}"
+                                             rowKey="#{cre.creId}" 
+                                             selection="#{reporteMorososBean.credSelected}" selectionMode="single"
+                                             filterEvent="enter"
+                                             filteredValue="#{reporteMorososBean.credFiltered}"
+                                             scrollHeight="80%"
+                                             paginator="true" rows="25"  
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                             rowsPerPageTemplate="25, 35, 45"
+                                             >  
+
+                                    <p:ajax event="rowSelect" listener="#{reporteMorososBean.obtieneTblAmortizacionPagos}"   
+                                            oncomplete="PF('dlgAmortizacion').show(); PF('statusDialog').hide()" 
+                                            onstart="PF('statusDialog').show()"
+                                            update=":frmTblAmortDlg"/>  
+
+                                    <p:column style='position: relative' filterStyle="width:80%" filterBy="#{cre.creEmpresa}" filterMatchMode="contains">  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Empresa"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cre.creEmpresa}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative' filterStyle="width:80%" filterBy="#{cre.creTipo}" filterMatchMode="contains">  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Producto"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cre.creTipo}" />  
+                                    </p:column>
+
+                                    <p:column style='position: relative' filterStyle="width:80%" filterBy="#{cre.creClaveEmpleado}" filterMatchMode="contains">  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Clave de empleado"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cre.creClaveEmpleado}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative' filterStyle="width:80%" filterBy="#{cre.creNombre}" filterMatchMode="contains">  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Nombre"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cre.creNombre}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative' filterStyle="width:80%" filterBy="#{cre.creClave}" filterMatchMode="contains">  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Clave de credito"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cre.creClave}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Monto del credito:"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cre.crePrestamo}">
+
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+
+                                        </h:outputText> 
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Catorcenas"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cre.creCatorcenas}" />  
+                                    </p:column>
+
+                                    <p:column style='position: relative' sortBy="#{cre.creCatorcenasPendts}" >  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Pagos Pendientes"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cre.creCatorcenasPendts}" />  
+                                    </p:column>
+                                    <p:column style='position: relative' sortBy="#{cre.capitalPendiente}" >  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Capital Pendiente"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cre.capitalPendiente}" >
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column style='position: relative' sortBy="#{cre.saldoTotalPendt}" >  
+                                        <f:facet name="header">  
+                                            <h:outputText value="Saldo Total Pendiente"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cre.saldoTotalPendt}" >
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>  
+                                    </p:column>
+
+                                </p:dataTable>
+
+                                <h:commandLink  rendered="#{reporteMorososBean.rendererTablaMorosos}">  
+                                    <p:graphicImage value="../../resources/images/excel.png" />  
+                                    <p:dataExporter type="xls" target="tblReporteMorosos" fileName="ReporteMorosos" />  
+                                </h:commandLink> 
+
+                            </h:form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p:dialog id="opnlTblAmortizacionDlg" header="Detalle de Tabla de Amortizacion y pagos sin Registrar" 
+                  widgetVar="dlgAmortizacion" width="1000" height="600" closable="true" closeOnEscape="true"
+                  resizable="false" draggable="false" modal="true"
+                  >
+            <h:form id="frmTblAmortDlg" >
+                <p:dataTable id="tblAmortizacionDetalle" var="tablaAmortizacion" value="#{reporteMorososBean.amortizacion}" 
+                             scrollHeight="80%"
+                             paginator="true" rows="25"  
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                             rowsPerPageTemplate="25, 35, 45"
+                             > 
+                    <f:facet name="header">  
+                        Tabla de amortizacion
+                    </f:facet> 
+                    <p:column headerText="Numero de pago">  
+                        <h:outputText value="#{tablaAmortizacion.amoNumeroPago}" />  
+                    </p:column>  
+                    <p:column headerText="Capital">  
+                        <h:outputText value="#{tablaAmortizacion.amoCapital}" />  
+                    </p:column>  
+                    <p:column headerText="Amortizacion">  
+                        <h:outputText value="#{tablaAmortizacion.amoAmortizacion}" />  
+                    </p:column>  
+                    <p:column headerText="Interes">  
+                        <h:outputText value="#{tablaAmortizacion.amoInteres}" />  
+                    </p:column>  
+                    <p:column headerText="Pago">  
+                        <h:outputText value="#{tablaAmortizacion.amoMontoPago}" />  
+                    </p:column>  
+                    <p:column headerText="Fecha">  
+                        <h:outputText value="#{tablaAmortizacion.amoFechaPago}" />  
+                    </p:column>  
+                    <p:column headerText="Estatus">  
+                        <h:outputText value="#{tablaAmortizacion.amoEstatus}" />  
+                    </p:column> 
+                </p:dataTable> 
+                <p:spacer height="30"/>
+                <p:dataTable id="tblPagosSinRegistrar" var="pagos" 
+                             value="#{reporteMorososBean.pagosSinRegistrar}" 
+                             scrollHeight="80%"
+                             paginator="true" rows="25"  
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                             rowsPerPageTemplate="25, 35, 45"
+                             >  
+                    <f:facet name="header">  
+                        Pagos por aplicar
+                    </f:facet> 
+                    <p:column headerText="Clave de Empleado">  
+                        <h:outputText value="#{pagos.pagClaveEmpleado}" />  
+                    </p:column>  
+                    <p:column headerText="Fecha">  
+                        <h:outputText value="#{pagos.pagFecha}" />  
+                    </p:column>  
+                    <p:column headerText="Deposito">  
+                        <h:outputText value="#{pagos.pagMonto}" />  
+                    </p:column>  
+                    <p:column headerText="Clave de Empresa">  
+                        <h:outputText value="#{pagos.pagNombreEmpresa}" />  
+                    </p:column>  
+                </p:dataTable> 
+            </h:form>
+        </p:dialog>
+
+
+
+    </ui:define>
+
+</ui:composition>

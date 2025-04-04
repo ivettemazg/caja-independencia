@@ -1,0 +1,570 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                >
+    <p:dialog id="dlgAmortizacion" header="Amortización" widgetVar="dlgAmortizacionW" width="1100" 
+              height="550" closable="true" closeOnEscape="true" modal="true" >
+        <h:form id="frmAmortizacion" enctype="multipart/form-data" >  
+            <p:dataTable id="tblAmortizacion" var="amo" 
+                         value="#{amoRepEmpBean.amortizacion}"                                 
+                         scrollable="true"
+                         scrollHeight="400" emptyMessage="Usted no tiene pagos que mostrar para este crédito." 
+                         rowKey="#{amo.amoId}"  
+                         selection="#{amoRepEmpBean.amoSelected}"
+                         rowStyleClass="#{amo.amoEstColor}"
+                         > 
+
+                <p:ajax event="rowSelectCheckbox" listener="#{amoRepEmpBean.rowSelect}"  
+                        onstart="PF('statusDialog').show()"
+                        oncomplete="PF('statusDialog').hide()"/>
+                <p:ajax event="rowUnselectCheckbox" listener="#{amoRepEmpBean.rowUnselect}"  
+                        onstart="PF('statusDialog').show()"
+                        oncomplete="PF('statusDialog').hide()"/>
+
+                <p:column selectionMode="multiple" style="width:4%" />
+
+                <p:column style='position: relative' >  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Pago"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{amo.amoNumeroPago}" />  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Capital"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoCapital}" >
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>  
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Amortizacion"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoAmortizacion}" >
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>  
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Interés"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoInteres}" >
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>  
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Monto pago"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoMontoPago}" >
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>  
+                </p:column> 
+
+                <p:column style='position: relative' >  
+                    <f:facet name="header">  
+                        <h:outputText value="Fecha"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoFechaPago}" >  
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>  
+                </p:column> 
+                <p:column style='position: relative' >  
+                    <f:facet name="header">  
+                        <h:outputText value="Estatus"/>  
+                    </f:facet>  
+                    <h:outputText value="#{amo.amoEstatus}" />
+                </p:column> 
+
+                <f:facet name="footer" >
+
+                    <p:commandButton id="multiViewButton1" value="Pago a capital" icon="ui-icon-plus"
+                                     actionListener="#{amoRepEmpBean.inicializaPagoACapital}"
+                                     oncomplete="PF('dlgPagosCapital').show(); PF('statusDialog').hide()" 
+                                     onstart="PF('statusDialog').show()"
+                                     disabled="#{amoRepEmpBean.dsbActions}"
+                                     update=":frmPagoCapital"/>
+                    <p:commandButton id="multiViewButton6" value="Pago Capital Ahorro" icon="ui-icon-plus"
+                                     actionListener="#{amoRepEmpBean.inicializaPagoACapitalAhorro}"
+                                     oncomplete="PF('dlgPagosCapitalAhorro').show(); PF('statusDialog').hide()" 
+                                     onstart="PF('statusDialog').show()"
+                                     disabled="#{amoRepEmpBean.dsbActions}"
+                                     update=":frmPagoCapitalAhorro"/>
+                    <p:commandButton id="multiViewButton4" value="Recorrer catorcenas" icon="ui-icon-plus"
+                                     actionListener="#{amoRepEmpBean.inicializaRecorrerCatorcenas}"
+                                     oncomplete="PF('dlgRecorrerCatorcenas').show(); PF('statusDialog').hide()" 
+                                     onstart="PF('statusDialog').show()" 
+                                     disabled="#{amoRepEmpBean.dsbActions}"
+                                     update=":frmRecorre"/>
+                    <p:commandButton id="multiViewButton2" value="Pago extemporáneo" icon="ui-icon-plus"
+                                     actionListener="#{amoRepEmpBean.inicializaPagoExtemporaneo}"
+                                     oncomplete="PF('dlgPagoExtemp').show(); PF('statusDialog').hide()" 
+                                     onstart="PF('statusDialog').show()"
+                                     disabled="#{amoRepEmpBean.dsbActions}"
+                                     update=":frmPagosExtemp"/>
+                    <p:commandButton id="multiViewButton3" value="Pago con saldo a favor" icon="ui-icon-plus"
+                                     actionListener="#{amoRepEmpBean.inicializaSaldoAFavor}"
+                                     oncomplete="PF('dlgSalFavor').show(); PF('statusDialog').hide()" 
+                                     onstart="PF('statusDialog').show()"
+                                     disabled="#{amoRepEmpBean.dsbActions}"
+                                     update=":frmSaldoFavor"/>
+                    <p:commandButton id="multiViewButton5" value="Pago con ahorro" icon="ui-icon-plus"
+                                     actionListener="#{amoRepEmpBean.inicializaPagoAhorro}"
+                                     oncomplete="PF('dlgAjustaCreditoW').show(); PF('statusDialog').hide()" 
+                                     onstart="PF('statusDialog').show()" 
+                                     disabled="#{amoRepEmpBean.dsbActions}"
+                                     update=":frmPagoAhorro"/>
+
+                </f:facet>
+
+            </p:dataTable> 
+            
+              <h:commandLink>  
+                            <p:graphicImage value="../../resources/images/excel.png" />  
+                            <p:dataExporter type="xls" target="tblAmortizacion" fileName="Amortizacion" />  
+              </h:commandLink> 
+
+
+            <p:growl id="dlgAmoRep"/>
+        </h:form>
+
+
+
+    </p:dialog>
+
+    <p:dialog id="dlgRecorreCatorcena" header="Recorre catorcenas" 
+              widgetVar="dlgRecorrerCatorcenas" 
+              width="500" height="300" closable="true" closeOnEscape="true"
+              modal ="true"
+              >
+        <h:form id="frmRecorre">
+            <h:panelGrid id="pgRecorrerCatorcenas" columns="2" cellpadding="3" cellspacing="5" rendered="#{amoRepEmpBean.rdrRecorreCat}">
+                <p:outputLabel value="Seleccione la catorcena que sigue: "/>
+                <p:calendar id="calFEchaCatoSiguiente" value="#{amoRepEmpBean.catorcenaSiguiente}" showOn="button" 
+                            required="true" requiredMessage="Debe seleccionar la catorcena siguiente"
+                            pattern="dd/MM/yyyy" locale="es"/>
+
+            </h:panelGrid>   
+            <h:panelGrid id="pgRecorrerCatorcenas2" columns="2" cellpadding="3" cellspacing="5" rendered="#{amoRepEmpBean.rdrRecorreCat}">
+                <p:outputLabel for="console" value="¿El crédito se enviará a reporte de descuentos?" />
+                <p:selectOneRadio id="console" value="#{amoRepEmpBean.mandarAReporte}" required="true"
+                                  requiredMessage="Debe elegir si el crédito será enviado a descuento">
+                    <f:selectItem itemLabel="SI" itemValue="true"  />
+                    <f:selectItem itemLabel="NO" itemValue="false"  />
+                </p:selectOneRadio>
+
+                <p:commandButton id="btnRecorreCatorcenas" value="Recorrer catorcenas" 
+                                 actionListener="#{amoRepEmpBean.recorreCatorcenas()}" 
+                                 onstart="PF('statusDialog').show()"
+                                 oncomplete="PF('statusDialog').hide()"
+                                 update=":frmRecorre:pgRecorrerCatorcenas :frmRecorre:pgRecorrerCatorcenas2 
+                                 :frmRecorre:msjsRecorr" 
+                                 />     
+
+
+            </h:panelGrid>
+
+
+            <p:messages id="msjsRecorr" ></p:messages>
+        </h:form>
+    </p:dialog>
+
+    <p:dialog id="dlgPagosACapital" header="Pagos a capital" 
+              widgetVar="dlgPagosCapital" modal="true" 
+              width="680" height="400" closable="true" closeOnEscape="true"
+              >
+         <p:ajax event="close" listener="#{repEmpleadoBean.updateMontosPagosYAcum}" />
+        
+        <h:form id="frmPagoCapital">
+            <h:panelGrid columns="4" cellpadding="3" cellspacing="5" rendered="#{amoRepEmpBean.rdrPagoCapital}">
+                <p:outputLabel for="olFechaPago" value="Fecha del pago :  " />  
+                <h:outputText id="olFechaPago" value="#{amoRepEmpBean.pagoSeleccionado.amoFechaPago}" style="font-weight:bold"/> 
+
+                <p:outputLabel for="olSaldoTotal" value="Saldo total :  " />  
+                <h:outputText id="olSaldoTotal" value="#{amoRepEmpBean.pagoSeleccionado.amoCapital}" style="font-weight:bold" >
+                    <f:convertNumber type="currency" currencySymbol="$" />
+                </h:outputText>
+
+                <p:outputLabel value="Fecha en que se efectuó el pago: "/>
+                <p:calendar id="calFechaPagoCapital" value="#{amoRepEmpBean.fechaPagoCapital}" showOn="button" 
+                            required="true" requiredMessage="Debe seleccionar una fecha"
+                            pattern="dd/MM/yyyy" locale="es"/>
+
+                <p:outputLabel for="montoPagoCapital" value="Monto del pago a capital"  />                 
+                <p:inputNumber id="montoPagoCapital" value="#{amoRepEmpBean.montoPagoACapital}" decimalPlaces="2"
+                               minValue="0">
+                    <p:ajax listener="#{amoRepEmpBean.actualizarSaldo}"
+                            onstart="PF('statusDialog').show()"
+                            oncomplete="PF('statusDialog').hide()"
+                            event="blur" update=":frmPagoCapital:olSaldoTotal"  />
+                </p:inputNumber>
+
+                <p:outputLabel for="itCatorcenasPagoCap" value="Catorcenas faltantes"/>                 
+                <p:inputText id="itCatorcenasPagoCap" value="#{amoRepEmpBean.catorcenasRestantes}" >
+                    <p:ajax listener="#{amoRepEmpBean.actualizarSaldo}"
+                            onstart="PF('statusDialog').show()"
+                            oncomplete="PF('statusDialog').hide()"
+                            event="blur" update=":frmPagoCapital:itSaldoRestante :frmPagoCapital:itMontoNuevoPago"  />
+                </p:inputText>
+
+                <p:outputLabel for="itMontoNuevoPago" value="Monto nuevo pago" />                 
+                <h:outputText  id="itMontoNuevoPago" value="#{amoRepEmpBean.montoNuevoPago}">
+                    <f:convertNumber type="currency" currencySymbol="$" />
+                </h:outputText>
+
+                <p:outputLabel for="itSaldoRestante" value="Saldo despues de pago" />                 
+                <h:outputText  id="itSaldoRestante" value="#{amoRepEmpBean.saldoDespuesPagoCapital}">
+                    <f:convertNumber type="currency" currencySymbol="$" />
+                </h:outputText>
+
+
+                <p:commandButton id="btnRehacAmortizacion" value="Aplicar pago a capital" 
+                                 actionListener="#{amoRepEmpBean.aplicarPagoCapital}" 
+                                 onstart="PF('statusDialog').show()"
+                                 oncomplete="PF('statusDialog').hide()"
+                                 update=":frmPagoCapital:msjErrPagosCapital" 
+                                 />     
+            </h:panelGrid>
+            <p:messages id="msjErrPagosCapital"/>
+
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog id="dlgPagosACapitalAhorro" header="Pagos a capital con ahorro" 
+              widgetVar="dlgPagosCapitalAhorro" modal="true" 
+              width="880" height="600" closable="true" closeOnEscape="true">
+         <p:ajax event="close" listener="#{repEmpleadoBean.updateMontosPagosYAcum}"/>
+        
+        <h:form id="frmPagoCapitalAhorro">
+            
+               <p:dataTable id="tblAhorros" var="mov" rendered="#{amoRepEmpBean.rdrPagoCapital}"  
+                         value="#{amoRepEmpBean.movimientos}"                                 
+                         editable="true">  
+
+                <p:ajax event="rowEdit" listener="#{amoRepEmpBean.onEditPagoCapitalAhorro}" 
+                        update=":frmPagoCapitalAhorro:tblAhorros :frmPagoCapitalAhorro:montoPagoCapital 
+                        :frmPagoCapitalAhorro:msjErrPagosCapital :frmPagoCapitalAhorro:itSaldoRestante :frmPagoCapitalAhorro:itMontoNuevoPago"
+                        onstart="PF('statusDialog').show()"
+                        oncomplete="PF('statusDialog').hide()"/>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Tipo ahorro"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{mov.movProductoStr}"/>  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Total"/>  
+                    </f:facet>  
+                    <h:outputText value="#{mov.totalMovimiento}"  > 
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                    </h:outputText> 
+                </p:column> 
+
+                <p:column headerText="Cantidad a devolver" style='position: relative'>  
+                    <p:cellEditor>  
+                        <f:facet name="output">  
+                            <h:outputText value="#{mov.devolucion}"  > 
+                                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                            </h:outputText> 
+                        </f:facet>  
+                        <f:facet name="input">  
+                            <p:inputNumber id="inDev" value="#{mov.devolucion}" required="true"
+                                           requiredMessage="Es necesario meter el monto de la devolución"
+                                           maxValue="#{mov.totalMovimiento}" decimalPlaces="2" 
+                                           minValue="0" converterMessage="El valor debe ser numérico">  
+                            </p:inputNumber>  
+                        </f:facet>  
+                    </p:cellEditor> 
+                </p:column>  
+
+                <p:column headerText="Fecha devolución" style='position: relative'>  
+                    <p:cellEditor>  
+                        <f:facet name="output">  
+                            <h:outputText value="#{mov.movFecha}" >
+                                <f:convertDateTime pattern="dd/MM/yyyy" locale="es" />
+                            </h:outputText>
+                        </f:facet>  
+                        <f:facet name="input">  
+                            <p:calendar value="#{mov.movFecha}" navigator="true" 
+                                        id="calFechaDevolucion" pattern="dd/MM/yyyy" locale="es" required="true" 
+                                        requiredMessage="Debe meter un valor en la fecha"/>
+                        </f:facet>  
+                    </p:cellEditor> 
+                </p:column> 
+
+                <p:column style="width:20%">  
+                    <p:rowEditor />  
+                </p:column> 
+            </p:dataTable>            
+            
+            <p:spacer height="20" rendered="#{amoRepEmpBean.rdrPagoCapital}"/>
+            <h:panelGrid id="pgDlgAjustar1" columns="2" cellpadding="2" cellspacing="5" rendered="#{amoRepEmpBean.rdrPagoCapital}" >
+               <p:outputLabel for="montoPagoCapital" value="Monto del pago a capital"  />                 
+               <h:outputText id="montoPagoCapital" value="#{amoRepEmpBean.montoPagoACapital}" >
+                   <f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+                </h:outputText> 
+            </h:panelGrid>  
+            
+            <h:panelGrid columns="4" cellpadding="3" cellspacing="5" rendered="#{amoRepEmpBean.rdrPagoCapital}">
+                <p:outputLabel for="olFechaPago" value="Fecha del pago :  " />  
+                <h:outputText id="olFechaPago" value="#{amoRepEmpBean.pagoSeleccionado.amoFechaPago}" style="font-weight:bold"/> 
+
+                <p:outputLabel for="olSaldoTotal" value="Saldo total :  " />  
+                <h:outputText id="olSaldoTotal" value="#{amoRepEmpBean.pagoSeleccionado.amoCapital}" style="font-weight:bold" >
+                    <f:convertNumber type="currency" currencySymbol="$" />
+                </h:outputText>
+
+                <p:outputLabel value="Fecha en que se efectuó el pago: "/>
+                <p:calendar id="calFechaPagoCapital" value="#{amoRepEmpBean.fechaPagoCapital}" showOn="button" 
+                            required="true" requiredMessage="Debe seleccionar una fecha"
+                            pattern="dd/MM/yyyy" locale="es"/>
+
+                <p:outputLabel for="itCatorcenasPagoCap" value="Catorcenas faltantes"/>                 
+                <p:inputText id="itCatorcenasPagoCap" value="#{amoRepEmpBean.catorcenasRestantes}" >
+                    <p:ajax listener="#{amoRepEmpBean.actualizarSaldo}"
+                            onstart="PF('statusDialog').show()"
+                            oncomplete="PF('statusDialog').hide()"
+                            event="blur" update=":frmPagoCapitalAhorro:itSaldoRestante :frmPagoCapitalAhorro:itMontoNuevoPago"  />
+                </p:inputText>
+
+                <p:outputLabel for="itMontoNuevoPago" value="Monto nuevo pago" />                 
+                <h:outputText  id="itMontoNuevoPago" value="#{amoRepEmpBean.montoNuevoPago}">
+                    <f:convertNumber type="currency" currencySymbol="$" />
+                </h:outputText>
+
+                <p:outputLabel for="itSaldoRestante" value="Saldo despues de pago" />                 
+                <h:outputText  id="itSaldoRestante" value="#{amoRepEmpBean.saldoDespuesPagoCapital}">
+                    <f:convertNumber type="currency" currencySymbol="$" />
+                </h:outputText>
+
+
+                <p:commandButton id="btnRehacAmortizacion" value="Aplicar pago a capital" 
+                                 actionListener="#{amoRepEmpBean.aplicarPagoCapitalAhorro}" 
+                                 onstart="PF('statusDialog').show()"
+                                 oncomplete="PF('statusDialog').hide()"
+                                 update=":frmPagoCapital:msjErrPagosCapital" 
+                                 />     
+            </h:panelGrid>
+
+            <p:messages id="msjErrPagosCapital"/>
+
+        </h:form>
+    </p:dialog>
+    
+    
+
+    <p:dialog id="dlgPagosExtemp" header="Pagos extemporáneo" 
+              widgetVar="dlgPagoExtemp" modal="true"
+              width="600" height="400" closable="true" closeOnEscape="true"
+
+              >
+        <h:form id="frmPagosExtemp">
+            <h:panelGrid columns="4" cellpadding="3" cellspacing="5" rendered="#{amoRepEmpBean.rdrPagoExtemp}">
+                <p:outputLabel for="olCatorcenasSelec" value="Catorcenas seleccionadas:  " />  
+                <h:outputText id="olCatorcenasSelec" value="#{amoRepEmpBean.catorcenasSeleccionadas}" style="font-weight:bold"/> 
+
+                <p:outputLabel for="olMontoCatorcenas" value="Total a pagar :  " />  
+                <h:outputText id="olMontoCatorcenas" value="#{amoRepEmpBean.montoTotalCatorcenas}" style="font-weight:bold" /> 
+
+                <p:outputLabel for="olMontoPagoExtemp" value="Monto del pago"  />                 
+                <p:inputText id="olMontoPagoExtemp" value="#{amoRepEmpBean.montoPagoExtemp}" style="width: 60px">
+                    <p:ajax listener="#{amoRepEmpBean.actualizarRestantePago}"
+                            onstart="PF('statusDialog').show()"
+                                 oncomplete="PF('statusDialog').hide()"
+                            event="blur" update="olRestante, msjPagoE" />
+                </p:inputText>
+
+                <p:outputLabel value="Fecha en que se efectuó el pago: "/>
+                <p:calendar id="calFechaPagoCapital" value="#{amoRepEmpBean.fechaPagoExtmp}" showOn="button" 
+                            required="true" requiredMessage="Debe seleccionar una fecha"
+                            pattern="dd/MM/yyyy" locale="es"/>
+
+                <p:outputLabel for="olRestante" value="Restante:  " />  
+                <h:outputText id="olRestante" value="#{amoRepEmpBean.restantePago}" style="font-weight:bold" />
+
+                <p:commandButton id="btnPagoExtemp" value="Realizar pago" 
+                                 actionListener="#{amoRepEmpBean.realizarPago}" 
+                                 update=":frmPagosExtemp:msjPagoE" 
+                                 onstart="PF('statusDialog').show()"
+                                 oncomplete="PF('statusDialog').hide()"
+                                 />     
+
+            </h:panelGrid>
+            <p:messages id="msjPagoE"></p:messages>
+        </h:form>
+    </p:dialog>
+
+    <p:dialog id="dlgSaldoAFavor" header="Saldo a favor" 
+              widgetVar="dlgSalFavor" modal="true"
+              width="750" height="350" closable="true" closeOnEscape="true"
+              >
+        
+         <p:ajax event="close" listener="#{repEmpleadoBean.updateMontosPagosYAcum}" 
+                />
+
+        <h:form id="frmSaldoFavor">
+            
+            <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" rendered="false">
+                <h:outputText value="Pago a capital? " rendered="false"/>
+                <p:selectBooleanButton id="value2" value="#{amoRepEmpBean.rdrScrPagAcumXPagCap}" onLabel="Si" offLabel="No" 
+                                       onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px"
+                                       rendered="false">
+                    <p:ajax  listener="#{amoRepEmpBean.rdrPantallaPagAcumXPagCap}" />
+                </p:selectBooleanButton>
+            </h:panelGrid>
+            
+            <h:panelGrid columns="4" cellpadding="3" cellspacing="5" rendered="#{amoRepEmpBean.rdrAcumulado}">
+                <p:outputLabel for="olCatorcenasSelecA" value="Catorcenas seleccionadas:  " />  
+                <h:outputText id="olCatorcenasSelecA" value="#{amoRepEmpBean.catSeleccionadasSaldoF}" style="font-weight:bold"/> 
+
+                <p:outputLabel for="olMontoCatorcenasA" value="Total a pagar :  " />  
+                <h:outputText id="olMontoCatorcenasA" value="#{amoRepEmpBean.montoTotalCatSaldoF}" style="font-weight:bold" >
+                </h:outputText>
+
+                <p:outputLabel for="olMontoAcumulado" value="Acumulado total:"  />                 
+                <h:outputText id="olMontoAcumulado" value="#{amoRepEmpBean.acumuladoCliente.acuMonto}" style="width: 60px"/>
+
+                <p:outputLabel for="olCatorcenasCubiertas" value="Catorcenas que alcanza a cubrir:"  />                 
+                <h:outputText id="olCatorcenasCubiertas" value="#{amoRepEmpBean.catorcenasCubiertas}" style="width: 60px"/>
+
+                <p:outputLabel for="olRestanteA" value="Restante:  " />  
+                <h:outputText id="olRestanteA" value="#{amoRepEmpBean.restanteAcumulado}" style="font-weight:bold" />
+
+                <p:outputLabel value="Fecha en que se efectuó el pago: "/>
+                <p:calendar id="calFechaPagoCapital" value="#{amoRepEmpBean.fechaPagoAcum}" showOn="button" 
+                            required="true" requiredMessage="Debe seleccionar una fecha"
+                            pattern="dd/MM/yyyy" locale="es"/>
+
+                <p:commandButton id="btnPagoAcum" value="Realizar pago" 
+                                 actionListener="#{amoRepEmpBean.pagarConAcumulado()}" 
+                                 update=":frmSaldoFavor:msjAcumulado" 
+                                 onstart="PF('statusDialog').show()"
+                                 oncomplete="PF('statusDialog').hide()"
+                                 />     
+
+            </h:panelGrid>
+            <p:messages id="msjAcumulado" ></p:messages>
+
+        </h:form>
+    </p:dialog>
+
+    <p:dialog id="dlgAjustaCredito" widgetVar="dlgAjustaCreditoW" width="850" height="380"
+              minimizable="false" maximizable="false" modal="true" 
+              header="Pago con ahorros">
+
+        <p:ajax event="close" listener="#{repEmpleadoBean.updtPantallaAhorros}" 
+                />
+       
+
+        <h:form id="frmPagoAhorro">
+
+            <h:panelGrid id="pgPagoCredito" columns="2" cellpadding="7" cellspacing="7" rendered="#{amoRepEmpBean.rdrPagoAhorro}">
+                <p:outputLabel for="ipCveCredito" value="Clave credito :  " />  
+                <h:outputText id="ipCveCredito" value="#{amoRepEmpBean.cveCredSeleccionado}" > 
+                </h:outputText> 
+            </h:panelGrid>
+
+            <p:dataTable id="tblAhorros" var="mov" rendered="#{amoRepEmpBean.rdrPagoAhorro}"  
+                         value="#{amoRepEmpBean.movimientos}"                                 
+                         editable="true">  
+
+                <p:ajax event="rowEdit" listener="#{amoRepEmpBean.onEdit}" 
+                        update=":frmPagoAhorro:tblAhorros :frmPagoAhorro:ipMontoDeuda 
+                        :frmPagoAhorro:msj :frmPagoAhorro:btnAjusta"
+                        onstart="PF('statusDialog').show()"
+                        oncomplete="PF('statusDialog').hide()"/>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Tipo ahorro"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{mov.movProductoStr}" />  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Total"/>  
+                    </f:facet>  
+                    <h:outputText value="#{mov.totalMovimiento}"  > 
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                    </h:outputText> 
+                </p:column> 
+
+                <p:column headerText="Cantidad a devolver" style='position: relative'>  
+
+                    <p:cellEditor>  
+                        <f:facet name="output">  
+                            <h:outputText value="#{mov.devolucion}"  > 
+                                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                            </h:outputText> 
+                        </f:facet>  
+                        <f:facet name="input">  
+                            <p:inputNumber id="inDev" value="#{mov.devolucion}" required="true"
+                                           requiredMessage="Es necesario meter el monto de la devolución"
+                                           maxValue="#{mov.totalMovimiento}" decimalPlaces="2" 
+                                           minValue="0" converterMessage="El valor debe ser numérico" 
+                                           >  
+                            </p:inputNumber>  
+                        </f:facet>  
+                    </p:cellEditor> 
+                </p:column>  
+
+                <p:column headerText="Fecha devolución" style='position: relative'>  
+
+                    <p:cellEditor>  
+                        <f:facet name="output">  
+                            <h:outputText value="#{mov.movFecha}" >
+                                <f:convertDateTime pattern="dd/MM/yyyy" locale="es" />
+                            </h:outputText>
+                        </f:facet>  
+                        <f:facet name="input">  
+                            <p:calendar value="#{mov.movFecha}" navigator="true" 
+                                        id="calFechaDevolucion" pattern="dd/MM/yyyy" locale="es" required="true" 
+                                        requiredMessage="Debe meter un valor en la fecha"/>
+                        </f:facet>  
+                    </p:cellEditor> 
+
+
+                </p:column> 
+
+                <p:column style="width:20%">  
+                    <p:rowEditor />  
+                </p:column> 
+
+            </p:dataTable> 
+
+
+            <p:spacer height="20" rendered="#{amoRepEmpBean.rdrPagoAhorro}"/>
+            <h:panelGrid id="pgDlgAjustar1" columns="2" cellpadding="2" cellspacing="5" rendered="#{amoRepEmpBean.rdrPagoAhorro}" >
+                <p:outputLabel for="ipMontoDeuda" value="Monto Adeudo :  " />  
+                <h:outputText id="ipMontoDeuda" value="#{amoRepEmpBean.saldoCredito}" > 
+                    <f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+                </h:outputText>  
+            </h:panelGrid>  
+            <h:panelGrid id="btnAjusta" columns="1" rendered="#{amoRepEmpBean.rdrPagoAhorro}">
+                <p:commandButton  value="Ajustar" rendered="#{amoRepEmpBean.rdrBtnAjustar}"
+                                  actionListener="#{amoRepEmpBean.ajustaCredito()}"
+                                  icon="fa fa-wrench Fs14 white"
+                                  onstart="PF('statusDialog').show()"
+                                 oncomplete="PF('statusDialog').hide()"
+                                  update=":frmPagoAhorro:msj"/>
+
+
+
+            </h:panelGrid>
+
+            <p:messages id ="msj"/>
+        </h:form>
+
+    </p:dialog>
+
+</ui:composition>
+
+

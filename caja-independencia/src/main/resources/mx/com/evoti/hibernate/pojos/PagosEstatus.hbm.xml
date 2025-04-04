@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.PagosEstatus" table="pagos_estatus" >
+        <id name="pagEstId" type="java.lang.Integer">
+            <column name="pag_est_id" />
+            <generator class="identity" />
+        </id>
+        <property name="pagEstNombre" type="string">
+            <column name="pag_est_nombre" length="30" not-null="true" />
+        </property>
+        <property name="pagEstDescripcion" type="string">
+            <column name="pag_est_descripcion" length="200" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

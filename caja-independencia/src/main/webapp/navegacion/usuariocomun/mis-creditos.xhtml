@@ -1,0 +1,211 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+    
+         <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Mis Créditos</div>
+                    </h3>
+
+                      <div class="Container10 ">
+                        <div class="ContainerIndent"> 
+                        </div>
+                    </div>
+
+                    <div class="Container90 ">
+                        <div class="ContainerIndent">
+
+                            <h:form id="frmMisCreditos"  >  
+                                <f:event type="preRenderComponent" listener="#{misCredBean.init()}"/>
+
+                                <p:dataTable id="tblCreditos" var="cred" style="width: 80%"  
+                                             value="#{misCredBean.creditos}"                                 
+                                             selection="#{misCredBean.creditoSelec}" 
+                                             rowKey="#{cred.creId}"
+                                             selectionMode="single"
+                                             emptyMessage="Usted no tiene créditos"
+                                             >  
+
+                                    <p:column style='position: relative' rendered="false">  
+                                        <f:facet name="header"  >  
+                                            <h:outputText value="ID"/>  
+                                        </f:facet>  
+                                        <h:outputText  value="#{cred.creId}" />  
+                                    </p:column>  
+                                    <p:column style='position: relative'>  
+                                        <f:facet name="header"  >  
+                                            <h:outputText value="CLAVE CREDITO"/>  
+                                        </f:facet>  
+                                        <h:outputText  value="#{cred.creClave}" />  
+                                    </p:column>  
+
+                                    <p:column style='position: relative'>  
+                                        <f:facet name="header">  
+                                            <h:outputText value="ESTATUS"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cred.creEstatusStr}"/>
+                                    </p:column> 
+                                    <p:column style='position: relative'>  
+                                        <f:facet name="header">  
+                                            <h:outputText value="MONTO PRESTAMO"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cred.crePrestamo}">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                                        </h:outputText>   
+                                    </p:column> 
+                                    <p:column style='position: relative'>  
+                                        <f:facet name="header">  
+                                            <h:outputText value="CATORCENAS"/>  
+                                        </f:facet>  
+                                        <h:outputText value="#{cred.creCatorcenas}"/>
+                                    </p:column> 
+
+
+                                </p:dataTable> 
+
+
+                                <p:contextMenu for="tblCreditos" style="width : 200px"   >  
+
+                                    <p:menuitem value="Ver amortizacion" update=":frmAmortizacion"
+                                                actionListener="#{misCredBean.verDetalle}"
+                                                oncomplete="PF('dlgAmortizacionW').show(); PF('statusDialog').hide()"
+                                                  onstart="PF('statusDialog').show()"
+                                                icon ="fa fa-search"
+                                                >
+
+                                    </p:menuitem>
+
+                                </p:contextMenu> 
+
+
+                            </h:form>
+                            </div></div>
+                </div>
+            </div>
+        </div>
+
+        <p:dialog id="dlgDetalleAhorro" header="Amortización" widgetVar="dlgAmortizacionW" width="1000" 
+                  height="400" closable="true" closeOnEscape="true" modal="true" >
+            <h:form id="frmAmortizacion" enctype="multipart/form-data" >  
+
+                <p:dataTable id="tblAmortizacion" var="amo" 
+                             value="#{misCredBean.amortizacion}"                                 
+                             filterEvent="enter"
+                             reflow="true"
+                             >  
+
+                    <p:column style='position: relative' >  
+                        <f:facet name="header"  >  
+                            <h:outputText value="Pago"/>  
+                        </f:facet>  
+                        <h:outputText  value="#{amo.amoNumeroPago}" />  
+                    </p:column>  
+
+                    <p:column style='position: relative'>  
+                        <f:facet name="header">  
+                            <h:outputText value="Capital"/>  
+                        </f:facet>  
+                        <h:outputText value="#{amo.amoCapital}" >
+                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                        </h:outputText>  
+                    </p:column> 
+                    <p:column style='position: relative'>  
+                        <f:facet name="header">  
+                            <h:outputText value="Amortizacion"/>  
+                        </f:facet>  
+                        <h:outputText value="#{amo.amoAmortizacion}" >
+                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                        </h:outputText>  
+                    </p:column> 
+                    <p:column style='position: relative'>  
+                        <f:facet name="header">  
+                            <h:outputText value="Interés"/>  
+                        </f:facet>  
+                        <h:outputText value="#{amo.amoInteres}" >
+                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                        </h:outputText>  
+                    </p:column> 
+                    <p:column style='position: relative'>  
+                        <f:facet name="header">  
+                            <h:outputText value="Monto pago"/>  
+                        </f:facet>  
+                        <h:outputText value="#{amo.amoMontoPago}" >
+                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                        </h:outputText>  
+                    </p:column> 
+
+                    <p:column style='position: relative' >  
+                        <f:facet name="header">  
+                            <h:outputText value="Fecha"/>  
+                        </f:facet>  
+                        <h:outputText value="#{amo.amoFechaPago}" >  
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>  
+                    </p:column> 
+                    <p:column style='position: relative' >  
+                        <f:facet name="header">  
+                            <h:outputText value="Estatus"/>  
+                        </f:facet>  
+                        <h:outputText value="#{amo.amoEstatus}" />
+                    </p:column> 
+
+
+                </p:dataTable> 
+                
+            </h:form>
+        </p:dialog>
+
+       
+    </ui:define>
+
+</ui:composition>

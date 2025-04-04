@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AnexoBPagare" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.1000000000000005"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="494"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="empresa" class="java.lang.String"/>
+	<field name="claveCredito" class="java.lang.String"/>
+	<field name="pagoCatorcenal" class="java.lang.Double"/>
+	<field name="fecha" class="java.util.Date"/>
+	<variable name="fechaHoy" class="java.util.Date"/>
+	<variable name="pagoCatorcenal_1" class="java.lang.Integer" resetType="Group" resetGroup="Group1" calculation="Count">
+		<variableExpression><![CDATA[$F{pagoCatorcenal}]]></variableExpression>
+	</variable>
+	<group name="Group1">
+		<groupHeader>
+			<band height="76">
+				<textField>
+					<reportElement x="0" y="6" width="555" height="70"/>
+					<textElement textAlignment="Justified">
+						<font size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{nombre}+" (en lo sucesivo el Deudor), por mi propio derecho y por así convenir a mis intereses, sin que medie error o dolo alguno y, de conformidad con lo dispuesto en el artículo 98 de la Ley Federal del Trabajo, por este conducto, atento a la relación de trabajo que sostengo con "+$F{empresa}+", (el Patron), de forma expresa e irrevocable solicito e instruyo, sin responsabilidad alguna para el Patrón que, con motivo de la celebración de un Contrato de Apertura de Crédito Simple con Interés número "+$F{claveCredito}+" (el Contrato) que firmé el día de hoy con Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. como Acreedora (Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. o la Acreedora), del cual se proporciona en este acto copia al Patron, junto con todos sus Anexos, que:"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="Group2">
+		<groupHeader>
+			<band height="61">
+				<textField>
+					<reportElement x="2" y="0" width="555" height="58"/>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["a) Catorcenales y de manera sucesiva, del producto líquido que percibo, el Patrón separe y mantenga en depósito temporal, con la periodicidad mencionada la cantidad de "+$F{pagoCatorcenal}+" (la Parcialidad) para ser pagada a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. y así cubrir el Crédito recibido bajo el Contrato hasta su total liquidación, sin responsabilidad alguna para el Patrón y tomando en cuenta las fechas de tabla de amortización que se agrega al Contrato como Anexo A, lo anterior, tomando en cuenta el derecho exclusivo y libre que tengo de disponer voluntariamente del producto liquido de la contraprestacion a ser entregada por el Patrón."]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="Group3">
+		<groupHeader>
+			<band height="336">
+				<staticText>
+					<reportElement x="0" y="0" width="555" height="76"/>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[b) El Patrón deposite la Parcialidad a que se refiere el inciso (a) anterior, ya sea mediante cheque o transferencia electrónica y en los 2 (dos) días hábiles siguientes al momento en que se generó el pago del salario o equivalente, el pago de la Parcialidad correspondiente, en nombre y representación del Deudor a favor de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. en la cuenta cuyo titular es: Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C., número: 0186041248; CLABE: 012180001860412486 aperturada en el Banco: Banamex (la "Cuenta para pago de Parcialidades Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C."), o el cualquier otra cuenta que designe Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. por escrito en cualquier momento sin reserva ni limitación alguna, y a efecto de cubrir el Crédito originado a cargo del Deudor por la celebración del Contrato, en la prelación establecida en el mismo; el Patrón deberá conservar el comprobante del depósito realizado para entregarlo al Deudor;]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="86" width="555" height="107"/>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[(c) En caso que la relación de trabajo entre el Deudor y el Patrón se termine o rescinda por cualquier causa, en este acto instruyo irrevocablemente al Patrón para que deposite a la Cuenta para pago de Parcialidades Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. o en otro a que al efecto designe Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. la cantidad que, a dicha eventualidad corresponda por concepto de finiquito, liquidación o cualquier otro concepto al Crédito pendiente de pago, hasta donde alcance. La cantidad antes mencionada se entregará por concepto de pago de las obligaciones originadas a cargo del Deudor derivado de la firma del Contrato, conforme a lo establecido en el inciso (b) anterior, de igual forma, a que tenga derecho el Deudor y a nombre de éste; y
+
+(d) En virtud del mandato que por este conducto formulo, autorizo e instruyo irrevocablemente al Patrón, en forma expresa para que ejecute, lleve el control y manejo de las cantidades que hubieren sido separadas (en concepto de entrega a mi total satisfacción), para que las destine como se describe en el presente.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="203" width="555" height="126"/>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Para los fines a que se hace mención en el presente Mandato, otorgo en este acto un poder especial e irrevocable en favor del Patrón en términos de los dispuesto en el articulo 2,553 (dos mil quinientos cincuenta y tres) y demás aplicables del Código Civil para el Distrito Federal y sus correlativos en las entidades de los Estados Unidos Mexicanos, para que en mi nombre y representación el Patrón: (i) realice de manera periódica el pago de las Parcialidades a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. en la cuenta en que se ha hecho mención o en aquella que Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. le notifique con posterioridad; (ii) entregue la documentación e información que se aprueba en el mismo, para el cumplimiento de las obligaciones del Deudor bajo el Contrato; y (iii) facilite la domiciliación de pagos a la que se hace mención arriba. De igual manera, me obligo, de ser necesario o requerido por Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. a formalizar y ratificar el presente poder ante notario público, así como los actos que bajo su otorgamiento se hubieren realizado, liberando al Patrón de cualquier responsabilidad en la que pudiera haber incurrido en el ejercicio de su encargo, ratificando cualquier acto que se hubiera adoptado.
+
+El presente mandato es gratuito conforme al artículo 2,549 (dos mil quinientos cuarenta y nueve) y demás aplicables del Código Civil para el Distrito Federal y sus correlativos en las entidades de los Estados Unidos Mexicanos.]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="Group4">
+		<groupHeader>
+			<band height="166">
+				<line>
+					<reportElement x="219" y="21" width="136" height="1"/>
+				</line>
+				<textField>
+					<reportElement x="219" y="21" width="136" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{nombre}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="219" y="37" width="136" height="17"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Firma]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="144" y="101" width="284" height="17"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Representado por su representante legal:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="218" y="116" width="136" height="17"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Firma]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#006699"/>
+				<staticText>
+					<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Anexo "B"]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="311" y="43" width="264" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Mandato de Pago y Poder Irrevocable]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="16">
+			<staticText>
+				<reportElement x="338" y="0" width="60" height="15"/>
+				<textElement/>
+				<text><![CDATA[México D. F.]]></text>
+			</staticText>
+			<textField pattern="yyyy.MM.dd G &apos;at&apos; HH:mm:ss z">
+				<reportElement x="398" y="0" width="157" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("EEEE dd,  MMMMM  yyyy",new Locale("es")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="13">
+			<staticText>
+				<reportElement x="0" y="0" width="254" height="13"/>
+				<textElement/>
+				<text><![CDATA[A quien corresponda:]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="48">
+			<textField>
+				<reportElement x="0" y="12" width="555" height="36"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Contrato de Apertura de Crédito Simple con Interés número "+$F{claveCredito}+" de fecha "+new SimpleDateFormat("EEEE dd,  MMMMM  yyyy",new Locale("es")).format(new java.util.Date())+" (el “Contrato”) celebrado entre: (i) Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. como acreedora, (“Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C.” o la “Acreedora”); y (ii) "+$F{nombre}+" (el “Cliente”)."]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band/>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

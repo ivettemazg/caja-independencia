@@ -1,0 +1,271 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="Container100 Responsive100">
+        <div class="ContainerIndent">
+
+            <h:form id="frmBeneficiarios">
+                <p:spacer height="20"/>
+                <p:panel id="pnlAvalesSol" styleClass="panelGrid" header="Por favor capture sus beneficiarios"
+                         >
+
+
+                    <p:dataTable id="tblBenef" value="#{beneficiariosBean.beneficiarios}"
+                                 var="ben" style="width: 97%" 
+                                 selection="#{beneficiariosBean.benefSelected}" 
+                                 rowKey="#{ben.benId}"
+                                 editable="true">
+
+                        <f:event type="preRenderComponent" rendered="true" listener="#{beneficiariosBean.init}"/>
+                        <p:ajax event="rowEdit" listener="#{beneficiariosBean.onEditBen}" 
+                                  onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                        update=":frmBeneficiarios:tblBenef"  
+                                />  
+                        <p:ajax event="rowEditCancel" listener="#{beneficiariosBean.onCancelBen}" 
+                                  onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                />  
+
+                        <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                        <p:column headerText="Id" rendered="false">
+                            <h:outputText value="#{ben.benId}" />
+                        </p:column>
+                        <p:column style='position: relative'> 
+                            <f:facet name="header" >  
+                                <h:outputText value="Nombre"/>  
+                            </f:facet> 
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{ben.benNombre}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:inputText id="benNombre" value="#{ben.benNombre}" style="width:90%" >
+                                        <f:validateRegex pattern="([\s ÑÁÉÍÓÚ A-Z_ñáéíóú a-z]+)?" />
+                                    </p:inputText>    
+                                </f:facet>  
+                            </p:cellEditor> 
+                        </p:column>  
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header" >  
+                                <h:outputText value="Apellido paterno"/>  
+                            </f:facet> 
+                            <p:cellEditor> 
+                                <f:facet name="output">  
+                                    <h:outputText value="#{ben.benPaterno}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:inputText id="benPaterno" value="#{ben.benPaterno}" style="width:90%" >
+                                        <f:validateRegex pattern="([\s ÑÁÉÍÓÚ A-Z_ñáéíóú a-z]+)?" />
+                                    </p:inputText>    
+                                </f:facet>  
+                            </p:cellEditor>
+                        </p:column>  
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header" >  
+                                <h:outputText value="Apellido materno"/>  
+                            </f:facet> 
+                            <p:cellEditor>
+                                <f:facet name="output">  
+                                    <h:outputText value="#{ben.benMaterno}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:inputText id="benMaterno" value="#{ben.benMaterno}" style="width:90%" >
+                                        <f:validateRegex pattern="([\s ÑÁÉÍÓÚ A-Z_ñáéíóú a-z]+)?" />
+                                    </p:inputText>    
+                                </f:facet>  
+                            </p:cellEditor>
+                        </p:column>  
+
+                        <p:column style='position: relative'>  
+                            <f:facet name="header" >  
+                                <h:outputText value="Parentesco"/>  
+                            </f:facet> 
+                            <p:cellEditor>
+                                <f:facet name="output">  
+                                    <h:outputText value="#{ben.parentesco}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <h:selectOneMenu value="#{ben.benParentesco}"  
+                                                     styleClass="ui-inputfield ui-widget ui-state-default ui-corner-all" >
+                                        <f:selectItems value="#{beneficiariosBean.parentescos}" var="par" itemLabel="#{par}" itemValue="#{par.parId}" />
+                                    </h:selectOneMenu> 
+                                </f:facet>  
+                            </p:cellEditor>
+                        </p:column>  
+                        <p:column style='position: relative'>  
+                            <f:facet name="header" >  
+                                <h:outputText value="Dirección"/>  
+                            </f:facet> 
+                            <p:cellEditor>
+                                <f:facet name="output">  
+                                    <h:outputText value="#{ben.benDireccion}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:inputText id="benDireccion" value="#{ben.benDireccion}" style="width:90%"/>
+                                </f:facet>  
+                            </p:cellEditor>
+                        </p:column>  
+                        <p:column style='position: relative'>  
+                            <f:facet name="header" >  
+                                <h:outputText value="Teléfono"/>  
+                            </f:facet> 
+                            <p:cellEditor>
+                                <f:facet name="output">  
+                                    <h:outputText value="#{ben.benTelefono}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:inputMask id="benTelefono"  value="#{ben.benTelefono}" 
+                                     mask="99-99-99-99-99" required="false"/> 
+                                </f:facet>  
+                            </p:cellEditor>
+                        </p:column>  
+                        <p:column style='position: relative'>  
+                            <f:facet name="header" >  
+                                <h:outputText value="Celular"/>  
+                            </f:facet> 
+                            <p:cellEditor>
+                                <f:facet name="output">  
+                                    <h:outputText value="#{ben.benCelular}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                     <p:inputMask id="benCelular" value="#{ben.benCelular}" 
+                                      mask="(999)(99)99-99-99-99" required="false"/> 
+                                </f:facet>  
+                            </p:cellEditor>
+                        </p:column>  
+                        <p:column style='position: relative'>  
+                            <f:facet name="header" >  
+                                <h:outputText value="%"/>  
+                            </f:facet> 
+                            <p:cellEditor>
+                                <f:facet name="output">  
+                                    <h:outputText value="#{ben.benPct}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                  <p:inputNumber id="pctBenef" value="#{ben.benPct}" symbol="%" 
+                                                 symbolPosition="s" emptyValue="sign" required="true">  
+                                    </p:inputNumber>
+                                </f:facet>  
+                            </p:cellEditor>
+                        </p:column>  
+
+                        <p:column style="width:5%" >  
+                            <p:rowEditor  />  
+                        </p:column> 
+
+                        <f:facet name="footer" >
+                            <p:commandButton id="multiViewButton1" value="Agregar beneficiario" icon="fa fa-user-plus Fs14 white"
+                                             actionListener="#{beneficiariosBean.agregaBeneficiario}"
+                                             update=":dlgFrmAddBenef"
+                                               onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"/>
+
+                            <p:commandButton id="multiViewButton2" value="Eliminar" icon="fa fa-user-times Fs14 white"
+                                             actionListener="#{beneficiariosBean.borraBeneficiario()}" 
+                                             update=":frmBeneficiarios"
+                                               onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()">
+
+                                <p:confirm header="Confirmación" message="¿Desea borrar el beneficiario?" 
+                                           icon="fa fa-exclamation-circle Fs14 white"  />
+                            </p:commandButton>
+
+                        </f:facet>
+
+                    </p:dataTable>
+                    <p:messages for="tblBenef"/>
+                </p:panel>
+
+                <p:growl />
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" 
+                                     actionListener="#{beneficiariosBean.borraBeneficiario}"
+                                     update=":frmBeneficiarios"
+                                     icon="ui-icon-check fa fa-check Fs14 white" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" 
+                                     icon="ui-icon-close fa fa-close Fs14 white" />
+                </p:confirmDialog>
+
+            </h:form>
+
+            <p:dialog id="dlgAddBenef" widgetVar="dlgAddBenefW"  header="Agregar beneficiario"
+                      height="400" width="700" modal="true">
+                <h:form id="dlgFrmAddBenef">
+                     <p:panelGrid columns="2" style="border:0px !important; background:none; "  styleClass="FormContent"
+                                 layout="grid" columnClasses="label"
+                         >
+                         
+                         <p:separator />
+                     </p:panelGrid>
+                    <p:panelGrid columns="2" style="border:0px !important; background:none; "  styleClass="FormContent"
+                                 layout="grid" columnClasses="label,value"
+                                 >
+
+                        <p:outputLabel for="perfilNombre" value="Nombre: " />  
+                        <p:inputText id="perfilNombre" value="#{beneficiariosBean.benefNuevo.benNombre}" validatorMessage="Campo Nombre: Sólo se permiten letras" 
+                                     required="true" >
+                            <f:validateRegex pattern="([\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\s ÑÁÉÍÓÚ A-Z_ñáéíóú a-z]+)?" />
+                        </p:inputText>  
+
+                        <p:outputLabel for="perfilApePaterno" value="Apellido Paterno :  " />  
+                        <p:inputText id="perfilApePaterno" value="#{beneficiariosBean.benefNuevo.benPaterno}" 
+                                     validatorMessage="Campo Apellido Paterno: Sólo se permiten letras" required="true">  
+                            <f:validateRegex pattern="([\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\s ÑÁÉÍÓÚ A-Z_ñáéíóú a-z]+)?" />
+                        </p:inputText>  
+
+
+                        <p:outputLabel for="perfilApeaterno" value="Apellido Materno :  " />  
+                        <p:inputText id="perfilApeaterno" value="#{beneficiariosBean.benefNuevo.benMaterno}" 
+                                     validatorMessage="Campo Apellido Materno: Sólo se permiten letras" required="false"> 
+                            <f:validateRegex pattern="([\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\s ÑÁÉÍÓÚ A-Z_ñáéíóú a-z]+)?" />
+                        </p:inputText> 
+                        <p:outputLabel for="somParentesco" value="Parentesco :  " />  
+                        <h:selectOneMenu id="somParentesco" value="#{beneficiariosBean.benefNuevo.benParentesco}"  
+                                          styleClass="ui-inputfield ui-widget ui-state-default ui-corner-all"   >
+                            <f:selectItems value="#{beneficiariosBean.parentescos}" var="par" itemLabel="#{par}" itemValue="#{par.parId}" />
+                        </h:selectOneMenu> 
+
+                         <p:outputLabel for="direccion" value="Dirección :  " />  
+                         <p:inputText id="direccion" value="#{beneficiariosBean.benefNuevo.benDireccion}" 
+                                     required="true"> 
+                        </p:inputText> 
+                         
+                         <p:outputLabel for="benTelefono" value="Teléfono :  " />  
+                         <p:inputMask id="benTelefono" value="#{beneficiariosBean.benefNuevo.benTelefono}" 
+                                     mask="99-99-99-99-99" required="false"/> 
+
+                        <p:outputLabel for="benCelular" value="Celular :  " />  
+                        <p:inputMask id="benCelular" value="#{beneficiariosBean.benefNuevo.benCelular}" 
+                                     mask="(999)(99)99-99-99-99" required="false" /> 
+                        
+                        <p:outputLabel for="pctBenef" value="% participación " />  
+                        <p:inputNumber id="pctBenef" value="#{beneficiariosBean.benefNuevo.benPct}" symbol="%" 
+                                       symbolPosition="s" emptyValue="sign" required="true">  
+                        </p:inputNumber>
+                        
+
+
+                        <p:commandButton value="Guardar"
+                                         actionListener="#{beneficiariosBean.guardaBeneficiario()}"
+                                         icon="fa fa-user-plus Fs14 white"
+                                         update=":frmBeneficiarios :frmPerfil:msjPerfil"
+                                          onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"/>
+
+                        
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+
+        </div>
+    </div>
+
+</ui:composition>

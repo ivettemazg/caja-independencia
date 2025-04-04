@@ -1,0 +1,187 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <f:event type="preRenderComponent" rendered="true" listener="#{credSegAuBean.init()}"
+                  />
+        <!-- BOX START -->
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Crédito Seguro de Auto</div>
+                    </h3>
+
+
+
+                    <div class="layout-portlets-box">
+                        <h:form id="fCreaSAU">
+                            <p:panelGrid id="pgBusquedaUsr" columns ="3" style="border:0px !important; background:none; "  styleClass="FormContent"
+                                         layout="grid"  >
+
+                                <h:outputText value="CLAVE DE EMPLEADO: " style="font-weight: bold"/>  
+                                <p:inputText id="baBuClave" value="#{credSegAuBean.claveEmpleado}" >
+                                    <p:ajax event="blur" listener="#{credSegAuBean.buscaEmpleado}" 
+                                            update=":fCreaSAU:msjBusqueda, :frmCredAu " 
+                                            onstart="PF('statusDialog').show()"
+                                            oncomplete="PF('statusDialog').hide()" />
+                                </p:inputText>
+
+
+
+                                <p:selectOneMenu id="somBuEmpresas"
+                                                 value="#{credSegAuBean.empresa}" converter="empConverter"
+                                                 styleClass="ui-inputfield ui-widget ui-state-default ui-corner-all" >
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" /> 
+                                    <f:selectItems value="#{credSegAuBean.empresas}" var="emp"  
+                                                   itemLabel="#{emp.empAbreviacion}" itemValue="#{emp}"></f:selectItems>
+                                    <p:ajax listener="#{credSegAuBean.buscaEmpleado}"
+                                            update=":fCreaSAU:msjBusqueda, :frmCredAu"  
+                                            onstart="PF('statusDialog').show()"
+                                            oncomplete="PF('statusDialog').hide()"
+                                            />  
+
+                                </p:selectOneMenu> 
+
+                                <p:messages id="msjBusqueda" for="msjBusqueda"/>
+                                <p:spacer height="10" />
+                            </p:panelGrid>
+                        </h:form>
+                        <h:form id="frmCredAu">
+                            <p:panelGrid rendered="#{credSegAuBean.rdrMuestrScrCred}" 
+                                         style="border:0px !important; background:none;"  >
+                                <div class="Container100 Responsive100">
+                                    <div class="ContainerIndent">
+                                        <p:panelGrid id="pnlGrd1erpaso" columns ="4"
+                                                     layout="grid" style="border:0px !important; background:none; " styleClass="FormContent">
+
+                                            <h:outputLabel for="montoPrestamo" value="Introduce el monto del crédito:" />  
+                                            <p:inputNumber id="montoPrestamo" value="#{credSegAuBean.montoSolicitado}" maxlength="7" decimalPlaces="2"
+                                                           label="montoPrestamo" required="true" converterMessage="Este campo solo admite digitos"
+                                                           minValue="0" maxValue="125000">
+                                            </p:inputNumber>
+
+                                            <h:outputLabel for="otBanco" value="Banco:" />  
+                                            <p:inputText id="otBanco" value="#{credSegAuBean.banco}"  >
+                                            </p:inputText>
+
+                                            <h:outputLabel for="otClabe" value="Clabe interbancaria:"  />  
+                                            <p:inputText id="otClabe" value="#{credSegAuBean.clabeInterbancaria}" required="true" requiredMessage="El campo clabe interbancaria es obligatorio" >
+                                            </p:inputText>
+
+                                            <h:outputLabel for="otReferencia" value="Referencia:" />  
+                                            <p:inputText id="otReferencia" value="#{credSegAuBean.referencia}" >
+                                            </p:inputText>
+
+                                            <h:outputLabel for="otAseguradora" value="Aseguradora:" />  
+                                            <p:inputText id="otAseguradora" value="#{credSegAuBean.aseguradora}" >
+                                            </p:inputText>
+
+                                            <h:outputLabel for="noPoliza" value="Poliza:" />  
+                                            <p:inputText id="noPoliza" value="#{credSegAuBean.noPoliza}"  >
+                                            </p:inputText>
+
+                                            <h:outputLabel for="faMes" value="Elija el mes de término"  />
+                                            <p:selectOneRadio id="faMes"  value="#{credSegAuBean.faCatorcena}" required="true" 
+                                                              requiredMessage="Debe elegir a qué mes va a solicitar su crédito de Fondo de Ahorro" >  
+                                                <f:selectItem itemLabel="Diciembre" itemValue="12" itemDisabled="#{!credSegAuBean.rdrEnableDiciembre}"/>  
+                                                <f:selectItem itemLabel="Julio" itemValue="7" itemDisabled="#{!credSegAuBean.rdrEnableJulio}"/>  
+
+                                            </p:selectOneRadio>  
+
+                                            <p:spacer height="20" width="30"/>
+                                            <p:spacer height="20" width="30"/>
+                                            <p:commandButton value="Calcula"  actionListener="#{credSegAuBean.aplicaCalcular()}"
+                                                             update=":frmCredAu" 
+                                                             onstart="PF('statusDialog').show()"
+                                                             oncomplete="PF('statusDialog').hide()"
+                                                             />
+
+                                        </p:panelGrid>
+                                    </div>
+                                </div>
+
+                                <p:spacer height="20"></p:spacer>
+                                <div class="Container100 Responsive100">
+                                    <div class="ContainerIndent">
+                                        <h:panelGrid id ="tablaAmortizacion" columns="1" rendered="#{credSegAuBean.rdrPnlSimulador}">
+                                            <ui:insert name="tablaAmortizaciones" >
+                                                <ui:include src="../common/tablaAmortizacion.xhtml"/>
+                                            </ui:insert>
+                                            <p:spacer height="10"></p:spacer>
+                                            <p:commandButton value="CREAR SOLICITUD" id="creaSolicitud" ajax="false"  
+                                                             action="#{credSegAuBean.creaSolicitud()}" disabled="#{credSegAuBean.dsblBtnCrear}" 
+                                                             update =":frmCredAu:growl"
+                                                             onstart="PF('statusDialog').show()"
+                                                             oncomplete="PF('statusDialog').hide()"
+                                                             />
+
+                                           
+                                        </h:panelGrid>
+                                       
+                                    </div>
+                                </div>
+
+                            </p:panelGrid>
+                            
+                            <p:growl id="growl"/>
+                        </h:form>
+                    </div>    
+
+                </div>
+            </div>
+        </div>
+
+
+    </ui:define>
+
+</ui:composition>

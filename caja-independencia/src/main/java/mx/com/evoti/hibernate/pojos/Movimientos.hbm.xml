@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Movimientos" table="movimientos">
+        <id name="movId" type="java.lang.Integer">
+            <column name="mov_id" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="movFecha" type="date">
+            <column name="mov_fecha" length="10" />
+        </property>
+        <property name="movUsuId" type="java.lang.Integer">
+            <column name="mov_usu_id" />
+        </property>
+        <property name="movDeposito" type="java.lang.Double">
+            <column name="mov_deposito" precision="22" scale="0" />
+        </property>
+        <property name="movProducto" type="java.lang.Integer">
+            <column name="mov_producto" />
+        </property>
+        <property name="movClaveEmpleado" type="java.lang.Integer">
+            <column name="mov_clave_empleado" />
+        </property>
+        <property name="movEmpresa" type="java.lang.Integer">
+            <column name="mov_empresa" />
+        </property>
+        <property name="movTipo" type="string">
+            <column name="mov_tipo" length="20" />
+        </property>
+        <property name="movArhId" type="java.lang.Integer">
+            <column name="mov_arh_id" />
+        </property>
+        <property name="movNombreEmpleado" type="string">
+            <column name="mov_nombre_empleado" length="200" />
+        </property>
+        <property name="movIdPadre" type="java.lang.Integer">
+            <column name="mov_id_padre" />
+        </property>
+        <property name="movEstatus" type="java.lang.Integer">
+            <column name="mov_estatus" />
+        </property>
+        <property name="movAr" type="java.lang.Integer">
+            <column name="mov_ar" />
+        </property>
+        <property name="movBandera" type="java.lang.Integer">
+            <column name="mov_bandera" />
+        </property>
+        <property name="movCambioanfaf" type="java.lang.Integer">
+            <column name="mov_cambioanfaf" />
+        </property>
+    </class>
+</hibernate-mapping>

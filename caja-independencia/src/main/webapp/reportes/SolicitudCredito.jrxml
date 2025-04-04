@@ -1,0 +1,829 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2023-12-05T18:11:02 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SolicitudCredito" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7d4a79ac-2526-4dd4-b23e-b1b259d48106">
+	<property name="ireport.zoom" value="1.331000000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="432"/>
+	<subDataset name="dataset1" uuid="4b64d464-8921-4922-a6c6-08b90e136da9">
+		<field name="nombreAva" class="java.lang.String"/>
+		<field name="direccion" class="java.lang.String"/>
+		<field name="telefonoAva" class="java.lang.String"/>
+		<field name="correoAva" class="java.lang.String"/>
+	</subDataset>
+	<field name="idSolicitud" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="claveCredito" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="edoCivil" class="java.lang.String"/>
+	<field name="fechaNacimiento" class="java.lang.String"/>
+	<field name="sexo" class="java.lang.String"/>
+	<field name="rfc" class="java.lang.String"/>
+	<field name="identificacion" class="java.lang.String"/>
+	<field name="correo" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="celular" class="java.lang.String"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="empresa" class="java.lang.String"/>
+	<field name="rfcEmpresa" class="java.lang.String"/>
+	<field name="telefonoEmpresa" class="java.lang.String"/>
+	<field name="puesto" class="java.lang.String"/>
+	<field name="salarioNeto" class="java.lang.Double"/>
+	<field name="fechaIngreso" class="java.lang.String"/>
+	<field name="direccionEmpresa" class="java.lang.String"/>
+	<field name="montoSolicitado" class="java.lang.Double"/>
+	<field name="catorcenas" class="java.lang.Integer"/>
+	<field name="producto" class="java.lang.String"/>
+	<field name="montoTotalPagar" class="java.lang.Double"/>
+	<field name="pagoCatorcenal" class="java.lang.Double"/>
+	<field name="banco" class="java.lang.String"/>
+	<field name="nombreTarjetahabiente" class="java.lang.String"/>
+	<field name="numeroCuenta" class="java.lang.String"/>
+	<field name="clabeInterbancaria" class="java.lang.String"/>
+	<field name="fechaPrimerPago" class="java.lang.String"/>
+	<field name="avalesSolicitud" class="java.util.List"/>
+	<field name="creProducto" class="java.lang.Integer"/>
+	<group name="Group1">
+		<groupHeader>
+			<band height="666">
+				<staticText>
+					<reportElement x="0" y="-53" width="89" height="20" uuid="6501cfec-8c6c-4280-84cb-fa3717d5e4c4"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Nombre completo: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="359" y="-53" width="66" height="20" uuid="fa6454fb-738f-4c73-b99b-5565bafeedc9"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Estado Civil:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="-28" width="113" height="20" uuid="2b4afd21-063e-4d19-9655-008d3a19e66e"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Fecha de nacimiento:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="126" y="-28" width="32" height="20" uuid="05582ffe-dd7b-45f2-9fcf-0d5aae3f6f39"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Sexo:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="180" y="-28" width="41" height="20" uuid="45ff77b2-b01e-47c4-b5e6-a237819f5268"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[RFC:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="247" y="-28" width="113" height="20" uuid="84a32095-dfbb-46c8-a9e6-4ab9fd05bb5a"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Tipo de Idenfitifacion:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="359" y="-28" width="42" height="20" uuid="6c3e5a31-85b9-4c9f-b70f-62fc475cfeb2"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Correo:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="443" y="-28" width="110" height="20" uuid="c87dd947-7b0e-4977-80c9-2adec6dac7b9"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Lugar de nacimiento:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="126" y="-53" width="233" height="20" uuid="858f84a3-2a98-4d64-af74-1791f83f956c"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="425" y="-53" width="100" height="20" uuid="af046c19-f1cf-4327-81f3-35f5d7bdb170"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{edoCivil}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="-8" width="100" height="20" uuid="e7c2e960-a263-4e04-bfb8-ed1a6a8ff039"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fechaNacimiento}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="126" y="-8" width="42" height="20" uuid="cdc7e3b9-73a9-4f84-9bdd-1e85e4f84b05"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{sexo}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="180" y="-8" width="67" height="20" uuid="6cd05a8c-1c48-4cfa-bd97-a4f4352aafb4"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{rfc}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="247" y="-8" width="82" height="20" uuid="f6f25674-aca2-46b2-af13-a8ccf9148cc4"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{identificacion}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="334" y="-8" width="109" height="20" uuid="483c5958-84c1-4793-ab27-3efd7ce92156"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{correo}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="443" y="-8" width="100" height="20" uuid="c4f0471a-19ac-468f-98a5-cc1a0db3f9ad"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="17" width="53" height="20" uuid="b7beb19e-47b1-41e9-b103-7b7781d9a525"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Telefono:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="126" y="17" width="39" height="20" uuid="06e50245-6b23-4077-9128-7b6e1bc6b581"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Celular:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="248" y="17" width="113" height="20" uuid="2505571a-1daf-4a17-ab40-42e6fc449a1b"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Direccion:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="37" width="126" height="20" uuid="2ccdf73a-b716-444d-81ca-29029ba11207"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="126" y="37" width="121" height="20" uuid="73a6ce49-ff97-4d08-974c-71e59695422e"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{celular}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="248" y="37" width="292" height="20" uuid="b2fd8944-0b4f-4dca-b494-ed1835708c02"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="57" width="183" height="16" forecolor="#006699" backcolor="#E6E6E6" uuid="d7a8d7c8-708c-4c7b-a306-1d877e60291c"/>
+					<textElement textAlignment="Center">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Empleo]]></text>
+				</staticText>
+				<line>
+					<reportElement x="-20" y="56" width="595" height="1" forecolor="#666666" uuid="a87fa2a6-4bb1-4aea-bf46-14f4c14ed9c6"/>
+				</line>
+				<staticText>
+					<reportElement x="0" y="73" width="100" height="20" uuid="cfccdaad-14cd-45ff-94ff-386fe3a65bf4"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Nombre del Patrón:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="158" y="73" width="25" height="20" uuid="67add02e-190f-4bd3-8b2c-b087684d3cc6"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[RFC:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="293" y="73" width="100" height="20" uuid="2073e53f-6bec-4d76-8858-f6e0b1862721"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Telefono:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="93" width="158" height="20" uuid="e1ed94aa-75cb-4e2f-b68a-085a38e428f0"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{empresa}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="158" y="93" width="100" height="20" uuid="b00b7216-9a2f-4716-ba44-f08ae2e6cb99"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{rfcEmpresa}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="293" y="93" width="100" height="20" uuid="5f2e9dd9-e38b-4898-9794-699e9413fc96"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{telefonoEmpresa}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="118" width="100" height="20" uuid="c85ee609-6da9-4b2c-825a-8c2f92248746"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Puesto:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="158" y="118" width="100" height="20" uuid="d61008e8-39d1-45e7-a4ff-79c8bff5a7d0"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Antiguedad:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="293" y="118" width="100" height="20" uuid="4ccce701-99df-4c5a-b05e-2886b9590420"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Sueldo Neto:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="424" y="118" width="100" height="20" uuid="d0b013bc-09e3-450b-8bfc-d272eb11487a"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Fecha Ingreso:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="138" width="100" height="20" uuid="16cd6533-ced5-4d84-9789-01ad00237de8"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{puesto}]]></textFieldExpression>
+				</textField>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="293" y="138" width="100" height="20" uuid="13ff8023-e1e2-4ca6-84ba-ce53c4572a2f"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{salarioNeto}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="424" y="138" width="100" height="20" uuid="5c3f50ee-b3e0-4eac-a008-1b94cd26a3c2"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fechaIngreso}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="164" width="100" height="20" uuid="1a659316-894c-4d47-85d3-dd6e47d2ccc1"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Direccion:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="184" width="258" height="20" uuid="2ab75345-5559-4b56-bcfa-a9e1b6437253"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{direccionEmpresa}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="205" width="183" height="16" forecolor="#006699" backcolor="#E6E6E6" uuid="67efa431-b33b-480b-91d4-aee58a08d081"/>
+					<textElement textAlignment="Center">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Credito]]></text>
+				</staticText>
+				<line>
+					<reportElement x="-20" y="204" width="595" height="1" forecolor="#666666" uuid="6d56e86c-b12c-45ad-b0ae-cad4fef834e8"/>
+				</line>
+				<staticText>
+					<reportElement x="0" y="221" width="100" height="20" uuid="6a72d40a-df54-4b15-a7e9-165135a133b4"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Monto Solicitado (Pesos):]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="113" y="221" width="108" height="20" uuid="6c121743-54e7-4cf0-8c7e-00c0c621f831"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Credito Otorgado (Pesos):]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="232" y="221" width="106" height="20" uuid="588a3b41-d712-4653-a517-444abfe3cea0"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Numero de parcialidades:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="345" y="221" width="100" height="20" uuid="fc8c5427-4ddb-440d-a16a-9b8b1dc467af"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Interes Ordinario Anual:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="449" y="221" width="106" height="20" uuid="0e4ee6dd-dc44-4c48-8301-5535aa97dbf3"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Interes Moratorio Anual:]]></text>
+				</staticText>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="0" y="241" width="100" height="20" uuid="3d0ad17d-9a88-4b60-80c6-94dd8c596a0c"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{montoSolicitado}]]></textFieldExpression>
+				</textField>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="113" y="241" width="100" height="20" uuid="af3ef5be-3fc0-4982-9e2d-92b2d910988b"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{montoSolicitado}]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0" isBlankWhenNull="true">
+					<reportElement x="232" y="241" width="100" height="20" uuid="2d37660c-4be5-4337-bf20-028d1a71425c"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{catorcenas}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="449" y="241" width="100" height="20" uuid="f4fb67c4-4f40-4a77-9a09-39cf902ddcf7"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[36%]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="272" width="100" height="20" uuid="9f79c5d5-173f-469e-9c92-4bacd838f7be"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Tipo de Credito:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="113" y="272" width="113" height="20" uuid="f2ebaa21-941e-46f6-8bb2-7da18d159fa9"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Monto Total a Pagar(Pesos):]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="292" width="100" height="20" uuid="a1315fea-73d9-4fb8-b5c2-9710a1124a7c"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression>
+				</textField>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="113" y="292" width="100" height="20" uuid="dadd0333-52de-41d8-99a1-d26deac8b490"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{montoTotalPagar}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="323" width="113" height="20" uuid="3240e957-61d2-4662-8763-99cefc845515"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Monto de las parcialidades:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="113" y="323" width="113" height="20" uuid="b1087201-960d-45b4-97c2-0fbaf0815ebc"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[CAT:]]></text>
+				</staticText>
+				<line>
+					<reportElement x="-20" y="363" width="595" height="1" forecolor="#666666" uuid="cb0c241b-b9c0-4620-91f2-221ad6e4de6a"/>
+				</line>
+				<rectangle>
+					<reportElement x="238" y="272" width="337" height="50" uuid="1197aebd-3cd3-46bf-bbf1-11f2c537886b"/>
+				</rectangle>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="0" y="343" width="100" height="20" uuid="cb4c24d2-35df-4dba-b2ac-450670f9cc71"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pagoCatorcenal}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="113" y="343" width="113" height="20" uuid="085ed5ab-0529-444d-8a6f-a2de99237cd9"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[0%]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement x="238" y="322" width="337" height="41" uuid="853c4cc2-a5e7-4cd9-ae3d-b79ac969d7c8"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="238" y="272" width="337" height="51" uuid="9a4a5fe6-2b0a-4c40-a4fc-7de8c9a1767c"/>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Estado de Cuenta
+Serán enviados mensualmente al correo electrónico estipulado en esta Solicitud y consultados por el Cliente en la Unidad Especial de Atención a Usuarios Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="238" y="323" width="337" height="40" uuid="42ff6fa9-2993-4d7d-9c20-1ab0de3e14dd"/>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Fechas Fijas de Pago de Parcialidad:
+Falta Configurar Periodicidad.; si alguno de esos días cae en fin de semana, el Cliente deberá pagar al día hábil siguiente en que el pago es exigible.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="365" width="555" height="23" uuid="480efa27-3917-4c64-88d0-40a29b356747"/>
+					<textElement textAlignment="Justified">
+						<font size="5"/>
+					</textElement>
+					<text><![CDATA[Comisión y Pena Convencional:9 (a) Comisión por Apertura de Crédito (incluyendo revisión en el Buró de Crédito y gastos iniciales): 0.00 % sobre el Crédito Solicitado; y (b) Pena Convencional: En caso de que el Cliente incumpla en el pago puntual de una Parcialidad, deberá pagar, en adición a la Parcialidad vencida y a los intereses moratorios que correspondan, por concepto de pena convencional, una cantidad equivalente a: la suma de la cantidad que resulte bajo el concepto de intereses ordinarios correspondiente a la Parcialidad vencida y no pagada conforme a la Tabla de Amortizaciones del Anexo “A” multiplicado por dos más $200.00 Pesos más IVA. La pena convencional será acumulable y exigible por cada Parcialidad vencida.]]></text>
+				</staticText>
+				<line>
+					<reportElement x="-20" y="388" width="595" height="1" forecolor="#666666" uuid="a8823bd3-5b1e-4103-af13-79f4f33c3aaa"/>
+				</line>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="389" width="183" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="8058fdd9-8ba1-470b-a41a-d4829654c898"/>
+					<textElement textAlignment="Center">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cuenta]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="409" width="180" height="10" uuid="421f7df0-e4a4-4bba-87da-4ac77a6c3e2d"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Cuenta para deposito de Credito Solicitado:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="419" width="58" height="10" uuid="3915a066-0bbf-4b5f-851f-9599dccbea06"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Banco:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="200" y="409" width="107" height="10" uuid="4644e8d0-c37a-480a-b492-43abac3d9f06"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Titular de la cuenta:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="332" y="409" width="79" height="10" uuid="e3de54f4-1d6e-4e05-857b-a7d3eeb46efb"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Numero de cuenta:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="434" y="409" width="100" height="10" uuid="0f44cfea-55dc-41c8-8d97-7effd5902189"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Clabe Interbancaria:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="58" y="419" width="58" height="10" uuid="58b1c2ce-159a-4156-be7f-6ba97e68aa46"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{banco}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="200" y="419" width="100" height="10" uuid="baec0f13-1569-48f6-89aa-bf833604aebd"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombreTarjetahabiente}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="332" y="419" width="80" height="10" uuid="5df2e884-c4f5-48bd-810f-c7d347df064b"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{numeroCuenta}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="434" y="419" width="100" height="10" uuid="7bbe325d-27a0-4f13-90c3-c438ddfcf52b"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{clabeInterbancaria}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="-20" y="436" width="595" height="1" forecolor="#666666" uuid="055c221d-c3fb-48b3-8fa3-72ac2fc40d91"/>
+				</line>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="437" width="183" height="17" forecolor="#006699" backcolor="#E6E6E6" uuid="5715d1dd-9464-4ef6-b7af-2e7b0f1e0ec7"/>
+					<textElement textAlignment="Center">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Aval(es)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="454" width="113" height="10" uuid="0ec55dfe-a9a5-4bcd-adda-2c4376863773"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Nombre completo del Aval:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="150" y="454" width="47" height="10" uuid="f53c2e45-e079-4664-8a6f-b00231216156"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Direccion:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="332" y="454" width="47" height="10" uuid="f83cf4fc-9b1f-4621-8a48-f6863c734628"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Telefono:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="449" y="454" width="47" height="10" uuid="7cef8ebc-ee64-43db-bdc2-368a05ce8f27"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Correo:]]></text>
+				</staticText>
+				<line>
+					<reportElement x="-20" y="507" width="595" height="1" forecolor="#666666" uuid="b298c879-b7a3-4695-9aff-4c83c8a38dda"/>
+				</line>
+				<staticText>
+					<reportElement x="0" y="508" width="549" height="11" uuid="955d3239-e3bd-4a85-bcf1-2b3940e71de0"/>
+					<textElement textAlignment="Justified">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Autorización: Los datos personales pueden utilizarse para mercadeo:	Si:	No:	Para cualquier duda, aclaración o reclamación, favor de dirigirse a:]]></text>
+				</staticText>
+				<line>
+					<reportElement x="-20" y="517" width="595" height="1" forecolor="#666666" uuid="f56799e6-751b-4613-a55e-327a9193158d"/>
+				</line>
+				<rectangle>
+					<reportElement x="0" y="519" width="180" height="20" uuid="6ee3e728-ffd2-492e-b3a4-d76b02f9addd"/>
+				</rectangle>
+				<rectangle>
+					<reportElement x="180" y="519" width="179" height="20" uuid="ddb0c694-dccd-4652-9865-72164be0f044"/>
+				</rectangle>
+				<rectangle>
+					<reportElement x="359" y="519" width="196" height="20" uuid="d1585479-5782-4d23-88ab-087cacbe6e4b"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="0" y="519" width="180" height="20" uuid="9eee3282-aa47-42ae-bc80-3b2da766757c"/>
+					<textElement textAlignment="Justified">
+						<font size="5"/>
+					</textElement>
+					<text><![CDATA[1) Unidad Especial de Atención a Usuarios Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C.: Tel Área Metropolitana: 57649240 Página de internet: http://cajadeahorrodelsindicatoindependencia.mx/]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="180" y="518" width="179" height="20" uuid="fa2c2c9f-a122-4b61-b5c0-a4b52f632b3f"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle">
+						<font size="5"/>
+					</textElement>
+					<text><![CDATA[2) PROFECO: Tel: del interior (01800)4688722, Área Metropolitana (55) 55688722. Página de internet: www.profeco.gob.mx]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="359" y="519" width="196" height="20" uuid="1b4ce365-a938-4187-9832-01e2178c105a"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle">
+						<font size="5"/>
+					</textElement>
+					<text><![CDATA[3) CONDUSEF: Tel: Unidades Especializadas de Atención a Usuarios: del interior (01800)9998080, Área Metropolitana (55)53400999. Página de internet: www.condusef.gob.mx]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement x="0" y="539" width="180" height="28" uuid="3b93790f-b575-436b-8415-f6da119e805b"/>
+				</rectangle>
+				<rectangle>
+					<reportElement x="180" y="539" width="180" height="28" uuid="32d91af7-2b00-41d4-97b7-b2094ee16a03"/>
+				</rectangle>
+				<rectangle>
+					<reportElement x="360" y="539" width="195" height="28" uuid="daae733d-83f1-4add-ad7e-3f253649d41d"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="0" y="539" width="180" height="28" uuid="0aac1b22-42d5-490f-af63-7547bbb12edf"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Firma o huella digital del Cliente:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="179" y="539" width="180" height="13" uuid="8f07696e-f4c1-4c21-815c-bbf1cc157304"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="5" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Lugar y fecha de firma: DISTRITO FEDERAL a]]></text>
+				</staticText>
+				<textField pattern="dd MMMMM yyyy">
+					<reportElement x="180" y="552" width="179" height="13" uuid="6a710fc6-7919-45ac-8bca-cc278d8c3a1a"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new SimpleDateFormat("EEEE dd,  MMMMM  yyyy",new Locale("es")).format(new java.util.Date())]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="359" y="539" width="196" height="28" uuid="46f39178-cfab-43b2-af80-22bd8a78920d"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Firma representante legal de CAJA DE AHORRO DEL S.N.T.S.L.A.T.S.S.C. INDEPENDENCIA A. C. como Acreedora:]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement x="0" y="567" width="555" height="75" uuid="c549357f-0720-4224-bb59-0a7ce3d3ebfc"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="0" y="567" width="555" height="75" uuid="a70b8396-d61d-487e-ab19-d762556fca36"/>
+					<textElement textAlignment="Justified">
+						<font size="4"/>
+					</textElement>
+					<text><![CDATA[1 Favor de llenar la presente Solicitud de Crédito con letra de molde y leer los términos y condiciones en la misma contenidos con atención. Esta Solicitud, se encuentra sujeta a aprobación por parte de Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C.en caso de que ésta la autorice, otorgará el Crédito al Cliente y las partes involucradas deberán firmar tanto el Contrato de Apertura de Crédito Simple con Interés como sus anexos de los cuales la presente Solicitud formará parte integrante.
+2 Advertencia: Contratar créditos por arriba de tu capacidad de pago puede afectar tu historial crediticio; incumplir tus obligaciones, te puede generar comisiones, intereses moratorios y penas convencionales.
+3 Incluye la Comisión por Apertura de Crédito (revisión en el buró de crédito y gastos de apertura).
+4 Más IVA. Metodología de cálculo de intereses ordinarios: Se calculan sobre saldos globales.
+5 Más IVA. Metodología de cálculo de intereses moratorios: La tasa anual se calcula sobre el monto de capital vencido no pagado del mes correspondiente (salvo el caso de vencimiento anticipado del crédito que el cálculo será por todo el saldo insoluto), la tasa moratoria se divide entre 365 para dar la tasa diaria, la tasa diaria se multiplica por el número de días del periodo de mora, para obtener la tasa del periodo, la tasa del periodo se multiplica por el saldo insoluto.
+6 Monto estimado según disposiciones del contrato y puede variar: (i) si se realizan pagos anticipados; o (ii) si por disposición gubernamental el porcentaje de impuestos aplicable se modifica. Metodología de cálculo de Monto Total a Pagar: Crédito otorgado más porcentaje de intereses ordinarios más IVA.
+7 Metodología de cálculo de Parcialidades: Monto Total a Pagar entre el Número de Parcialidades que se estipula en esta Solicitud.
+8 Costo Anual Total, Para fines informativos y de comparación.
+9 Una descripción de las comisiones relevantes y de la pena convencional se encuentra en el Contrato de Apertura de Crédito Simple con Interés.
+10 Declaro, bajo protesta de decir verdad, que toda la información proporcionada a CAJA DE AHORRO DEL S.N.T.S.L.A.T.S.S.C. INDEPENDENCIA A. C. ("Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C.") es verdadera. Asimismo, declaro que el destino de este Crédito será sólo para fines permitidos por la ley aplicable. Más aún, autorizo irrevocablemente a Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C. para que: (i) compruebe la información anterior a su entera satisfacción; y (ii) lleve a cabo las investigaciones necesarias sobre mi comportamiento e historial crediticio con cualquier sociedad de investigación crediticia, conforme al artículo 28 de la Ley para Regular las Sociedades de Información Crediticia. La presente autorización estará vigente durante el tiempo que mantenga una relación jurídica con Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C.]]></text>
+				</staticText>
+				<componentElement>
+					<reportElement x="1" y="464" width="554" height="14" uuid="8beece88-63ff-49f6-92d9-99b86b3e6379"/>
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+						<datasetRun subDataset="dataset1" uuid="72680e6a-d7dd-478d-9de9-4af125df2271">
+							<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{avalesSolicitud})]]></dataSourceExpression>
+						</datasetRun>
+						<jr:listContents height="14" width="554">
+							<textField isBlankWhenNull="true">
+								<reportElement x="149" y="0" width="179" height="12" uuid="0c6391ad-4b5a-463a-a54f-eae8f66e35e1"/>
+								<textElement verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+							</textField>
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="1" width="149" height="12" uuid="4fe831ff-9762-4022-8c0a-56f10b9da3e0"/>
+								<textElement verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nombreAva}]]></textFieldExpression>
+							</textField>
+							<textField isBlankWhenNull="true">
+								<reportElement x="333" y="0" width="100" height="12" uuid="8dbad50f-cd2b-4294-a5a6-09ab4d41cbe3"/>
+								<textElement verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{telefonoAva}]]></textFieldExpression>
+							</textField>
+							<textField isBlankWhenNull="true">
+								<reportElement x="448" y="0" width="100" height="12" uuid="3173a64c-7570-4836-b0e9-14a166a94c17"/>
+								<textElement verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{correoAva}]]></textFieldExpression>
+							</textField>
+						</jr:listContents>
+					</jr:list>
+				</componentElement>
+				<textField pattern="###0" isBlankWhenNull="true">
+					<reportElement x="345" y="241" width="100" height="20" uuid="aa7426cf-8b8e-4a9b-9dc1-6a5a524cade3"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{creProducto}.equals(7) ? "12%" : "18%"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="76">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="46" backcolor="#006699" uuid="296a74e9-8974-45a8-bb77-bed08a743db0"/>
+				<staticText>
+					<reportElement x="20" y="6" width="320" height="40" forecolor="#FFFFFF" uuid="ac493a25-556c-49c1-bb8a-c3a93744874b"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CAJA DE AHORRO DEL S.N.T.S.L.A.T.S.S.C. INDEPENDENCIA A. C.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="395" y="24" width="180" height="20" forecolor="#FFFFFF" uuid="510b4579-b012-42d9-819b-065ea9784dca"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Solicitud de Credito]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="22">
+			<staticText>
+				<reportElement x="0" y="-50" width="100" height="20" uuid="c4a59857-d9dd-48b4-882a-36e8245d37d3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Numero de solicitud:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="-50" width="100" height="20" uuid="55ed7c98-ef74-4378-b3ab-e0b6d90324d9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{idSolicitud}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="221" y="-50" width="52" height="20" uuid="897a03b8-5b34-41ab-a975-9e92622dadad"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Contrato:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="272" y="-50" width="100" height="20" uuid="8e3ba548-8c64-41da-94b1-b08307ba1340"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{claveCredito}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="-51" width="183" height="18" forecolor="#006699" backcolor="#E6E6E6" uuid="70f6399b-8235-421e-8954-735dc43df616"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-20" y="-52" width="595" height="1" forecolor="#666666" uuid="aef575cc-a828-49a3-82cd-eed2811ab3f1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="17" uuid="44e88092-ada7-494d-8faf-4ce6ffee2588"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Registro de Contrato de Adhesión en CONDUSEF número: [1]. Contrato de Apertura de Crédito Simple con Interés número "+$F{claveCredito}+" de fecha "+new SimpleDateFormat("EEEE dd,  MMMMM  yyyy",new Locale("es")).format(new java.util.Date())+" (el “Contrato”) celebrado entre: (i) CAJA DE AHORRO DEL S.N.T.S.L.A.T.S.S.C. INDEPENDENCIA A. C. como acreedora, (“Caja de Ahorro del S.N.T.S.L.A.T.S.S.C. Independencia A. C.” o la “Acreedora”); y (ii) "+$F{nombre}+" (el “Cliente”)."]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13/07/2019 11:50:35 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.RegistroTransaccion" table="registro_transaccion" catalog="sindicato" optimistic-lock="version">
+        <id name="tranId" type="int">
+            <column name="tran_id" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="tranIdUsuario" type="java.lang.Integer">
+            <column name="tran_id_usuario" />
+        </property>
+        <property name="tranFecha" type="date">
+            <column name="tran_fecha" length="10" />
+        </property>
+        <property name="tranTipoTran" type="java.lang.Integer">
+            <column name="tran_tipo_tran" />
+        </property>
+        <property name="tranIdSistema" type="java.lang.Integer">
+            <column name="tran_id_sistema" />
+        </property>
+    </class>
+</hibernate-mapping>

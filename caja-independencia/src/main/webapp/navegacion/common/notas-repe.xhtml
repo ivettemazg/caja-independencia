@@ -1,0 +1,99 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog id="dlgAgregaNota" widgetVar="dlgAgregaNota" width="450" height="250"
+              minimizable="false" maximizable="false" modal="true" resizable="false" 
+              header="Agregar nota">
+        <h:form id="frmAddNota">
+            <h:panelGrid  columns="2" cellpadding="4" cellspacing="4" style="border:0px !important; background:none; "  
+                          >
+
+
+                <p:outputLabel for="tituloNota" value="Titulo " />  
+                <p:inputText id="tituloNota" 
+                             value="#{repEmpleadoBean.notaTitulo}" />
+
+                <p:outputLabel value="Nota"/>
+                <p:inputTextarea id ="itaObservacion" rows="5" cols="40" counter="display" maxlength="500" 
+                                 required="true" requiredMessage="El campo nota es requerido"
+                                 counterTemplate="{0} Caracteres restantes" autoResize="false"
+                                 value="#{repEmpleadoBean.notaContent}" />
+                <p:spacer width="20"/>
+                <h:outputText id="display" />
+
+                <p:messages id="msjAddNota"/>
+            </h:panelGrid>
+            <p:panelGrid columns="1" style="border:0px !important; background:none; "  styleClass="FormContent"
+                          layout="grid">
+
+                <p:commandButton value="Guardar" actionListener="#{repEmpleadoBean.guardaRegBitacora}"
+                                 onstart="PF('statusDialog').show()"
+                                 oncomplete="PF('statusDialog').hide()"
+                                 ></p:commandButton>  
+            </p:panelGrid>
+        </h:form>
+    </p:dialog>
+
+
+    <h:form id="frmListaNotas">
+        <p:dialog id="dlgLstNotas" widgetVar="dlgLstNotas" width="900" height="400"
+                  minimizable="false" maximizable="false" modal="true" 
+                  header="Lista notas">
+            <p:dataTable id="tblNotas" var="bit"  
+                         value="#{repEmpleadoBean.notas}"                                 
+                         rowKey="#{bit.bitId}"
+                         emptyMessage="No hay notas relacionadas con este usuario"
+                         >  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Titulo"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{bit.bitTitulo}" />  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Nota"/>  
+                    </f:facet>  
+                    <h:outputText value="#{bit.bitNota}" />  
+                </p:column> 
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Fecha nota"/>  
+                    </f:facet>  
+                    <h:outputText value="#{bit.bitFecha}" > 
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>   
+                </p:column> 
+                <p:column style="width:32px;text-align: center">
+                    <p:commandButton update=":frmListaNotas:detalleNota" 
+                                     oncomplete="PF('dlgDetalle').show(); PF('statusDialog').hide()" 
+                                     icon="ui-icon-search" title="Ver"
+                                     onstart="PF('statusDialog').show()">
+                        <f:setPropertyActionListener value="#{bit}" target="#{repEmpleadoBean.notaSeleccionada}" />
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable> 
+        </p:dialog>
+
+        <p:dialog header="Detalle nota" widgetVar="dlgDetalle" modal="true" showEffect="fade" 
+                  hideEffect="fade" resizable="false" >
+            <p:outputPanel id="detalleNota" style="text-align:center; " >
+                <h:panelGrid  columns="1" cellspacing="7">
+
+
+                    <h:outputText value="#{repEmpleadoBean.notaSeleccionada.bitTitulo}" class="FontBold" />
+
+                    <h:outputText value="#{repEmpleadoBean.notaSeleccionada.bitNota}"  />
+
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:dialog>
+
+
+    </h:form>
+</ui:composition>

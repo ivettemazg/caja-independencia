@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.BancosConceptos" table="bancos_conceptos">
+        <id name="cbanId" type="int">
+            <column name="cban_id" />
+            <generator class="assigned"></generator>
+        </id>
+        <property name="cbanNombre" type="string">
+            <column name="cban_nombre" length="40" />
+        </property>
+        <property name="cbanTipo" type="string">
+            <column name="cban_tipo" length="20">
+                <comment>Es descuento o adicion a bancos</comment>
+            </column>
+        </property>
+        <property name="cbanTabla" type="string">
+            <column name="cban_tabla" length="20" />
+        </property>
+        <property name="cbanColumnapk" type="string">
+            <column name="cban_columnapk" length="50" />
+        </property>
+    </class>
+</hibernate-mapping>

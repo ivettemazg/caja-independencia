@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27/03/2017 05:12:47 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.EstadoCuenta" table="estado_cuenta">
+        <id name="ecId" type="java.lang.Integer">
+            <column name="ec_id" />
+            <generator class="identity" />
+        </id>
+        <property name="ecConcepto" type="int">
+            <column name="ec_concepto" not-null="true" />
+        </property>
+        <property name="ecMonto" type="double">
+            <column name="ec_monto" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="ecEmpresa" type="java.lang.Integer">
+            <column name="ec_empresa" />
+        </property>
+        <property name="ecFechatransaccion" type="date">
+            <column name="ec_fechatransaccion" length="10" />
+        </property>
+        <property name="ecAjustado" type="int">
+            <column name="ec_ajustado" not-null="true" />
+        </property>
+        <property name="ecPadre" type="java.lang.Integer">
+            <column name="ec_padre" not-null="false" />
+        </property>
+         <property name="ecDescripcion" type="string">
+            <column name="ec_descripcion" length="100" />
+        </property>
+        <property name="ecFechaRelacion" type="date">
+            <column name="ec_fecha_relacion" length="10"/>
+        </property>
+        <property name="ecIdRelacion" type="java.lang.Long">
+            <column name="ec_id_relacion" />
+        </property>
+    </class>
+</hibernate-mapping>

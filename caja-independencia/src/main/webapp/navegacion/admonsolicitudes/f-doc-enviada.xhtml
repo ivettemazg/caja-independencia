@@ -1,0 +1,191 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <div class="layout-portlets-box">
+        <div class="Container100 Responsive100">
+            <div class="ContainerIndent">
+
+                <h:form id="frmPdtsFirmaDocumentos">  
+
+                    <f:event type="preRenderComponent" rendered="true" listener="#{fondeoBean.getSolDoctosEnviados}"/>
+
+                    <p:dataTable id="tblPendFirmarDoctos" var="solicitudes" value="#{fondeoBean.doctosEnviados}"  
+                                 emptyMessage="No hay solicitudes por validar"
+                                 selection="#{fondeoBean.doctosEnviadosSelected}" 
+                                 rowKey="#{solicitudes.solId}"
+                                 selectionMode="single"
+                                 paginatorPosition="bottom" reflow="true"
+                                 scrollable="true" scrollHeight="50%"
+                                 paginator="true" rows="25"  
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                 rowsPerPageTemplate="25, 35, 45"
+                                 filterEvent="enter"
+                                 filteredValue="#{fondeoBean.doctosEnviadosFltr}"
+                                 style="min-height:400px"
+                                 >  
+
+                        <p:column style='position: relative' filterBy="#{solicitudes.solId}" filterMatchMode="contains">  
+                            <f:facet name="header">  
+                                <h:outputText value="Folio"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solId}" />  
+                        </p:column>
+                        <p:column style='position: relative' >  
+                            <f:facet name="header">  
+                                <h:outputText value="Empresa"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.empAbreviacion}" />  
+                        </p:column>
+
+                        <p:column style='position: relative' filterBy="#{solicitudes.solClaveEmpleado}"  filterMatchMode="contains"
+                                  >  
+                            <f:facet name="header">  
+                                <h:outputText value="Clave de empleado"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solClaveEmpleado}" />  
+                        </p:column>
+                        <p:column style='position: relative' filterBy="#{solicitudes.usuNombreCompleto}"  filterMatchMode="contains">  
+                            <f:facet name="header">  
+                                <h:outputText value="Nombre completo"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.usuNombreCompleto}" />  
+                        </p:column>  
+                        <p:column style='position: relative' >  
+                            <f:facet name="header">  
+                                <h:outputText value="E-mail"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.usuEmail}" />  
+                        </p:column>  
+                        <p:column style='position: relative' filterBy="#{solicitudes.proDescripcion}"  filterMatchMode="contains" >  
+                            <f:facet name="header">  
+                                <h:outputText value="Tipo de Credito"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.proDescripcion}" />  
+                        </p:column>
+                        <p:column style='position: relative' filterBy="#{solicitudes.solFechaFondeo}"  filterMatchMode="exact" sortBy="#{solicitudes.solFechaFondeo}">  
+                            <f:facet name="header">  
+                                <h:outputText value="Fecha fondeo"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solFechaFondeo}" >  
+                             <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>  
+                        </p:column>
+                        <p:column style='position: relative'>  
+                            <f:facet name="header">  
+                                <h:outputText value="Monto solicitado"/>  
+                            </f:facet>  
+                            <h:outputText value="#{solicitudes.solMontoSolicitado}" > 
+                                 <f:convertNumber maxFractionDigits="2" minFractionDigits="2" pattern="###,###.00"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>  
+                    
+                    <p:contextMenu for="tblPendFirmarDoctos" style="width : 200px"   >  
+
+                        <p:menuitem value="Ver documento"  icon="fa fa-image" update=":frmDlgDocFirm"
+                                    actionListener="#{fondeoBean.initDoctoFirmado()}"
+                                    onstart="PF('statusDialog').show()"
+                                    oncomplete="PF('statusDialog').hide()"
+                                    >
+                            
+                        </p:menuitem>
+                          <p:menuitem value="Cancelar crédito" icon="fa fa-times-circle"
+                                   oncomplete="PF('dlgRechazoDepositoCredito2').show()"
+                                   update=":frmRechazoCred2"
+                                   
+                                    />
+
+                    </p:contextMenu> 
+                    
+                    <p:growl />
+                </h:form>
+
+                <p:dialog id="dlgVisorPdfs" widgetVar="dlgDocPdfW" width="900" height="500"
+                          minimizable="true" maximizable="true" modal="true">
+                     <p:ajax event="close" listener="#{fondeoBean.eliminaImagen()}" />
+                    <h:form id="frmDlgDocFirm" style="height: 100%">
+                         
+                        <h:panelGrid id="pgBtnValidaPdf" columns="2" >
+                          
+                            <p:commandButton value="Aprobar"
+                                             actionListener="#{fondeoBean.updtEstatusDocSol(3)}"
+                                             icon="fa fa-thumbs-o-up Fs16 white" 
+                                             process="@this" 
+                                             update=":frmPdtsFirmaDocumentos"
+                                             oncomplete="PF('dlgDocPdfW').hide();PF('statusDialog').hide()"
+                                             onstart="PF('statusDialog').show()"
+                                   
+                                             >
+                            </p:commandButton>
+                            <p:commandButton value="Rechazar"
+                                             actionListener="#{fondeoBean.abrirDialogRechazoDocFirmado}"
+                                             icon="fa  fa-thumbs-o-down Fs16 white" 
+                                             process="@this" 
+                                          
+                                             >
+                            </p:commandButton>
+                        </h:panelGrid>
+                        <h:panelGrid id="pgVisorPdf" class="Container100 Responsive100" columns="1"
+                                     style="height: 80%"
+                                     >
+
+                            <object type="application/pdf" data="../../#{fondeoBean.doctoFirmado.imaImagen}?pfdrid_c=true" height="100%" width="100%"
+                                    internalinstanceid="6" >
+                                Su browser no puede mostrar el pdf, <a href="../../#{fondeoBean.doctoFirmado.imaImagen}">click</a> para descargarlo.
+                            </object>
+
+
+                        </h:panelGrid>
+                        
+                    </h:form>
+                </p:dialog>
+
+               
+
+
+                <p:dialog id="dlgRechazoDocFirm" widgetVar="dlgRechazoDocFirm" modal="true" >
+                   
+                    <h:form>
+                        <h:panelGrid columns="1" cellpadding="5" >
+                            <h4>Describa el motivo del rechazo</h4>  
+                            <p:inputTextarea rows="5" cols="30" counter="counter" maxlength="150"       
+                                             counterTemplate="{0} Caracteres restantes" autoResize="false"
+                                             value="#{fondeoBean.motivoCancelacion}"
+                                             required="true"
+                                             requiredMessage="Por favor indique el motivo del rechazo de la solicitud"/>
+                            <h:outputText id="counter" /> 
+                            <p:commandButton value="Aceptar"  actionListener="#{fondeoBean.updtEstatusDocSol(4)}"
+                                             oncomplete="PF('dlgRechazoDocFirm').hide(); PF('dlgDocPdfW').hide(); PF('statusDialog').hide()"
+                                             onstart="PF('statusDialog').show()"
+                                             update=":frmPdtsFirmaDocumentos"></p:commandButton>
+                        </h:panelGrid>
+                        
+                    </h:form>
+                </p:dialog>
+                
+                
+           <p:dialog id="dlgRechazoDepositoCredito2" widgetVar="dlgRechazoDepositoCredito2" modal="true" >
+                   
+                    <h:form id="frmRechazoCred2">
+                        <h:panelGrid columns="1" cellpadding="5" >
+                            <h4>Describa el motivo del rechazo</h4>  
+                            <p:inputTextarea rows="5" cols="30" counter="counter" maxlength="150"       
+                                             counterTemplate="{0} Caracteres restantes" autoResize="false"
+                                             value="#{fondeoBean.motivoCancelacionCredito}"
+                                             required="true"
+                                             requiredMessage="Por favor indique el motivo del rechazo de la solicitud"/>
+                            <h:outputText id="counter" /> 
+                            <p:commandButton value="Aceptar"  actionListener="#{fondeoBean.cancelarCreditoDoc2()}"
+                                             oncomplete="PF('dlgRechazoDepositoCredito2').hide(); PF('statusDialog').hide()"
+                                             onstart="PF('statusDialog').show()"
+                                             update=":frmPdtsFirmaDocumentos "></p:commandButton>
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+
+            </div>
+        </div>
+    </div>
+</ui:composition>

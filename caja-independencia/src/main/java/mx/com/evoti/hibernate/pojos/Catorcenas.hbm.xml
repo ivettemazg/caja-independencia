@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/10/2016 12:57:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Catorcenas" table="catorcenas">
+        <id name="carId" type="int">
+            <column name="car_id" />
+            <generator class="assigned"></generator>
+        </id>
+        <property name="carFecha" type="date">
+            <column name="car_fecha" length="10" />
+        </property>
+        <property name="carDia" type="java.lang.Integer">
+            <column name="car_dia" />
+        </property>
+        <property name="carMes" type="java.lang.Integer">
+            <column name="car_mes" />
+        </property>
+        <property name="carAnio" type="java.lang.Integer">
+            <column name="car_anio" />
+        </property>
+        <property name="carInversiones" type="java.lang.Integer">
+            <column name="car_inversiones" />
+        </property>
+    </class>
+</hibernate-mapping>

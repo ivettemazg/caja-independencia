@@ -1,0 +1,134 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Solicitudes Pendientes</div>
+                    </h3>
+                    <h:form id="valSolsPendtsFrm">  
+
+                        <f:event type="preRenderComponent" rendered="true" listener="#{valSolBean.init}"/>
+                        <p:dataTable id="tblSolicitudesPendientes" var="solicitudes" value="#{valSolBean.solsPendientes}"  
+                                     emptyMessage="No hay solicitudes por validar"
+                                     style="min-height:200px">  
+
+                            <p:column style='position: relative' rendered="false" >  
+                                <f:facet name="header">  
+                                    <h:outputText value="Folio"/>  
+                                </f:facet>  
+                                <h:outputText value="#{solicitudes.solId}" />  
+                            </p:column>
+                            <p:column style='position: relative' >  
+                                <f:facet name="header">  
+                                    <h:outputText value="Folio"/>  
+                                </f:facet>  
+                                <h:outputText value="#{solicitudes.solId}" />  
+                            </p:column>
+
+                            <p:column style='position: relative' >  
+                                <f:facet name="header">  
+                                    <h:outputText value="Fecha de creación"/>  
+                                </f:facet>  
+                                <h:outputText value="#{solicitudes.solFechaCreacion}" >  
+                             <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>    
+                            </p:column>
+                            <p:column style='position: relative' >  
+                                <f:facet name="header">  
+                                    <h:outputText value="Tipo de Credito"/>  
+                                </f:facet>  
+                                <h:outputText value="#{solicitudes.proDescripcion}" />  
+                            </p:column>
+
+                            <p:column style='position: relative'>  
+                                <f:facet name="header">  
+                                    <h:outputText value="Clave de empleado"/>  
+                                </f:facet>  
+                                <h:outputText value="#{solicitudes.usuClaveEmpleado}" />  
+                            </p:column>
+
+                            
+                            <p:column style='position: relative'>  
+                                <f:facet name="header">  
+                                    <h:outputText value="Nombre completo"/>  
+                                </f:facet>  
+                                <h:outputText value="#{solicitudes.usuNombreCompleto}" />  
+                            </p:column>  
+
+                            <p:column style='position: relative'>  
+                                <f:facet name="header">  
+                                    <h:outputText value="Empresa"/>  
+                                </f:facet>  
+                                <h:outputText value="#{solicitudes.empAbreviacion}" />  
+                            </p:column>
+
+                            <p:column style='position: relative'>  
+                                <p:commandButton value="Validar "  
+                                                 actionListener="#{valSolBean.abreDetalle(solicitudes)}"
+                                                 onstart="PF('statusDialog').show()"
+                                                 oncomplete="PF('statusDialog').hide()"
+                                                 styleClass="ui-priority-primary" >
+                                    
+                                </p:commandButton>
+
+                            </p:column>  
+
+                        </p:dataTable>  
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

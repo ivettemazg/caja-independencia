@@ -1,0 +1,130 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <!-- BOX START -->
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <div class="Container100">
+
+                        <div class="DispInlBlock MarTop20">
+                            <div class="Container40"><i class="fa fa-user Fs50 red Fleft MarRight10">     </i></div>
+                            <div class="Container60">
+                                <div class="Fright">
+
+                                    <h2 class="black Fs24 FontRalewayMedium">#{dashboardBean.usuarioSesion.nombreCompleto}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="Seperator"></div>
+                        
+                        
+                        <div class="Container100 Responsive100">
+                            
+                            <a href="/Sindicato/navegacion/usuariocomun/mi-perfil.xhtml" class="Wid30 Responsive BorderedBox Fleft TexAlCenter HoverEffect">
+                                <div class="ContainerIndent" >
+                                    <div class="EmptyBox10"></div>
+                                    <i class="fa fa-bell Fs24 animated swing infinite red"></i>
+                                    <span class="Fs15 DispBlock gray">Mi Perfil</span>
+                                    
+                                    <div class="EmptyBox10"></div>
+                                </div>
+                            </a>
+                            
+                            <a href="/Sindicato/navegacion/usuariocomun/mis-ahorros.xhtml" 
+                               class="Wid30 Responsive BorderedBox Fleft TexAlCenter HoverEffect" style="margin-left:2%;">
+                                <div class="ContainerIndent">
+                                    <div class="EmptyBox10"></div>
+                                    <i class="fa fa-dollar red Fs24"></i>
+                                    <span class="Fs15 DispBlock gray">Mis Ahorros</span>
+                                    <div class="EmptyBox10"></div>
+                                </div>
+                            </a>
+                            <a href="/Sindicato/navegacion/usuariocomun/mis-solicitudes.xhtml"
+                               class="Wid30 Responsive BorderedBox Fleft TexAlCenter HoverEffect" style="margin-left:2%;">
+                                <div class="ContainerIndent">
+                                    <div class="EmptyBox10"></div>
+                                    <i class="fa fa-archive red Fs24"></i>
+                                    <span class="Fs15 DispBlock gray">Mis Solicitudes</span>
+                                    <div class="EmptyBox10"></div>
+                                </div>
+                            </a>
+                            
+                            <a href="/Sindicato/navegacion/usuariocomun/mis-creditos.xhtml" 
+                               class="Wid30 Responsive BorderedBox Fleft TexAlCenter HoverEffect">
+                                <div class="ContainerIndent">
+                                    <div class="EmptyBox10"></div>
+                                    <i class="fa fa-calculator red Fs24"></i>
+                                    <span class="Fs15 DispBlock gray">Mis Créditos</span>
+                                    <div class="EmptyBox10"></div>
+                                </div>
+                            </a>
+                            <a href="/Sindicato/navegacion/usuariocomun/solicitud-credito.xhtml"
+                               class="Wid30 Responsive BorderedBox Fleft TexAlCenter HoverEffect" style="margin-left:2%;">
+                                <div class="ContainerIndent">
+                                    <div class="EmptyBox10"></div>
+                                    <i class="fa fa-edit red Fs24"></i>
+                                    <span class="Fs15 DispBlock gray">Solicitar crédito</span>
+                                    <div class="EmptyBox10"></div>
+                                </div>
+                            </a>
+                        </div>
+                      
+
+                    </div>
+                </div>
+            </div>
+         </div>
+                
+    </ui:define>
+
+</ui:composition>

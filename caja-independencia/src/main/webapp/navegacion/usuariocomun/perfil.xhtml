@@ -1,0 +1,220 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="Container100 Responsive100">
+        <div class="ContainerIndent">
+            <h:form id="frmPerfil">
+                <f:event type="preRenderComponent" rendered="true" listener="#{perfilBean.init}"/>
+                <p:spacer height="20"/>
+
+                <p:panelGrid columns="4"  style="border:0px !important; background:none; "  styleClass="FormContent"
+                             layout="grid"  >
+
+                    <p:outputLabel for="perfilClaveEmpleado" value="Clave de Empleado " />  
+                    <p:inputText id="perfilClaveEmpleado" 
+                                 value="#{perfilBean.usuario.usuClaveEmpleado}" readonly="true" />
+
+                    <p:outputLabel for="perfilEmpresa" value="Empresa " />  
+                    <p:inputText id="perfilEmpresa" value="#{perfilBean.usuario.empresas.empDescripcion}" readonly="true"/>
+
+                    <p:outputLabel value="Puesto :  " />  
+                    <p:selectOneMenu value="#{perfilBean.usuario.usuPuesto}" label="perfilPuesto" required="true" 
+                                     panelStyle="width:100px" disabled="#{perfilBean.soloLectura}" >  
+                        <f:selectItem itemLabel="Puesto" itemValue="" />  
+                        <f:selectItem itemLabel="AEROVIAS: Mecanico de Aviacion" itemValue="AEROVIAS: Mecanico de Aviacion" />  
+                        <f:selectItem itemLabel="AEROVIAS: Mecanico de Aviacion B" itemValue="AEROVIAS: Mecanico de Aviacion B" />    
+                        <f:selectItem itemLabel="AEROVIAS: Ayudante" itemValue="AEROVIAS: Ayudante" />    
+                        <f:selectItem itemLabel="AEROVIAS: Obrero Multihabilidades" itemValue="AEROVIAS: Obrero Multihabilidades" />    
+                        <f:selectItem itemLabel="AEROVIAS: Obrero" itemValue="AEROVIAS: Obrero" /> 
+                        <f:selectItem itemLabel="AEROVIAS: Operador de Equipo Motorizado" itemValue="AEROVIAS: Operador de Equipo Motorizado" />
+                        <f:selectItem itemLabel="AEROVIAS: Trabajador General" itemValue="AEROVIAS: Trabajador General" />
+                        <f:selectItem itemLabel="AEROVIAS: Agente de Servicio al Pasajero" itemValue="AEROVIAS: Agente de Servicio al Pasajero" />
+                        <f:selectItem itemLabel="AEROVIAS: Representante de Atencion al Pasajero A" itemValue="AEROVIAS: Representante de Atencion al Pasajero A" />
+                        <f:selectItem itemLabel="AEROVIAS: Representante de Atencion al Pasajero B" itemValue="AEROVIAS: Representante de Atencion al Pasajero B" />
+                        <f:selectItem itemLabel="AEROVIAS: Telefonista" itemValue="AEROVIAS: Telefonista" />
+                        <f:selectItem itemLabel="AEROVIAS: Tornero" itemValue="AEROVIAS: Tornero" />
+                        <f:selectItem itemLabel="TECH: Tecnico A" itemValue="TECH: Tecnico A" />
+                        <f:selectItem itemLabel="TECH: Tecnico B" itemValue="TECH: Tecnico B" />
+                        <f:selectItem itemLabel="TECH: Tecnico C/Soldador" itemValue="TECH: Tecnico C/Soldador" />
+                        <f:selectItem itemLabel="TECH: Tenico Maquinas/Herramientas" itemValue="TECH: Tenico Maquinas/Herramientas" />
+                        <f:selectItem itemLabel="TECH: Obrero" itemValue="TECH: Obrero" />
+                        <f:selectItem itemLabel="TECH: Obrero B/Operador Equipo Motorizado" itemValue="TECH: Obrero B/Operador Equipo Motorizado" />
+                        <f:selectItem itemLabel="TECH: Operador Equipo Motorizado" itemValue="TECH: Operador Equipo Motorizado" />
+                        <f:selectItem itemLabel="TECH: Trabajador General" itemValue="TECH: Trabajador General" />
+                        <f:selectItem itemLabel="SISTEM: Empleado General" itemValue="SISTEM: Empleado General" />
+                        <f:selectItem itemLabel="SISTEM: Empleado General Polivalente" itemValue="SISTEM: Empleado General Polivalente" />
+                        <f:selectItem itemLabel="SISTEM: Sillas Ruedas (Agente de Servicio al Pasajero)" itemValue="SISTEM: Sillas Ruedas (Agente de Servicio al Pasajero)" />
+                        <f:selectItem itemLabel="CARGO: Agente Express" itemValue="CARGO: Agente Express" />
+                    </p:selectOneMenu>
+                </p:panelGrid>
+
+                <p:spacer height="30"/>
+                <p:panelGrid columns="6"  style="border:0px !important; background:none; "  styleClass="FormContent"
+                             layout="grid" columnClasses="label,value"  >
+                    <p:outputLabel for="perfilNombre" value="Nombre: " />  
+                    <p:inputText id="perfilNombre" value="#{perfilBean.usuario.usuNombre}" validatorMessage="Campo Nombre: Sólo se permiten letras" 
+                                 required="true" readonly="#{perfilBean.soloLectura}">
+                        <f:validateRegex pattern="([\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\s ÑÁÉÍÓÚ A-Z_ñáéíóú a-z]+)?" />
+                    </p:inputText>  
+
+                    <p:outputLabel for="perfilApePaterno" value="Apellido Paterno :  " />  
+                    <p:inputText id="perfilApePaterno" value="#{perfilBean.usuario.usuPaterno}" readonly="#{perfilBean.soloLectura}"
+                                 validatorMessage="Campo Apellido Paterno: Sólo se permiten letras" required="true">  
+                        <f:validateRegex pattern="([\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\s ÑÁÉÍÓÚ A-Z_ñáéíóú a-z]+)?" />
+                    </p:inputText>  
+
+
+                    <p:outputLabel for="perfilApeaterno" value="Apellido Materno :  " />  
+                    <p:inputText id="perfilApeaterno" value="#{perfilBean.usuario.usuMaterno}" readonly="#{perfilBean.soloLectura}"
+                                 validatorMessage="Campo Apellido Materno: Sólo se permiten letras" required="true"> 
+                        <f:validateRegex pattern="([\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\s ÑÁÉÍÓÚ A-Z_ñáéíóú a-z]+)?" />
+                    </p:inputText>  
+                    <p:outputLabel value="Sexo :  " />  
+                    <p:selectOneMenu value="#{perfilBean.usuario.usuSexo}" label="perfilSexo" required="true" disabled="#{perfilBean.soloLectura}">  
+                        <f:selectItem itemLabel="Sexo" itemValue="" />  
+                        <f:selectItem itemLabel="Femenino" itemValue="F" />  
+                        <f:selectItem itemLabel="Masculino" itemValue="M" />    
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Estado Civil :  " />  
+                    <p:selectOneMenu value="#{perfilBean.usuario.usuEdoCivil}" label="perfilEdoCivil" required="true"
+                                     disabled="#{perfilBean.soloLectura}">  
+                        <f:selectItem itemLabel="Estado Civil" itemValue="" />  
+                        <f:selectItem itemLabel="Soltero(a)" itemValue="Soltero" />  
+                        <f:selectItem itemLabel="Casado(a)" itemValue="Casado" />    
+                        <f:selectItem itemLabel="Viudo(a)" itemValue="Viudo" />    
+                        <f:selectItem itemLabel="Separado(a)" itemValue="Separado" />    
+                        <f:selectItem itemLabel="Union Libre" itemValue="Unionlibre" />      
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="pefilCorreo" value="Correo :  " />  
+                    <p:inputText id="pefilCorreo" value="#{perfilBean.usuario.usuCorreo}" required="true" readonly="#{perfilBean.soloLectura}"
+                                 validatorMessage="Ingreso un correo valido">
+                        <f:validateRegex pattern="^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$" />
+                    </p:inputText>
+
+                    <p:outputLabel for="perfilTelefono" value="Teléfono :  " />  
+                    <p:inputMask id="perfilTelefono" value="#{perfilBean.usuario.usuTelefono}" readonly="#{perfilBean.soloLectura}"
+                                 mask="99-99-99-99" required="true"/> 
+
+                    <p:outputLabel for="perfilCelular" value="Celular :  " />  
+                    <p:inputMask id="perfilCelular" value="#{perfilBean.usuario.usuCelular}" readonly="#{perfilBean.soloLectura}"
+                                 mask="(999)(99)99-99-99-99" required="true" /> 
+
+                    <p:outputLabel value="Estado :  " />  
+                    <p:selectOneMenu value="#{perfilBean.usuario.usuEstado}" label="perfilEstado" required="true" disabled="#{perfilBean.soloLectura}">  
+                        <f:selectItem itemLabel="Estado" itemValue="" />  
+                        <f:selectItem itemLabel="Aguascalientes" itemValue="AG" />  
+                        <f:selectItem itemLabel="Baja California Norte" itemValue="BN" />    
+                        <f:selectItem itemLabel="Baja California Sur" itemValue="BS" />    
+                        <f:selectItem itemLabel="Campeche" itemValue="CA" />    
+                        <f:selectItem itemLabel="Coahuila" itemValue="CH" /> 
+                        <f:selectItem itemLabel="Colima" itemValue="CO" />
+                        <f:selectItem itemLabel="Chiapas" itemValue="CS" />
+                        <f:selectItem itemLabel="Chihuahua" itemValue="CH" />
+                        <f:selectItem itemLabel="Distrito Federal" itemValue="DF" />
+                        <f:selectItem itemLabel="Durango" itemValue="DU" />
+                        <f:selectItem itemLabel="Estado de Mexico" itemValue="EM" />
+                        <f:selectItem itemLabel="Guanajuato" itemValue="GO" />
+                        <f:selectItem itemLabel="Guerrero" itemValue="GU" />
+                        <f:selectItem itemLabel="Hidalgo" itemValue="HI" />
+                        <f:selectItem itemLabel="Jalisco" itemValue="JA" />
+                        <f:selectItem itemLabel="Michoacan" itemValue="MI" />
+                        <f:selectItem itemLabel="Morelos" itemValue="MO" />
+                        <f:selectItem itemLabel="Nayarit" itemValue="NA" />
+                        <f:selectItem itemLabel="Nuevo Leon" itemValue="NL" />
+                        <f:selectItem itemLabel="Oaxaca" itemValue="OA" />
+                        <f:selectItem itemLabel="Puebla" itemValue="PU" />
+                        <f:selectItem itemLabel="Queretaro" itemValue="QU" />
+                        <f:selectItem itemLabel="Quintana Roo" itemValue="QR" />
+                        <f:selectItem itemLabel="Sinaloa" itemValue="SI" />
+                        <f:selectItem itemLabel="San Luis Potosi" itemValue="SL" />
+                        <f:selectItem itemLabel="Sonora" itemValue="SO" />
+                        <f:selectItem itemLabel="Tabasco" itemValue="TA" />
+                        <f:selectItem itemLabel="Tamaulipas" itemValue="TM" />
+                        <f:selectItem itemLabel="Tlaxcala" itemValue="TL" />
+                        <f:selectItem itemLabel="Veracruz" itemValue="VE" />
+                        <f:selectItem itemLabel="Yucatan" itemValue="YU" />
+                        <f:selectItem itemLabel="Zacatecas" itemValue="ZA" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="perfilMunicipio" value="Municipio :  " />  
+                    <p:inputText id="perfilMunicipio" value="#{perfilBean.usuario.usuMunicipio}" readonly="#{perfilBean.soloLectura}" required="true" /> 
+
+                    <p:outputLabel for="perfilCp" value="CP :  " />  
+                    <p:inputMask id="perfilCp" value="#{perfilBean.usuario.usuCp}" readonly="#{perfilBean.soloLectura}" mask="99999" required="true" /> 
+
+                    <p:outputLabel for="perfilColonia" value="Colonia :  " />  
+                    <p:inputText id="perfilColonia" value="#{perfilBean.usuario.usuColonia}" readonly="#{perfilBean.soloLectura}" required="true" /> 
+
+                    <p:outputLabel for="perfilCalle" value="Calle :  " />  
+                    <p:inputText id="perfilCalle" value="#{perfilBean.usuario.usuCalle}" readonly="#{perfilBean.soloLectura}" required="true" /> 
+
+                    <p:outputLabel for="perfilNumext" value="Numero Exterior :  " />  
+                    <p:inputText id="perfilNumext" value="#{perfilBean.usuario.usuNumext}" readonly="#{perfilBean.soloLectura}" required="true" /> 
+
+                    <p:outputLabel for="perfilNumint" value="Numero Interior :  " />  
+                    <p:inputText id="perfilNumint" value="#{perfilBean.usuario.usuNumint}" readonly="#{perfilBean.soloLectura}" /> 
+
+                    <p:outputLabel for="perfilRfc" value="RFC :  " />  
+                    <p:inputText id="perfilRfc" value="#{perfilBean.usuario.usuRfc}" readonly="#{perfilBean.soloLectura}" required="true" /> 
+
+                    <p:outputLabel value="Tipo de Identificacion :  " />  
+                    <p:selectOneMenu value="#{perfilBean.usuario.usuIdentificacion}" label="perfilIdentificacion" disabled="#{perfilBean.soloLectura}" required="true">  
+                        <f:selectItem itemLabel="Tipo de Identificacion" itemValue="" />  
+                        <f:selectItem itemLabel="IFE" itemValue="IFE" />  
+                        <f:selectItem itemLabel="PASAPORTE" itemValue="PASAPORTE" />         
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="perfilDepto" value="Departamento :  " />  
+                    <p:inputText id="perfilDepto" readonly="#{perfilBean.soloLectura}" value="#{perfilBean.usuario.usuDepartamento}" /> 
+
+
+
+                    <p:outputLabel for="perfilAreaTrab" value="Área de trabajo :  " />  
+                    <p:inputText id="perfilAreaTrab" readonly="#{perfilBean.soloLectura}" value="#{perfilBean.usuario.usuAreaTrabajo}" />
+
+                    <p:outputLabel for="perfilEstacion" value="Estación :  " />  
+                    <p:inputText id="perfilEstacion" readonly="#{perfilBean.soloLectura}" value="#{perfilBean.usuario.usuEstacion}" />
+
+                    <p:outputLabel for="perfilSalarioNeto" value="Salario Catorcenal: "  />  
+                    <p:inputNumber id="perfilSalarioNeto" readonly="#{perfilBean.soloLectura}" 
+                                   value="#{perfilBean.usuario.usuSalarioNeto}" required="true"  
+                                   validatorMessage="El valor no puede ser 0" minValue="1" > 
+                    </p:inputNumber>
+
+                    <p:outputLabel value="Fecha ingreso empresa :  " />  
+                    <p:calendar value="#{perfilBean.usuario.usuFechaIngresoEmpresa}" navigator="true" readonly="#{perfilBean.soloLectura}" disabled="#{perfilBean.soloLectura}"
+                                id="calFechaIngreso" pattern="dd/MM/yyyy" locale="es" required="true" yearRange="c-60:c+1" />
+
+
+                    <p:outputLabel value="Fecha de nacimiento :  " />  
+                    <p:calendar value="#{perfilBean.usuario.usuFechaNacimiento}" navigator="true" readonly="#{perfilBean.soloLectura}" disabled="#{perfilBean.soloLectura}"
+                                id="calFechaNacimiento"  pattern="dd/MM/yyyy" locale="es" required="true" mindate="01/01/1900" yearRange="c-90:c+1" />
+
+
+
+
+                </p:panelGrid>   
+
+                <p:panelGrid columns="1"  style="border:0px !important; background:none; "  styleClass="FormContent"
+                             layout="grid"  >
+                    <p:spacer height="50"/>
+                    <p:commandButton value="Actualizar" 
+                                     actionListener="#{perfilBean.actualizaPerfil}"
+                                     rendered="#{perfilBean.rdrBtn}" 
+                                     onstart="PF('statusDialog').show()"
+                                     oncomplete="PF('statusDialog').hide()"
+                                     update=":frmPerfil:msjPerfil" >
+                    </p:commandButton>    
+                    <p:messages id="msjPerfil"/>
+                </p:panelGrid>
+
+            </h:form>  
+        </div>
+    </div>
+
+</ui:composition>

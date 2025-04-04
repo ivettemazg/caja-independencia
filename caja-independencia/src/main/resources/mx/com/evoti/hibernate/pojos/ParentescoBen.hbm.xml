@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 1/02/2017 05:08:42 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.ParentescoBen" table="parentesco_ben" >
+        <id name="parId" type="java.lang.Integer">
+            <column name="par_id" />
+            <generator class="identity" />
+        </id>
+        <property name="parNombre" type="string">
+            <column name="par_nombre" length="20" />
+        </property>
+    </class>
+</hibernate-mapping>

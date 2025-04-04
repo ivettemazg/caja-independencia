@@ -1,0 +1,218 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+
+    <h:form id="frmAhorros">
+        <p:fieldset  legend="Aportaciones" toggleable="true" toggleSpeed="500" rendered="#{repEmpleadoBean.rdrFieldSets}" >
+            <p:dataTable id="tblAhorrosRep" var="mov" style="width: 90%"  
+                         value="#{repEmpleadoBean.lstTotalesAhorro}"                                 
+                         selection="#{repEmpleadoBean.movSelected}" 
+                         rowKey="#{mov.totalMovimiento}"
+                         selectionMode="single"
+                         sortBy="#{mov.movUsuId}"
+                         >  
+
+                <p:column style='position: relative' rendered="false">  
+                    <f:facet name="header"  >  
+                        <h:outputText value="ID"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{mov.movProducto}" />  
+                </p:column>  
+                <p:column style='position: relative'>  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Tipo ahorro"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{mov.movProductoStr}" />  
+                </p:column>  
+
+                <p:column style='position: relative'>  
+                    <f:facet name="header">  
+                        <h:outputText value="Total"/>  
+                    </f:facet>  
+                    <h:outputText value="#{mov.totalMovimiento}">
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>   
+                </p:column> 
+
+                <p:summaryRow>
+                    <p:column >
+                        <h:outputText value="Total:" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{repEmpleadoBean.totalAhorro}">
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </h:outputText>
+                    </p:column>
+                </p:summaryRow>
+
+            </p:dataTable> 
+
+
+            <p:contextMenu for="tblAhorrosRep" style="width : 200px"   >  
+
+                <p:menuitem value="Ver detalle" update=":frmDetalleMovs"
+                            actionListener="#{repEmpleadoBean.verDetalle}"
+                            oncomplete="PF('dlgDetalleAhorroW').show(); PF('statusDialog').hide()"
+                            onstart="PF('statusDialog').show()"
+                            icon ="fa fa-search"
+                            >
+
+                </p:menuitem>
+
+            </p:contextMenu> 
+
+            <p:growl/>     
+
+            <p:commandButton id="btnApoVol" value="Aportación Voluntaria" onclick="PF('dlgAhorrosW').show();" 
+
+                             update=":frmApoVol"/> 
+            <p:spacer height="30" />
+        </p:fieldset>
+    </h:form>  
+
+    <p:dialog id="dlgAhorros" widgetVar="dlgAhorrosW" closable="true"
+              closeOnEscape="true" header="Aportación voluntaria" modal="true"
+              resizable="true" width="800" height="180" >
+        <h:form id="frmApoVol">
+            <p:panelGrid id="pgApoVolId" columns="2"  style="border:0px !important; background:none; "  styleClass="FormContent"
+                         layout="grid"  >
+                <p:outputLabel for="calFecApoVol" value="Fecha de Aportacion:  " />  
+                <p:calendar id="calFecApoVol" showOn="button" required="true" requiredMessage="Debe introducir la fecha de la aportación"
+                            pattern="dd-MM-yyyy" locale="es"
+                            value="#{repEmpleadoBean.fechaApoVol}"/>
+                <p:outputLabel for="inpMonApo" value="Monto: " />  
+                <p:inputNumber id="inpMonApo" maxlength="9" decimalPlaces="2" 
+                               label="monApo" required="true" requiredMessage="Debe introducir el monto de la aportación"
+                               value="#{repEmpleadoBean.montoApoVol}"/> 
+                <p:commandButton id="insApoVol" value="Aceptar" 
+                                 actionListener="#{repEmpleadoBean.guardaAportacionVoluntaria()}" 
+                                 onstart="PF('statusDialog').show()"
+                                 oncomplete="PF('statusDialog').hide()"
+                                 update=":frmApoVol:msjsApVol">
+                </p:commandButton>
+            </p:panelGrid>
+
+            <p:messages id="msjsApVol" ></p:messages>
+        </h:form>
+    </p:dialog>
+
+    <p:dialog id="dlgDetalleAhorro" header="Detalle ahorro" widgetVar="dlgDetalleAhorroW" width="1000" 
+              height="400" closable="true" closeOnEscape="true" modal="true">
+        <h:form id="frmDetalleMovs" enctype="multipart/form-data" >  
+
+            <p:dataTable id="tblAhorroDetalle" var="mov" rendered="#{repEmpleadoBean.rdrFNF}"
+                         value="#{repEmpleadoBean.detalleMovs}"     
+                         paginator="true" rows="25"  
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                         rowsPerPageTemplate="25, 35, 45"
+                         filterEvent="enter"
+                         paginatorPosition="bottom" reflow="true"
+                         sortBy="#{mov.movUsuId}"
+                         >  
+
+                <p:column style='position: relative'  filterBy="#{mov.movTipo}"  filterMatchMode="contains">  
+                    <f:facet name="header"  >  
+                        <h:outputText value="Tipo ahorro"/>  
+                    </f:facet>  
+                    <h:outputText  value="#{mov.movTipo}" />  
+                </p:column>  
+
+                <p:column style='position: relative' filterBy="#{mov.movDeposito}"  filterMatchMode="exact">  
+                    <f:facet name="header">  
+                        <h:outputText value="Monto"/>  
+                    </f:facet>  
+                    <h:outputText value="#{mov.movDeposito}" >
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" currencySymbol="$" type="currency"/>
+                    </h:outputText>  
+                </p:column> 
+
+                <p:column style='position: relative' filterBy="#{mov.movFecha}"  filterMatchMode="contains" >  
+                    <f:facet name="header">  
+                        <h:outputText value="Fecha"/>  
+                    </f:facet>  
+                    <h:outputText value="#{mov.movFecha}" >  
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>  
+                </p:column> 
+
+                <p:summaryRow >
+                    <p:column >
+                        <h:outputText value="Total:" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{repEmpleadoBean.totalDetalle}">
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </h:outputText>
+                    </p:column>
+                </p:summaryRow>
+
+            </p:dataTable> 
+
+
+            <p:dataTable id="tblAhorroVol" var="ahorro" rendered="#{repEmpleadoBean.rdrV}"
+                         value="#{repEmpleadoBean.ahorrosVol}"                                 
+
+                         >  
+
+
+                <p:columnGroup type="header">
+
+                    <p:row>
+                        <p:column headerText="Tipo" />
+                        <p:column headerText="Monto" />
+                        <p:column headerText="Fecha" />
+                    </p:row>
+                </p:columnGroup>
+
+
+                <p:subTable var="rend" value="#{ahorro.rendimiento}" >
+                    <p:columnGroup type="header"  >
+
+                        <p:row >
+                            <p:column styleClass="ui-datatable-subtable-header">
+                                <f:facet name="header" >
+                                    <h:outputText value="#{ahorro.nombre}" />
+                                </f:facet>
+                            </p:column>
+                            <p:column styleClass="ui-datatable-subtable-header">
+                                <f:facet name="header">
+                                    <h:outputText value="#{ahorro.monto}" >
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </f:facet>
+                            </p:column>
+                            <p:column styleClass="ui-datatable-subtable-header">
+                                <f:facet name="header">
+                                    <h:outputText value="#{ahorro.fecha}" >  
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>  
+                                </f:facet>
+                            </p:column>
+                        </p:row>
+                    </p:columnGroup>
+
+                    <p:column>
+                        <h:outputText value="#{rend.nombre}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{rend.monto}" >
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{rend.fecha}" >  
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>  
+                    </p:column>
+
+
+                </p:subTable>
+            </p:dataTable> 
+        </h:form>
+    </p:dialog>
+
+</ui:composition>

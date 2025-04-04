@@ -1,0 +1,89 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                };
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Asignar pagos</div>
+                    </h3>
+
+
+                    <h:form id="frmAplicaPagos">
+                        <h:panelGrid id="pnlGdCambiosEmpresa" columns="2" cellpadding="3" cellspacing="5"
+                                     class="Container75 Responsive100">
+
+                            <p:outputLabel  value="Selecciona la catorcena de la cual quieres aplicar los pagos:" />
+                            <p:calendar id="fechaCatorc" value="#{asignaPagosBean.catorcenaSeleccionada}" locale="es"
+                                        required="true" requiredMessage="Debe elegir una catorcena para continuar." showOn="button">
+                            </p:calendar>
+
+                            <p:commandButton value="Aplicar pagos" 
+                                             icon="ui-icon-refresh"
+                                             actionListener="#{asignaPagosBean.procesaPagos()}"
+                                             update=":frmAplicaPagos"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"
+                                             >
+                            </p:commandButton>
+                        </h:panelGrid>
+                        <h:panelGrid columns="1" cellpadding="3" cellspacing="5"
+                                     class="Container100 Responsive100">
+                            <p:messages></p:messages>
+                        </h:panelGrid>
+
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

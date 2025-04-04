@@ -1,0 +1,48 @@
+<ui:composition 
+
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    
+    <div id="layout-topbar" class="ShadowGray">
+    	<div id="layout-topbar-indent">
+        	<a href="dashboard.xhtml"><h:graphicImage name="images/LOGO.jpg" styleClass="Fleft" library="spark-layout" id="logo" class="Fleft"/></a>
+            <a href="#" id="mobile-menu-button" class="BordRad3 white ShowOnMobile"><i class="fa fa-bars"></i> Menu</a>
+            <a href="#" id="mobile-menu-button-gray" class="BordRad3 white ShowOnMobile"><i class="fa fa-caret-down"></i> Personal</a>
+            
+            <ul id="layout-topbar-menu">
+            	<li>
+                    <a href="#" class="Animated05"><i class="fa fa-sign-out"></i> <p:commandLink value="Salir" actionListener="#{dashboardBean.logout()}"/></a>
+                </li>
+              
+
+               
+                <li class="fa fa-ellipsis-v menu-separator"></li>
+                   
+                <f:event type="preRenderComponent" rendered="true" listener="#{dashboardBean.validaUsuario}"/>
+                      <li>
+                	 <a class="Animated05 CursPointer"><i class="fa fa-user"> </i> <h:outputLabel value="#{dashboardBean.nickname}"/><i class="fa fa-chevron-down Fs14 Fright ShowOnMobile"></i></a>
+                    <ul style="width:175px; margin-left:-10px;" class="Animated03 submenu">
+                        <li><a class="Animated05">
+                                <i class="fa fa-user Fs30 Fleft red"></i> 
+                                <span class="Fright Fs14 TexAlRight red">
+                                    <h:outputLabel value="#{dashboardBean.usuarioSesion.nombreCompleto}"/>
+                                </span>
+                            </a>
+                        </li>
+                    	<li><a href="/Sindicato/navegacion/usuariocomun/mi-perfil.xhtml" class="Animated05"><i class="fa fa-bell red"></i> Mi Perfil</a></li>
+                        <li><a href="/Sindicato/navegacion/usuariocomun/mis-ahorros.xhtml"  class="Animated05"><i class="fa fa-dollar red"></i> Mis Ahorros</a></li>
+                        <li><a href="/Sindicato/navegacion/usuariocomun/mis-solicitudes.xhtml" class="Animated05"><i class="fa fa-suitcase red"></i> Mis Solicitudes</a></li>
+                        <li><a href="/Sindicato/navegacion/usuariocomun/mis-creditos.xhtml"  class="Animated05"><i class="fa fa-calculator red"></i> Mis Créditos </a></li>
+                        <li><a href="/Sindicato/navegacion/usuariocomun/solicitud-credito.xhtml" class="Animated05"><i class="fa fa-edit red"></i> Solicitar crédito </a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+    
+</ui:composition>

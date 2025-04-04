@@ -1,0 +1,92 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="Container100 Responsive100">
+        <div class="ContainerIndent">
+            <h:form id="frmAvalesCredito">
+                <f:event type="preRenderComponent" rendered="true" listener="#{avalBean.init}"/>
+
+                <h:panelGrid >
+
+                    <p:dataTable id="tblAvalesSolPdtes" var="aval"  
+                                 value="#{avalBean.avales}"                                 
+                                 selection="#{avalBean.avalSeleccionados}"
+                                 rowKey="#{aval.id}"
+                                 >  
+
+                        <p:column selectionMode="single" style="width:4%" />
+
+                        <p:column headerText="Nombre">  
+                            <h:outputText value="#{aval.nombreCompleto}" />  
+                        </p:column>  
+
+                        <p:column headerText="Domicilio">  
+                            <h:outputText value="#{aval.domicilioConcat}" />  
+                        </p:column>  
+                        <p:column headerText="Empresa">  
+                            <h:outputText value="#{aval.empresaAbreviacion}" />  
+                        </p:column> 
+                        <p:column headerText="Fecha ingreso">  
+                            <h:outputText value="#{aval.fechaIngresoCaja}" />  
+                        </p:column> 
+                        <p:column headerText="Teléfono">  
+                            <h:outputText value="#{aval.telefono}" />  
+                        </p:column> 
+                        <p:column headerText="Celular">  
+                            <h:outputText value="#{aval.celular}" />  
+                        </p:column> 
+                        <p:column headerText="Estatus empleado">  
+                            <h:outputText value="#{aval.estatusStr}" />  
+                        </p:column> 
+                        <p:column headerText="Estatus Validación">  
+                            <h:outputText value="#{aval.estatusAvalStr}" />  
+                        </p:column> 
+
+
+                        <f:facet name="footer" rendered="#{avalBean.rdrSolicitud}" >
+                            <p:commandButton value="Aprobar aval " icon="ui-icon-close"
+                                             actionListener="#{avalBean.aprobarAval}"
+                                             styleClass="ui-priority-primary"
+                                             process="tblAvalesSolPdtes"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"
+                                             update=":frmAvalesCredito"/>
+                            <p:commandButton value="Rechazar " icon="ui-icon-close"
+                                             actionListener="#{avalBean.abrirDialogRechazo}"
+                                             styleClass="ui-priority-primary"
+                                             process="tblAvalesSolPdtes"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"
+                                             update=":frmAvalesCredito"/>
+
+                        </f:facet>
+
+                    </p:dataTable> 
+                </h:panelGrid>  
+                <p:messages for="msjAval" />
+
+                <p:dialog id="dlgMotivRechazoAval" widgetVar="dlgMotivRechazoAvalW" modal="true" >
+                    <h:panelGrid columns="1" cellpadding="5" >
+                        <h4>Describa el motivo del rechazo</h4>  
+                        <p:inputTextarea rows="5" cols="30" counter="counter" maxlength="150"       
+                                         counterTemplate="{0} Caracteres restantes" autoResize="false"
+                                         required="true"
+                                         requiredMessage="Por favor indique el motivo del rechazo de la solicitud"
+                                         value="#{avalBean.motivoRechazo}"/>
+                        <h:outputText id="counter" /> 
+                        <p:commandButton value="Aceptar" 
+                                         actionListener="#{avalBean.rechazaAval}"
+                                         onstart="PF('statusDialog').show()"
+                                         oncomplete="PF('statusDialog').hide()"
+                                         update=":frmAvalesCredito" ></p:commandButton>
+                    </h:panelGrid>
+                </p:dialog>
+
+            </h:form>
+        </div>
+    </div>
+
+</ui:composition>

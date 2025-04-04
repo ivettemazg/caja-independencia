@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+
+    <p:dialog id="dlgGridDoctos" widgetVar="dlgGridDoctos" 
+              header="Documentación de la solicitud"  width="700" height="400"
+              minimizable="false" maximizable="false" modal="true">
+        <h:form id="frmDoctosSolicitud">
+            <p:dataGrid  id="tblDocs" var="doc" value="#{doctosSolBean.documentos}"
+                         widgetVar="tblDocsWd" columns="3" layout="grid">
+
+
+                <p:panel header="#{doc.tipoDocumento}" style="text-align:center">
+                    <h:panelGrid columns="1" style="width:100%" class="Container100 Responsive100">
+
+                        <h:outputText value="#{doc.strStatus}" />
+                        <p:commandButton update=":frmDlgVisor:pgVisorPdf" 
+                                         actionListener="#{doctosSolBean.abrirDialogVisor(doc)}"
+                                         icon="fa fa-file-pdf-o Fs16 white" 
+                                         process="@this"
+                                           onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                         >
+                            <f:setPropertyActionListener value="#{doc}" target="#{doctosSolBean.docSeleccionado}"  />
+                        </p:commandButton>
+
+                    </h:panelGrid>
+                </p:panel>
+
+            </p:dataGrid >
+        </h:form>
+    </p:dialog>
+
+    <p:dialog id="dlgVisorPdfs" widgetVar="dlgDocPdf" width="900" height="600"
+              minimizable="true" maximizable="true" modal="true">
+         <p:ajax event="close" listener="#{doctosSolBean.eliminaImagen()}" />
+         <h:form id="frmDlgVisor" style="width: 100%;height: 100%">
+            <h:panelGrid id="pgVisorPdf" class="Container100 Responsive100" columns="1"
+                         style="height:100%"
+                         >
+
+                <object type="application/pdf" data="../../#{doctosSolBean.docSeleccionado.nombreDocumento}?pfdrid_c=true" height="100%" width="100%"
+                        internalinstanceid="6" >
+                    Su browser no puede mostrar el pdf, <a href="../../#{doctosSolBean.docSeleccionado.nombreDocumento}">click</a> para descargarlo.
+                </object>
+
+            </h:panelGrid>
+        </h:form>
+    </p:dialog>
+
+</ui:composition>

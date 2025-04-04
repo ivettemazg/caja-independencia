@@ -1,0 +1,81 @@
+@charset "UTF-8";
+/* CSS Document */
+
+
+
+
+.PAGADO{
+    background-color: #9BFF78 !important; 
+    background-image: none !important; 
+    font-weight: bold;                    
+
+}
+.CANCELADO{
+    background-color: #F1948A !important; 
+    background-image: none !important; 
+    font-weight: bold;                    
+
+}
+
+.TRANSFERIDO{
+    background-color: #F9E79F !important; 
+    background-image: none !important; 
+    font-weight: bold;                    
+
+}
+.INCOBRABLE{
+    background-color: #D5DBDB !important; 
+    background-image: none !important; 
+    font-weight: bold;                    
+
+}
+.AJUSTADO{
+    background-color: #D2B4DE !important; 
+    background-image: none !important; 
+    font-weight: bold;                    
+
+}
+.AJUSTADO_DESC_EMP{
+    background-color: #E8DAEF !important; 
+    background-image: none !important; 
+    font-weight: bold;                    
+
+}
+
+.PAG{
+    background-color: #9BFF78 !important; 
+    background-image: none !important; 
+    font-weight: bold;                    
+
+}
+.DFIN{
+    background-color: #F9E79F !important; 
+    background-image: none !important; 
+    font-weight: bold;                    
+
+}
+.TRA{
+    background-color: #F9E79F !important; 
+    background-image: none !important; 
+    font-weight: bold;                    
+
+}
+.INCO{
+    background-color: #D5DBDB !important; 
+    background-image: none !important; 
+    font-weight: bold;                    
+
+}
+.REC{
+    background-color: #D5DBDB !important; 
+    background-image: none !important; 
+    font-weight: bold;                    
+
+}
+
+
+/*Colores de pagos_estatus*/
+
+
+
+

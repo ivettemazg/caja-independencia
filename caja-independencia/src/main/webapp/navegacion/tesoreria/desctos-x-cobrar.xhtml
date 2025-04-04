@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        
+       
+        
+        <h:form id="frmDesctosXCobrar">
+            <f:event type="preRenderComponent" rendered="true" listener="#{desctosXCobrarBean.init()}"
+                     />
+            <!-- BOX START -->
+            <div class="layout-portlets-box">
+                <div class="Container100 Responsive100">
+                    <div class="ContainerIndent">
+
+                        <h3 class="BigTopic">
+                            <div class="Wid50 Responsive50 Fleft">Pendientes por cobrar de finiquito</div>
+                        </h3>
+
+
+
+                        <p:dataTable id="tblDesctosXCobrar" var="cre"  
+                                     value="#{desctosXCobrarBean.desctosPendts}"                                 
+                                     selection="#{desctosXCobrarBean.desctoSelected}"
+                                     selectionMode="single" 
+                                     rowKey="#{cre.creId}"
+                                     emptyMessage="No hay descuentos pendientes"
+                                     editable="true"
+                                     filterEvent="enter"
+                                     paginatorPosition="bottom" reflow="true"
+                                     scrollable="true" scrollHeight="90%"
+                                     paginator="true" rows="25"  
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                     rowsPerPageTemplate="25, 35, 45"
+                                     style="min-height:400px"
+                                     
+                                     >  
+
+                            <p:ajax event="rowEdit" listener="#{desctosXCobrarBean.onEdit}" 
+                                    update=":frmDesctosXCobrar:tblDesctosXCobrar"  
+                                      onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                    />  
+
+                            <p:column style='position: relative; color:#778D9B !important;' filterBy="#{cre.creClave}" filterMatchMode="contains"
+                                      >  
+                                <f:facet name="header"  >  
+                                    <h:outputText value="Clave credito"/>  
+                                </f:facet>  
+                                <h:outputText  value="#{cre.creClave}" />  
+                            </p:column>  
+
+                            <p:column style='position: relative; color:#778D9B !important;'  filterBy="#{cre.usuClaveEmpleado}" filterMatchMode="contains">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Clave empleado"/>  
+                                </f:facet>  
+                                <h:outputText value="#{cre.usuClaveEmpleado}" />  
+                            </p:column> 
+                            <p:column style='position: relative; color:#778D9B !important;'  filterBy="#{cre.empAbreviacion}" filterMatchMode="contains">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Empresa"/>  
+                                </f:facet>  
+                                <h:outputText value="#{cre.empAbreviacion}" > 
+                                </h:outputText>   
+                            </p:column> 
+
+                            <p:column style='position: relative'>  
+                                <f:facet name="header" >  
+                                    <h:outputText value="Monto descuento"/>  
+                                </f:facet> 
+                                <p:cellEditor>
+                                    <f:facet name="output">  
+                                        <h:outputText value="#{cre.pagDeposito}" >
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" pattern="###,###.00"/>
+                                        </h:outputText>  
+                                    </f:facet>  
+                                    <f:facet name="input">  
+                                        <p:inputNumber id="pctBenef" value="#{cre.pagDeposito}" 
+                                                       minValue="0" decimalPlaces="2" required="true" >  
+                                        </p:inputNumber>
+                                    </f:facet>  
+                                </p:cellEditor>
+                            </p:column>  
+                            <p:column style='position: relative' filterBy="#{cre.pagFecha}" filterMatchMode="contains">  
+                                <f:facet name="header" >  
+                                    <h:outputText value="Fecha descuento"/>  
+                                </f:facet> 
+                                <p:cellEditor>
+                                    <f:facet name="output">  
+                                        <h:outputText value="#{cre.pagFecha}"  >  
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:outputText>  
+                                    </f:facet>  
+                                    <f:facet name="input">  
+                                        <p:calendar value="#{cre.pagFecha}" navigator="true" 
+                                                    pattern="dd/MM/yyyy" locale="es" required="true" />
+                                    </f:facet>  
+                                </p:cellEditor>
+                            </p:column>  
+
+                            <p:column style="width:5%" >  
+                                <p:rowEditor  />  
+                            </p:column> 
+
+                        </p:dataTable> 
+
+
+                        <p:contextMenu for="tblDesctosXCobrar" style="width : 200px"   >  
+
+                            <p:menuitem value="Enviar a bancos"  icon="fa fa-bank" update=":frmDesctosXCobrar:tblDesctosXCobrar :frmDesctosXCobrar:growl" 
+                                        actionListener="#{desctosXCobrarBean.updtRegBanco}"
+                                          onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide()"
+                                        >
+
+                            </p:menuitem>
+
+                        </p:contextMenu> 
+
+                        <p:growl id="growl" />
+
+                    </div>
+                </div>
+            </div>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

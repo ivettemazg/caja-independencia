@@ -1,0 +1,163 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="Container100 Responsive100">
+        <div class="ContainerIndent">
+            <h:form id="frmPendtsFondear">  
+
+                <f:event type="preRenderComponent" rendered="true" listener="#{fondeoBean.getSolicitudesAceptadas}"/>
+
+              
+
+                <p:dataTable id="tblFondeosPendts" var="sols" 
+                             scrollable="true" 
+                             value="#{fondeoBean.pendtsXFondear}"  
+                             emptyMessage="No hay solicitudes por validar"
+                             selection="#{fondeoBean.pendtsXFondearSelected}" 
+                             rowKey="#{sols.solId}"
+                             selectionMode="single"
+                             scrollHeight="80%"
+                             paginator="true" rows="25"  
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                             rowsPerPageTemplate="25, 35, 45"
+                             filterEvent="enter"
+                             filteredValue="#{fondeoBean.pendtsXFondearFltr}"
+                             paginatorPosition="bottom" reflow="true" 
+                             style="min-height:400px"
+                             >  
+
+
+                   
+                    <p:column style='position: relative' >  
+                        <f:facet name="header">  
+                            <h:outputText value="Folio"/>  
+                        </f:facet>  
+                        <h:outputText value="#{sols.solId}" />  
+                    </p:column>
+                    <p:column style='position: relative' filterBy="#{sols.empAbreviacion}"  filterMatchMode="contains" >  
+                        <f:facet name="header">  
+                            <h:outputText value="Empresa"/>  
+                        </f:facet>  
+                        <h:outputText value="#{sols.empAbreviacion}" />  
+                    </p:column>
+
+                    <p:column style='position: relative' filterBy="#{sols.solClaveEmpleado}"  filterMatchMode="contains">  
+                        <f:facet name="header">  
+                            <h:outputText value="Clave de empleado"/>  
+                        </f:facet>  
+                        <h:outputText value="#{sols.solClaveEmpleado}" />  
+                    </p:column>
+                    <p:column style='position: relative' filterBy="#{sols.usuNombreCompleto}"  filterMatchMode="contains">  
+                        <f:facet name="header">  
+                            <h:outputText value="Nombre completo"/>  
+                        </f:facet>  
+                        <h:outputText value="#{sols.usuNombreCompleto}" />  
+                    </p:column>  
+                    <p:column style='position: relative' >  
+                        <f:facet name="header">  
+                            <h:outputText value="Tipo de Credito"/>  
+                        </f:facet>  
+                        <h:outputText value="#{sols.proDescripcion}" />  
+                    </p:column>
+                    <p:column style='position: relative' sortBy="#{sols.solFechaAutorizacion}" >  
+                        <f:facet name="header" >  
+                            <h:outputText value="Fecha autorización" />  
+                        </f:facet>  
+                        <h:outputText value="#{sols.solFechaAutorizacion}">  
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column style='position: relative'>  
+                        <f:facet name="header">  
+                            <h:outputText value="Monto solicitado"/>  
+                        </f:facet>  
+                        <h:outputText value="#{sols.solMontoSolicitado}" > 
+                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" pattern="###,###.00"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style='position: relative'>  
+                        <f:facet name="header">  
+                            <h:outputText value="Catorcenas"/>  
+                        </f:facet>  
+                        <h:outputText value="#{sols.solCatorcenas}" />  
+                    </p:column>
+                    <p:column style='position: relative'>  
+                        <f:facet name="header">  
+                            <h:outputText value="Pago catorcenal"/>  
+                        </f:facet>  
+                        <h:outputText value="#{sols.solPagoCredito}"  > 
+                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" pattern="###,###.00"/>
+                        </h:outputText> 
+                    </p:column>
+                </p:dataTable>  
+                
+                  <p:contextMenu for="tblFondeosPendts" style="width : 200px" >  
+
+                    <p:menuitem value="Fondear solicitud"  oncomplete="PF('dlgFndSolW').show()"
+                                icon="fa fa-dot-circle-o" update=":frmFondeaFecha, :frmPendtsFondear:tblFondeosPendts"
+                                actionListener="#{fondeoBean.inicializaDialogFondeo()}"
+                                />  
+                    <p:menuitem value="Cancelar credito" icon="fa fa-times-circle"
+                                actionListener="#{fondeoBean.abrirCancelarSol}"
+                                onstart="PF('statusDialog').show()"
+                                oncomplete="PF('statusDialog').hide()"
+                                update=":frmMotivRechazoSol, :frmPendtsFondear:tblFondeosPendts" 
+                                />  
+                </p:contextMenu> 
+                
+                <p:growl id="growl" ></p:growl>
+
+            </h:form>
+
+            <p:dialog widgetVar="dlgFndSolW" height="100" width="600" modal="true"
+                      header="Por favor introduzca las fechas solicitadas">
+
+                <h:form id="frmFondeaFecha">
+                    
+                <p:panelGrid id="pgDlgFondearSolicitud" columns="2" style="border:0px !important; background:none; "  styleClass="FormContent"
+                             layout="grid"  >
+                   
+                    <p:outputLabel value="Fecha de primer pago:  " />  
+                    <p:calendar id="calFechaPrimerPago" value="#{fondeoBean.fechaPrimerPago}" 
+                                showOn="button" required="true" requiredMessage="La fecha del primer pago es un campo obligatorio"
+                                pattern="dd/MM/yyyy" locale="es"/>
+
+                    <p:commandButton value="Fondear crédito" actionListener="#{fondeoBean.fondeaSolicitud()}"
+                                     process="@form"  onstart="PF('statusDialog').show()"
+                                     oncomplete="PF('statusDialog').hide()"
+                                     update=":frmPendtsFondear, :frmPdtsDeposito" ajax="true">
+                    </p:commandButton>
+
+                </p:panelGrid>
+
+
+                </h:form>
+
+            </p:dialog>
+
+
+
+            <p:dialog id="dlgMotivRechazoSol" widgetVar="dlgMotivRechazoSol" modal="true" >
+                <h:form id="frmMotivRechazoSol">
+                    <h:panelGrid columns="1" cellpadding="5" >
+                        <h4>Describa el motivo del rechazo</h4>  
+                        <p:inputTextarea rows="5" cols="30" counter="counter" maxlength="150"       
+                                         counterTemplate="{0} Caracteres restantes" autoResize="false"
+                                         value="#{bitaBean.observacion}"
+                                         required="true"
+                                         requiredMessage="Por favor indique el motivo del rechazo de la solicitud"/>
+                        <h:outputText id="counter" /> 
+                        <p:commandButton value="Aceptar"  actionListener="#{bitaBean.rechazarSolicitud}"
+                                         oncomplete="PF('dlgMotivRechazoSol').hide(); PF('statusDialog').hide()"
+                                         onstart="PF('statusDialog').show()"
+                                         update=":frmPendtsFondear "></p:commandButton>
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </div>
+    </div>
+
+</ui:composition>

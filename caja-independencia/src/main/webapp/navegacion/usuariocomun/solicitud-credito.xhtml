@@ -1,0 +1,226 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="fCreaSol">
+            <f:event type="preRenderComponent" rendered="true" listener="#{solCreditoBean.validacionesInicialesRdr()}"
+                     />
+            <!-- BOX START -->
+            <div class="layout-portlets-box">
+                <div class="Container100 Responsive100">
+                    <div class="ContainerIndent">
+
+                        <h3 class="BigTopic">
+                            <div class="Wid50 Responsive50 Fleft">Solicitud de crédito</div>
+                        </h3>
+
+                        <div class="Container100 Responsive100">
+                            <div class="ContainerIndent" >
+                                <h:outputLabel  value="Los préstamos están desactivados por mantenimiento del sistema" />  
+                                <p:selectOneButton value="#{solCreditoBean.tipoSolicitud}"  >
+                                    <f:selectItem itemLabel="NOMINA" itemValue="no" itemDisabled="#{!solCreditoBean.dsblBtnNo}"   />
+                                    <f:selectItem itemLabel="AUTOMOVIL" itemValue="au" itemDisabled="#{!solCreditoBean.dsblBtnAu}" />
+                                       <!--!solCreditoBean.dsblBtnFa or usuario.getEmpresaId() == 2-->
+                                    <!--!solCreditoBean.dsblBtnAg or usuario.getEmpresaId() == 2-->
+                                    <f:selectItem itemLabel="FONDO AHORRO" itemValue="fa" itemDisabled="#{!solCreditoBean.dsblBtnFa or usuario.getEmpresaId() == 2 or usuario.getEmpresaId() == 3 or usuario.getEmpresaId() == 5}" />                                    
+				    <f:selectItem itemLabel="AGUINALDO" itemValue="ag" itemDisabled="#{!solCreditoBean.dsblBtnAg or usuario.getEmpresaId() == 2 or usuario.getEmpresaId() == 3 or usuario.getEmpresaId() == 5}"/> 
+                                    
+                                     <!--! <f:selectItem itemLabel="FONDO AHORRO" itemValue="fa" itemDisabled="{!solCreditoBean.dsblBtnFa}" />                                    
+				    <f:selectItem itemLabel="AGUINALDO" itemValue="ag" itemDisabled="{!solCreditoBean.dsblBtnAg}"/> -->
+                                    <p:ajax update=":fCreaSol"
+                                            listener="#{solCreditoBean.muestraSimulador}" 
+                                            onstart="PF('statusDialog').show()"
+                                            oncomplete="PF('statusDialog').hide()"
+                                            />
+                                </p:selectOneButton>
+
+                                <p:messages autoUpdate="true" for="valIniMsj"></p:messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layout-portlets-box">
+                <p:panelGrid rendered="#{solCreditoBean.rdrPnlSimulador}"
+                             style="border:0px !important; background:none;" >
+                    <div class="Container100 Responsive100">
+                        <div class="ContainerIndent">
+                            <p:panelGrid id="pnlGrd1erpaso" columns ="4" rendered="#{solCreditoBean.rdrPnlSimulador}"
+                                         layout="grid" style="border:0px !important; background:none;" styleClass="FormContent">
+                                <h:outputLabel for="sueldoNeto" value="Salario catorcenal:" />  
+                                <h:outputText id="sueldoNeto" value="#{usuario.salarioNeto}" >
+                                    <f:convertNumber maxFractionDigits="2" minFractionDigits="2" pattern="###,###.00"/>
+                                </h:outputText>
+
+                                <h:outputLabel for="deducciones" value="Introduzca sus deducciones catorcenales:" />  
+                                <p:inputNumber id="deducciones" value="#{solCreditoBean.deducciones}" maxlength="7"
+                                               decimalPlaces="2"
+                                               label="deducciones" required="true"  converterMessage="Este campo solo admite digitos"> 
+
+                                    <p:ajax event="blur" update=":fCreaSol:tablaAmortizacion" 
+                                            onstart="PF('statusDialog').show()"
+                                            oncomplete="PF('statusDialog').hide()"
+                                            listener="#{solCreditoBean.aplicaCalcular}"  />
+                                </p:inputNumber>
+
+
+                                <h:outputLabel for="montoPrestamo" value="Introduce el monto del crédito:" />  
+                                <p:inputNumber id="montoPrestamo" value="#{solCreditoBean.montoSolicitado}" maxlength="7" decimalPlaces="2"
+                                               label="montoPrestamo" required="true" converterMessage="Este campo solo admite digitos"
+                                               minValue="0" maxValue="#{solCreditoBean.topeMaximoPermitido}">
+
+                                    <p:ajax event="blur" update=":fCreaSol:tablaAmortizacion" 
+                                            onstart="PF('statusDialog').show()"
+                                            oncomplete="PF('statusDialog').hide()"
+                                            listener="#{solCreditoBean.aplicaCalcular}" />
+
+                                </p:inputNumber>
+
+                                <h:outputText value="Selecione las catorcenas a liquidar su crédito:" 
+                                              rendered="#{solCreditoBean.rdrCatorcenas}" />  
+
+                                <p:inputNumber id="Catorcenas" required="true" rendered="#{solCreditoBean.rdrCatorcenas}" minValue="0"
+                                               value="#{solCreditoBean.catorcenas}" maxlength="3" maxValue="#{solCreditoBean.catorcenasMax}"
+                                             converterMessage="Este campo solo admite digitos">
+                                        <p:ajax event="blur" update=":fCreaSol:tablaAmortizacion" 
+                                            onstart="PF('statusDialog').show()"
+                                            oncomplete="PF('statusDialog').hide()"
+                                            listener="#{solCreditoBean.aplicaCalcular}" />
+                                </p:inputNumber>
+
+                                <h:outputLabel for="aguinaldo" value="Monto recibido en Aguinaldo:" rendered="#{solCreditoBean.rendererSolAguinaldo}" />  
+                                <p:inputText id="aguinaldo" value="#{solCreditoBean.montoAguinaldo}" label="lblaguinaldo" 
+                                             required="true" rendered="#{solCreditoBean.rendererSolAguinaldo}" converterMessage="Este campo solo admite digitos">
+                                    <f:validateLength minimum="1" maximum="8" />
+                                    <p:ajax event="blur" 
+                                            update=":fCreaSol:tablaAmortizacion" 
+                                            onstart="PF('statusDialog').show()"
+                                            oncomplete="PF('statusDialog').hide()"
+                                            listener="#{solCreditoBean.aplicaCalcular}" />
+                                </p:inputText>
+
+                                <h:outputLabel for="fahorro" value="Monto de fondo de ahorro:" rendered="#{solCreditoBean.rendererSolFondoAhorro}" />  
+                                <p:inputText id="fahorro" value="#{solCreditoBean.montoFAhorro}" label="lblfahorro"  converterMessage="Este campo solo admite digitos"
+                                             required="true" rendered="#{solCreditoBean.rendererSolFondoAhorro}"
+                                             >
+                                    <f:validateLength minimum="1" maximum="8" />
+                                    <p:ajax event="blur" 
+                                            update=":fCreaSol:tablaAmortizacion" 
+                                            onstart="PF('statusDialog').show()"
+                                            oncomplete="PF('statusDialog').hide()"
+                                            listener="#{solCreditoBean.aplicaCalcular}" />
+                                </p:inputText>
+
+                                <h:outputLabel for="faMes" value="Elija el mes al cual solicitará el fondo de ahorro" rendered="#{solCreditoBean.rendererSolFondoAhorro}" />
+                                 
+                                
+                                <p:selectOneMenu id="faMes"
+                                                value="#{solCreditoBean.faCatorcena}" required="true" rendered="#{solCreditoBean.rendererSolFondoAhorro}"
+                                                  requiredMessage="Debe elegir a qué mes va a solicitar su crédito de Fondo de Ahorro" 
+                                                 styleClass="ui-inputfield ui-widget ui-state-default ui-corner-all" >
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" /> 
+                                  
+                                    <f:selectItem itemLabel="Diciembre" itemValue="12" itemDisabled="#{!solCreditoBean.rdrEnableDiciembre and usuario.getEmpresaId() == 2}"/>
+
+                                     <p:ajax event="change" update=":fCreaSol:tablaAmortizacion" 
+                                            onstart="PF('statusDialog').show()"
+                                            oncomplete="PF('statusDialog').hide()"
+                                            listener="#{solCreditoBean.aplicaCalcular}"/>
+
+                                </p:selectOneMenu> 
+
+                            </p:panelGrid>
+                        </div>
+                    </div>
+
+                    <p:spacer height="20"></p:spacer>
+                    <div class="Container100 Responsive100">
+                        <div class="ContainerIndent">
+                            <h:panelGrid id ="tablaAmortizacion" columns="1" rendered="#{solCreditoBean.rdrPnlSimulador}">
+
+
+
+                                <ui:insert name="tablaAmortizaciones" >
+                                    <ui:include src="../common/tablaAmortizacion.xhtml"/>
+                                </ui:insert>
+
+
+                                <p:spacer height="10"></p:spacer>
+
+
+                                <p:commandButton value="CONTINUAR EL LLENADO DE SU SOLICITUD" id="creaSolicitud" 
+                                                 action="#{solCreditoBean.creaSolicitud()}" 
+                                                 disabled="#{solCreditoBean.dsblBtnCrear}" >
+                                      <p:confirm header="Crear solicitud" 
+                                              message="Al aceptar se estará creando una solicitud la cual deberá 
+                                              llenar con la infomación requerida en la misma" 
+                                              icon="ui-icon-alert"/>
+                                </p:commandButton>
+                                
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode"
+                                                 width="500">
+                                    <p:commandButton title="GDelYesButton" value="Si" styleClass="ui-confirmdialog-yes"
+                                                     />
+                                    <p:commandButton title="GDelNoButton" value="No" styleClass="ui-confirmdialog-no" />
+                                </p:confirmDialog>
+                            </h:panelGrid>
+                            <p:messages autoUpdate="true"></p:messages>
+
+                        </div>
+                    </div>
+
+                </p:panelGrid>
+            </div>   
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
