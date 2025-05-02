@@ -12,10 +12,10 @@
     <property name="hibernate.connection.username">sindicatoindependencia</property>
     <property name="hibernate.connection.password">hvf850K#</property>
     
-   <!-- SSL Java properties -->
+   <!-- SSL Java properties 
     <property name="hibernate.connection.useSSL">true</property>
     <property name="hibernate.connection.requireSSL">true</property>
-    <property name="hibernate.connection.verifyServerCertificate">true</property>
+    <property name="hibernate.connection.verifyServerCertificate">true</property>-->
 
     <property name="hibernate.connection.isolation">2</property>    
     <property name="hibernate.c3p0.min_size">5</property>

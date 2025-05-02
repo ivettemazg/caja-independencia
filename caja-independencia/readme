@@ -39,3 +39,7 @@ PARAR E INICIAR TOMCAT:
 /opt/homebrew/Cellar/tomcat@8/8.5.100/libexec/bin/shutdown.sh
 
 /opt/homebrew/Cellar/tomcat@8/8.5.100/libexec/bin/startup.sh
+
+Es necesario agregar la ip publica a la whitelist de mysql en google cloud, para obtenerla en mac:
+curl https://ipinfo.io/ip
+Pegarla en la lista de ips permitidas
