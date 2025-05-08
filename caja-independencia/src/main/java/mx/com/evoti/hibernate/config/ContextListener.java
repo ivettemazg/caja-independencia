@@ -13,6 +13,8 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import org.apache.log4j.PropertyConfigurator;
 
+import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
+
 /**
  *
  * @author Venus
@@ -61,7 +63,8 @@ public class ContextListener implements ServletContextListener, Serializable {
   
     @Override
     public void contextDestroyed(ServletContextEvent event) {  
-       HibernateUtil.closeSessionFactory();
+        AbandonedConnectionCleanupThread.checkedShutdown();
+        HibernateUtil.closeSessionFactory();
     }  
     
 }

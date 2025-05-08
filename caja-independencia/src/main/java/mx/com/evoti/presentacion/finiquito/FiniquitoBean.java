@@ -175,7 +175,9 @@ public class FiniquitoBean extends BaseBean implements Serializable {
         editTable = Boolean.FALSE;
 
         //Solo realiza las validaciones si el credito es estatus activo o pagaado o ajustado
-        if (credito.getCreEstatusId() == Constantes.CRE_EST_ACTIVO || credito.getCreEstatusId() == Constantes.CRE_EST_PAGADO || credito.getCreEstatusId() == Constantes.CRE_EST_AJUSTADO) {
+        if (credito.getCreEstatusId() == Constantes.CRE_EST_ACTIVO 
+        || credito.getCreEstatusId() == Constantes.CRE_EST_PAGADO 
+        || credito.getCreEstatusId() == Constantes.CRE_EST_AJUSTADO) {     
 
             /**
              * Carga los movimientos en la tabla

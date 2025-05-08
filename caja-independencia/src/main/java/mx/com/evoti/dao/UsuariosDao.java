@@ -141,19 +141,19 @@ public class UsuariosDao extends ManagerDB implements Serializable{
           super.beginTransaction(); 
           
          Query qry = session.createSQLQuery(
-                String.format("select usu.usu_Id as usuId, usu.usu_Clave_Empleado as usuClaveEmpleado, " +
-                        "emp.emp_Abreviacion as empAbreviacion, " +
-                        "concat(usu.usu_Nombre, ' ', usu.usu_Paterno,' ', usu.usu_Materno) as usuNombreCompleto, " +
-                        "usu.usu_Fecha_Baja as usuFechaBaja, bae.bae_Deuda_Creditos as baeDeudaCreditos, " +
-                        "bae.bae_Ahorros as baeAhorros " +
-                        "from Usuarios usu, empresas emp, Baja_Empleados bae, Creditos_final cre " +
+                String.format("select usu.usu_id as usuId, usu.usu_clave_empleado as usuClaveEmpleado, " +
+                        "emp.emp_abreviacion as empAbreviacion, " +
+                        "concat(usu.usu_nombre, ' ', usu.usu_paterno,' ', usu.usu_materno) as usuNombreCompleto, " +
+                        "usu.usu_fecha_baja as usuFechaBaja, bae.bae_deuda_creditos as baeDeudaCreditos, " +
+                        "bae.bae_ahorros as baeAhorros " +
+                        "from usuarios usu, empresas emp, baja_empleados bae, creditos_final cre " +
                         "where cre.cre_usu_id = usu.usu_id " +
-                        "and bae.bae_Estatus = %1$s " +
-                        "and usu.usu_Fecha_Baja is not null " +
-                        "and usu.usu_Id = bae.bae_Id_Empleado " +
+                        "and bae.bae_estatus = %1$s " +
+                        "and usu.usu_fecha_baja is not null " +
+                        "and usu.usu_id = bae.bae_id_empleado " +
                         "and usu.usu_empresa = emp.emp_id " +
                         "and cre.cre_estatus in (1, 6, 7) "  +
-                        "order by usu.usu_Fecha_Baja desc ", estatus));
+                        "order by usu.usu_fecha_baja desc ", estatus));
 
         List<UsuarioBajaDto> usuarios = qry.setResultTransformer(Transformers.aliasToBean(UsuarioBajaDto.class)).list();
           System.out.println(usuarios.size());
