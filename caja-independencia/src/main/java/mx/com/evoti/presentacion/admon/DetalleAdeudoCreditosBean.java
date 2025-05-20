@@ -10,6 +10,7 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import mx.com.evoti.bo.CreditosBo;
+import mx.com.evoti.bo.administrador.finiquito.FiniquitosBo;
 import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.dto.DetalleCreditoDto;
 import mx.com.evoti.hibernate.pojos.Amortizacion;
@@ -29,6 +30,7 @@ public class DetalleAdeudoCreditosBean extends BaseBean implements Serializable{
     private static final long serialVersionUID = -7455685082343704755L;
     
     private CreditosBo creditoBo;
+    private FiniquitosBo finiquitosBo;
     
     private List<DetalleCreditoDto> creditos;
     private DetalleCreditoDto creditoSelected;
@@ -37,6 +39,7 @@ public class DetalleAdeudoCreditosBean extends BaseBean implements Serializable{
     private List<Amortizacion> amoPendientesAnteriores;
 
     public DetalleAdeudoCreditosBean() {
+        finiquitosBo = new FiniquitosBo();
         creditoBo = new CreditosBo();
     }
     
@@ -47,10 +50,8 @@ public class DetalleAdeudoCreditosBean extends BaseBean implements Serializable{
      */
     public void obtieneCreditosDetalle(){
         try {
-           creditos = creditoBo.obtCreditosDetalle(usuario);
-           
+           creditos = finiquitosBo.obtCreditosDetalleFiniquito(usuario);
           
-           
         } catch (BusinessException ex) {
            LOGGER.error(ex.getMessage(), ex);
         }

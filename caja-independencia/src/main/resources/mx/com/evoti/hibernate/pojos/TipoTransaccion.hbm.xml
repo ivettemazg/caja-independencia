@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 13/07/2019 11:50:35 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="mx.com.evoti.hibernate.pojos.TipoTransaccion" table="tipo_transaccion" catalog="sindicato" optimistic-lock="version">
+    <class name="mx.com.evoti.hibernate.pojos.TipoTransaccion" table="tipo_transaccion" catalog="pruebas_migracion" optimistic-lock="version">
         <id name="tipoTranId" type="int">
             <column name="tipo_tran_id" />
             <generator class="assigned" />

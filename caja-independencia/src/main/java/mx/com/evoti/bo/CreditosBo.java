@@ -13,6 +13,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import mx.com.evoti.bo.administrador.finiquito.FiniquitosBo;
 import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.bo.impl.AmortizacionTransformerImpl;
 import mx.com.evoti.dao.AmortizacionDao;
@@ -49,6 +51,7 @@ public class CreditosBo implements Serializable, AmortizacionTransformerImpl {
         this.catorcenaDao = new CatorcenasDao();
         this.creditoDao = new CreditosDao();
         this.amoDao = new AmortizacionDao();
+
     }
 
     /**
@@ -220,7 +223,7 @@ public class CreditosBo implements Serializable, AmortizacionTransformerImpl {
      * @return
      * @throws BusinessException
      */
-    private Date obtCatorcenaSig(Date fecha) throws BusinessException {
+    public Date obtCatorcenaSig(Date fecha) throws BusinessException {
 
         try {
             return catorcenaDao.getCatInmediataSiguiente(fecha);
@@ -237,7 +240,7 @@ public class CreditosBo implements Serializable, AmortizacionTransformerImpl {
      * @return
      * @throws BusinessException
      */
-    private Date getCatorcenaUltArchivo(int empresa) throws BusinessException {
+    public Date getCatorcenaUltArchivo(int empresa) throws BusinessException {
         try {
             return arhDao.getCatorUltArchivo(empresa);
         } catch (IntegracionException ex) {

@@ -9,17 +9,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import mx.com.evoti.bo.CreditosBo;
 import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.dao.AmortizacionDao;
 import mx.com.evoti.dao.CatorcenasDao;
+import mx.com.evoti.dao.CreditosDao;
 import mx.com.evoti.dao.FiniquitoDao;
 import mx.com.evoti.dao.MovimientosDao;
 import mx.com.evoti.dao.PagosDao;
 import mx.com.evoti.dao.UsuariosDao;
 import mx.com.evoti.dao.bancos.BancosDao;
 import mx.com.evoti.dao.exception.IntegracionException;
+import mx.com.evoti.dto.DetalleCreditoDto;
+import mx.com.evoti.dto.TotalesAmortizacionDto;
 import mx.com.evoti.hibernate.pojos.Amortizacion;
 import mx.com.evoti.hibernate.pojos.BajaEmpleados;
 import mx.com.evoti.hibernate.pojos.Bancos;
@@ -40,20 +44,16 @@ public class FiniquitosBo implements PagoCapitalFiniquitoBoImpl, Serializable {
     private static final long serialVersionUID = 141328638092848989L;
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(FiniquitosBo.class);
 
-    
-    private AmortizacionDao amoDao;
-    private PagosDao pagoDao;
-    private UsuariosDao usuDao;
-    private CatorcenasDao catDao;
-    private CreditosBo creBo;
-    private FiniquitoDao finDao;
+
+    private final AmortizacionDao amoDao = new AmortizacionDao();
+    private final PagosDao pagoDao = new PagosDao();
+    private final UsuariosDao usuDao  = new UsuariosDao();
+    private final CatorcenasDao catDao = new CatorcenasDao();
+    private final CreditosBo creBo = new CreditosBo();
+    private final FiniquitoDao finDao = new FiniquitoDao();
+    private final CreditosDao creditosDao = new CreditosDao();
 
     public FiniquitosBo() {
-
-        this.usuDao = new UsuariosDao();
-        catDao = new CatorcenasDao();
-        finDao = new FiniquitoDao();
-        creBo = new CreditosBo();
     }
 
     /**
@@ -67,8 +67,6 @@ public class FiniquitosBo implements PagoCapitalFiniquitoBoImpl, Serializable {
      */
     public void ajustaCredito(Amortizacion amoPagoCapital, List<Amortizacion> amoPendts,
             Double abonoACapital, Integer estatus) throws BusinessException {
-
-        amoDao = new AmortizacionDao();
 
         try {
             /**
@@ -363,7 +361,6 @@ public class FiniquitosBo implements PagoCapitalFiniquitoBoImpl, Serializable {
         try {
             BancosDao banDao =  new BancosDao();
             
-            pagoDao = new PagosDao();
             Pagos pago = new Pagos();
 
             pago.setPagAcumulado(0.0);
@@ -468,5 +465,95 @@ public class FiniquitosBo implements PagoCapitalFiniquitoBoImpl, Serializable {
             throw new BusinessException(ex.getMessage(), ex);
         }
     }
+
+    /**
+     * Obtiene el detalle de los créditos que se mostrarán en la pantalla de finiquitos
+     */
+    public List<DetalleCreditoDto> obtenerCreditosParaFiniquito(Usuarios usuario, Date catAnterior, Date catSiguiente) throws BusinessException {
+        try {
+            // Paso 1: Obtener lista de créditos del usuario
+            List<DetalleCreditoDto> creditos = creditosDao.getCreditosBasicosPorUsuario(usuario.getUsuId());
+            if (creditos.isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            // Paso 2: Extraer IDs
+            List<Integer> idsCredito = new ArrayList<>();
+            for (DetalleCreditoDto dto : creditos) {
+                idsCredito.add(dto.getCreId());
+            }
+
+            // Paso 3: Obtener totales de amortización por crédito
+            Map<Integer, TotalesAmortizacionDto> totalesMap = creditosDao.getTotalesAmortizacion(idsCredito, catAnterior, catSiguiente);
+
+            // Paso 4: Combinar resultados
+            for (DetalleCreditoDto credito : creditos) {
+                TotalesAmortizacionDto totales = totalesMap.get(credito.getCreId());
+                if (totales != null) {
+                    credito.setSaldoPendiente(totales.getSaldoPendiente());
+                    credito.setSaldoCapital(totales.getSaldoCapital());
+                    credito.setSaldoTotal(totales.getSaldoPendiente() + totales.getSaldoCapital());
+                   
+                }
+            }
+
+            return creditos;
+        } catch (Exception e) {
+            throw new BusinessException("Error al obtener créditos para finiquito", e);
+        }
+    }
+
+
+            /**
+     * Obtiene el detalle de los créditos que se mostrarán en la pantalla de
+     * finiquitos
+     *
+     * @param usuario
+     * @return
+     * @throws mx.com.evoti.bo.exception.BusinessException
+     */
+    public List<DetalleCreditoDto> obtCreditosDetalleFiniquito(Usuarios usuario) throws BusinessException {
+
+        /**
+         * Obtiene la fecha en que se subio el último archivo, esta se utilizará
+         * para sacar la deuda de las catorcenas pendientes anteriores
+         */
+        Date catorcenaUltArchivo= null;
+        
+        if(usuario.getEmpresas().getEmpId()!= 5){
+            catorcenaUltArchivo = creBo.getCatorcenaUltArchivo(usuario.getEmpresas().getEmpId());
+        }else{
+            catorcenaUltArchivo = creBo.getCatorcenaUltArchivo(Constantes.AMX);
+        }
+        
+
+        /**
+         * Obtiene la catorcena siguiente a la fecha en que se subió el ultimo
+         * archivo, para sacar el monto del capital total que se debe
+         */
+        Date catorcenaCapital = creBo.obtCatorcenaSig(catorcenaUltArchivo);
+
+        /**
+         * Obtiene el detalle de créditos que se mostrará en la pantalla de
+         * finiquitos
+         */
+        List<DetalleCreditoDto> creditos = obtenerCreditosParaFiniquito(usuario, catorcenaUltArchivo, catorcenaCapital);
+
+        try {
+
+            List avales;
+            
+            for (DetalleCreditoDto cre : creditos) {
+              avales =  creditosDao.getAvalesXCredito(cre.getCreId());
+              cre.setNoAvales(avales.size());
+            }
+        } catch (IntegracionException ex) {
+            throw new BusinessException(ex.getMessage(), ex);
+        }
+
+        return creditos;
+    }
+
+
 
 }

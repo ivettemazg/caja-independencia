@@ -6,16 +6,19 @@
 package mx.com.evoti.dao;
 
 import mx.com.evoti.dto.DetalleCreditoDto;
+import mx.com.evoti.dto.TotalesAmortizacionDto;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import mx.com.evoti.dao.exception.IntegracionException;
 import mx.com.evoti.dto.CreditoDto;
-import mx.com.evoti.dto.PagoDto;
 import mx.com.evoti.dto.finiquito.AvalesCreditoDto;
 import mx.com.evoti.hibernate.config.HibernateUtil;
 import mx.com.evoti.hibernate.pojos.CreditosFinal;
-import mx.com.evoti.hibernate.pojos.Pagos;
 import mx.com.evoti.util.Constantes;
 import mx.com.evoti.util.Util;
 import org.hibernate.Query;
@@ -527,6 +530,80 @@ public class CreditosDao extends ManagerDB implements Serializable {
         }
 
     }
+
+    public List<DetalleCreditoDto> getCreditosBasicosPorUsuario(Integer usuId) throws IntegracionException {
+        try {
+            super.beginTransaction();
+
+            SQLQuery query = session.createSQLQuery(String.format(
+            "SELECT "
+            +"cre_id AS creId,"
+            +"cre_clave AS creClave,"
+            +"pro_descripcion AS proDescripcion,"
+            +"cre_prestamo AS crePrestamo,"
+            +"IFNULL(cre_catorcenas, 1) AS creCatorcenas,"
+            +"cre_est_nombre AS creEstatusNombre,"
+            +"cre_est_id AS creEstatusId"
+            +"FROM creditos_final "
+            +"INNER JOIN productos ON creditos_final.cre_producto = productos.pro_id "
+            +"INNER JOIN credito_estatus ON creditos_final.cre_estatus = credito_estatus.cre_est_id "
+            +"WHERE cre_usu_id = %1$s "
+            +"AND cre_producto NOT IN (4,5,11)",
+            usuId));
+
+            List<DetalleCreditoDto> results = query.setResultTransformer(Transformers.aliasToBean(DetalleCreditoDto.class)).list();
+            
+            super.endTransaction();
+            return results;
+        } catch (Exception e) {
+            super.endTransaction();
+            throw new IntegracionException("Error al obtener créditos básicos por usuario", e);
+        }
+    }
+
+   public Map<Integer, TotalesAmortizacionDto> getTotalesAmortizacion(List<Integer> idsCredito, Date catAnterior, Date catSiguiente) throws IntegracionException {
+    try {
+
+        System.out.println("Dentro de getTotalesAmortizacion: \n catorcena anterior:  "+catAnterior +"  \n catorcena siguiente:  "+ catSiguiente);
+        idsCredito.forEach(c -> {
+            System.out.println("Credito: " + c);
+        });
+        super.beginTransaction();
+
+        String sql = ""
+            + "SELECT "
+            + "    amo_credito AS creditoId,"
+            + "    SUM(CASE WHEN amo_fecha_pago <= :catAnterior THEN amo_monto_pago ELSE 0 END) AS saldoPendiente,"
+            + "    SUM(CASE WHEN amo_fecha_pago <= :catAnterior THEN 1 ELSE 0 END) AS catPendAdeudo,"
+            + "    SUM(CASE WHEN amo_fecha_pago >= :catSiguiente THEN amo_amortizacion ELSE 0 END) AS saldoCapital,"
+            + "    SUM(CASE WHEN amo_fecha_pago >= :catSiguiente THEN 1 ELSE 0 END) AS catPendCap "
+            + "FROM amortizacion "
+            + "WHERE amo_estatus_int = 1 "
+            + "  AND amo_credito IN (:idsCredito) "
+            + "GROUP BY amo_credito";
+
+        Query query = session.createSQLQuery(sql)
+                .setParameterList("idsCredito", idsCredito)
+                .setParameter("catAnterior", catAnterior)
+                .setParameter("catSiguiente", catSiguiente);
+
+        List<TotalesAmortizacionDto> resultados = query
+                .setResultTransformer(Transformers.aliasToBean(TotalesAmortizacionDto.class))
+                .list();
+
+        Map<Integer, TotalesAmortizacionDto> map = new HashMap<>();
+        for (TotalesAmortizacionDto dto : resultados) {
+            map.put(dto.getCreditoId(), dto);
+        }
+
+        super.endTransaction();
+        return map;
+    } catch (Exception e) {
+        super.endTransaction();
+        throw new IntegracionException("Error al obtener los totales de amortización", e);
+    }
+}
+
 
     public static void main(String args[]) {
         try {
