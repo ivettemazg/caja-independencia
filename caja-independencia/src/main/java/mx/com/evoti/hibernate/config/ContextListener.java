@@ -50,11 +50,11 @@ public class ContextListener implements ServletContextListener, Serializable {
         }
     
         // Inicializando Log4J
-        ServletContext context = event.getServletContext();
-        String log4jConfigFile = context.getInitParameter("log4j-config-location");
-        String fullPath = context.getRealPath("") + File.separator + log4jConfigFile;
-    
-        PropertyConfigurator.configure(fullPath);
+
+        PropertyConfigurator.configure(
+        Thread.currentThread().getContextClassLoader().getResource("log4j.properties")
+        );
+
     
         // Inicializando Hibernate
         HibernateUtil.buildSessionFactory();

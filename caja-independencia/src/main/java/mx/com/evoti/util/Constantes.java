@@ -240,6 +240,7 @@ public class Constantes {
     public static final Integer PAGEST_FINIQ_12 =12;
     
     //ESTATUS BAJA_EMPLEADO
+    public static final Integer BAJA_INICIADA = 0;
     public static final Integer BAJA_PENDIENTE = 1;
     public static final Integer BAJA_AHORROSXDEVOLVER = 2;
     public static final Integer BAJA_COMPLETADA = 3;

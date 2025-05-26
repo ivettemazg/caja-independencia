@@ -1,6 +1,7 @@
 package mx.com.evoti.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class TotalesAmortizacionDto implements Serializable {
 
@@ -9,8 +10,8 @@ public class TotalesAmortizacionDto implements Serializable {
     private Integer creditoId;
     private Double saldoPendiente;
     private Double saldoCapital;
-    private Integer catPendAdeudo;
-    private Integer catPendCap;
+    private BigDecimal catPendAdeudo;
+    private BigDecimal catPendCap;
 
     public Integer getCreditoId() {
         return creditoId;
@@ -36,19 +37,19 @@ public class TotalesAmortizacionDto implements Serializable {
         this.saldoCapital = saldoCapital;
     }
 
-    public Integer getCatPendAdeudo() {
-        return catPendAdeudo != null ? catPendAdeudo : 0;
+    public BigDecimal getCatPendAdeudo() {
+        return catPendAdeudo != null ? catPendAdeudo : BigDecimal.ZERO;
     }
 
-    public void setCatPendAdeudo(Integer catPendAdeudo) {
+    public void setCatPendAdeudo(BigDecimal catPendAdeudo) {
         this.catPendAdeudo = catPendAdeudo;
     }
 
-    public Integer getCatPendCap() {
-        return catPendCap != null ? catPendCap : 0;
+    public BigDecimal getCatPendCap() {
+        return catPendCap != null ? catPendCap : BigDecimal.ZERO;
     }
 
-    public void setCatPendCap(Integer catPendCap) {
+    public void setCatPendCap(BigDecimal catPendCap) {
         this.catPendCap = catPendCap;
     }
 } 

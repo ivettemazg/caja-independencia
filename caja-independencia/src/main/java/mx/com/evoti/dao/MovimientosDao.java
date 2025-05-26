@@ -6,6 +6,7 @@
 package mx.com.evoti.dao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import mx.com.evoti.dao.exception.IntegracionException;
 import mx.com.evoti.dto.AhorroVoluntarioDto;
@@ -42,20 +43,39 @@ public class MovimientosDao extends ManagerDB implements Serializable {
      * @throws IntegracionException
      */
     public List<MovimientosDto> getAFANFyR(Integer usuId) throws IntegracionException {
-
         super.beginTransaction();
-        String sql = String.format("select mov_usu_id as movUsuId,mov_producto as movProducto,mov_ar as movAr,"
-                + "sum(mov_deposito) as totalMovimiento,mov_clave_empleado as movClaveEmpleado,mov_empresa as movEmpresa "
-                + "from movimientos where mov_usu_id=%1$s and mov_producto in (1,2) "
-                + "group by mov_producto, mov_ar", usuId);
+
+        String sql =
+            "SELECT mov_producto, mov_ar, SUM(mov_deposito), " +
+            "       ANY_VALUE(mov_usu_id), " +
+            "       ANY_VALUE(mov_clave_empleado), " +
+            "       ANY_VALUE(mov_empresa) " +
+            "FROM movimientos " +
+            "WHERE mov_usu_id = :usuId " +
+            "  AND mov_producto IN (1, 2) " +
+            "GROUP BY mov_producto, mov_ar";
 
         SQLQuery query = session.createSQLQuery(sql);
+        query.setParameter("usuId", usuId);
 
-        List<MovimientosDto> movs = query.setResultTransformer(Transformers.aliasToBean(MovimientosDto.class)).list();
+        @SuppressWarnings("unchecked")
+        List<Object[]> rawResults = (List<Object[]>) query.list();
+
+        List<MovimientosDto> resultados = new ArrayList<>();
+
+        for (Object[] row : rawResults) {
+            MovimientosDto dto = new MovimientosDto();
+            dto.setMovProducto(row[0] != null ? ((Number) row[0]).intValue() : null);
+            dto.setMovAr(row[1] != null ? ((Number) row[1]).intValue() : null);
+            dto.setTotalMovimiento(row[2] != null ? ((Number) row[2]).doubleValue() : null);
+            dto.setMovUsuId(row[3] != null ? ((Number) row[3]).intValue() : null);
+            dto.setMovClaveEmpleado(row[4] != null ? ((Number) row[4]).intValue() : null);
+            dto.setMovEmpresa(row[5] != null ? ((Number) row[5]).intValue() : null);
+            resultados.add(dto);
+        }
 
         super.endTransaction();
-        return movs;
-
+        return resultados;
     }
 
     /**

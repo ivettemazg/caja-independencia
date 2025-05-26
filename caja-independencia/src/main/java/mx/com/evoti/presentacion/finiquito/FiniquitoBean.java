@@ -18,6 +18,7 @@ import mx.com.evoti.presentacion.BaseBean;
 import mx.com.evoti.presentacion.admon.DetalleAdeudoCreditosBean;
 import mx.com.evoti.service.finiquito.FiniquitoService;
 import mx.com.evoti.service.finiquito.ValidadorFiniquito;
+import mx.com.evoti.util.Constantes;
 import mx.com.evoti.util.Util;
 
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     private MovimientosDto movDevSelected;
     private String cveCredSeleccionado;
 
+    private Double sumaTotalDevolucion;
     private Double adeudoTotalCredito;
     private Double adeudoAjustado;
     private Double montoFiniquito;
@@ -66,10 +68,10 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     public void init() {
 
         finiquitoService = new FiniquitoService();
-            try {
-                Integer idUsuBaja = (Integer) getSession().getAttribute("usuBajaId");
+        try {
+            Integer idUsuBaja = (Integer) getSession().getAttribute("usuBajaId");
 
-                if (idUsuBaja == null) {
+            if (idUsuBaja == null) {
                 LOGGER.error("El atributo usuBajaId no está presente en sesión");
                 muestraMensajeError("Error", "No se pudo cargar la información del usuario en sesión", null);
                 return;
@@ -81,23 +83,44 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             detAdCreBean.setUsuario(usuarioBaja);
             detAdCreBean.obtieneCreditosDetalle();
             this.creditos = detAdCreBean.getCreditos();
-            this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
+
+            if (creditos == null) {
+                creditos = new java.util.ArrayList<>();
+            }
 
             boolean todosPagados = creditos.stream().allMatch(c -> ValidadorFiniquito.estaPagado(c.getCreEstatusId()));
             LOGGER.debug("***************** Todos pagados: {}", todosPagados);
             boolean hayActivos = creditos.stream().anyMatch(c -> ValidadorFiniquito.estaActivo(c.getCreEstatusId()));
             LOGGER.debug("***************** Hay activos: {}", hayActivos);
 
-            //Cuando todos estan pagados y no hay activos, solo muestra tabla de ahorros (origen 1)
-            //Cuando hay activos, muestra tabla de ahorros y creditos (origen 2)
             this.rdrTblMovimientos = creditos.isEmpty() || (todosPagados && !hayActivos);
-            LOGGER.debug("***************** rdrTblMovimientos: ", rdrTblMovimientos);
+            LOGGER.debug("***************** rdrTblMovimientos: {}", rdrTblMovimientos);
             this.origen = rdrTblMovimientos ? 1 : 2;
+
+            this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
+            this.sumaTotalDevolucion = movimientos.stream()
+                    .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
+                    .sum();
+
         } catch (BusinessException ex) {
             LOGGER.error("Error inicializando bean de finiquito", ex);
             muestraMensajeError("Error al cargar información de baja", ex.getMessage(), null);
         }
     }
+
+    public void obtieneTotalesMovimientos() {
+        try {
+                LOGGER.debug("***************** OBTIENETOTALESMOVIMIENTO++++++++++++++++++++++++++++++");
+                this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
+                this.sumaTotalDevolucion = movimientos.stream()
+                    .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
+                    .sum();
+    
+        } catch (BusinessException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+        }
+    }
+
 
     public void initDlgAjuste() {
         try {
@@ -164,6 +187,28 @@ public class FiniquitoBean extends BaseBean implements Serializable {
         }
     }
 
+     public void devolverTotalAhorro() {
+        try {
+            for (MovimientosDto dto : movimientos) {
+                dto.setDevolucion(dto.getTotalMovimiento());
+                dto.setTotalMovimiento(0.0);
+                dto.setDevolucionFecha(new Date());
+                finiquitoService.devolverAhorroConBancos(dto, usuarioBaja);
+            }
+
+            this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
+            this.sumaTotalDevolucion = movimientos.stream()
+                .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
+                .sum();
+
+            updtComponent("frmCreditoDetalle:tblAhorros");
+            updtComponent("frmCreditoDetalle:otEst");
+        } catch (BusinessException ex) {
+            LOGGER.error("Error al devolver total de ahorros", ex);
+            muestraMensajeError("Error en devolución", ex.getMessage(), null);
+        }
+    }
+
     public void initDlgTransferir() {
         try {
             DetalleCreditoDto credito = detAdCreBean.getCreditoSelected();
@@ -212,6 +257,53 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             muestraMensajeError("Error al mandar a incobrable", ex.getMessage(), null);
         }
     }
+
+
+    public void inicializaDialogDev(MovimientosDto mov) {
+        this.movDevSelected = mov;
+
+        if (this.movDevSelected != null) {
+            this.movDevSelected.setDevolucion(this.movDevSelected.getTotalMovimiento());
+            this.movDevSelected.setDevolucionFecha(Util.restaHrToDate(new Date(), 6));
+        }
+
+        updtComponent("frmDlgDev");
+    }
+
+    public void actualizarBajaEmpleadoFinal() {
+        try {
+            double saldoCreditos = creditos.stream()
+                    .mapToDouble(c -> c.getSaldoTotal() != null ? c.getSaldoTotal() : 0.0)
+                    .sum();
+            double saldoAhorros = movimientos.stream()
+                    .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
+                    .sum();
+
+            int estatus;
+            if (saldoCreditos >= 5.0) {
+                estatus = Constantes.BAJA_PENDIENTE;
+            } else if (saldoAhorros >= 5.0) {
+                estatus = Constantes.BAJA_AHORROSXDEVOLVER;
+            } else {
+                estatus = Constantes.BAJA_COMPLETADA;
+            }
+
+            finiquitoService.actualizarBajaEmpleadoConFiniquito(
+                usuarioBaja.getUsuId(),
+                Util.round(saldoCreditos),
+                Util.round(saldoAhorros),
+                estatus,
+                new Date()
+            );
+            LOGGER.info("   → Baja actualizada con estatus final=" + estatus);
+
+        } catch (Exception e) {
+            LOGGER.error("Error al actualizar baja_empleados desde finiquito", e);
+        }
+    }
+
+
+
 
     public void setDetAdCreBean(DetalleAdeudoCreditosBean detAdCreBean) {
         this.detAdCreBean = detAdCreBean;
@@ -287,6 +379,14 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public Integer getOrigen() { return origen; }
     public void setOrigen(Integer origen) { this.origen = origen; }
+
+    public Double getSumaTotalDevolucion() {
+    return sumaTotalDevolucion;
+    }
+
+    public void setSumaTotalDevolucion(Double sumaTotalDevolucion) {
+        this.sumaTotalDevolucion = sumaTotalDevolucion;
+    }
 
 
 } 

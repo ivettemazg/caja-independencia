@@ -11,6 +11,8 @@ import mx.com.evoti.bo.CreditosBo;
 import mx.com.evoti.bo.MovimientosBo;
 import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.bo.usuarioComun.PerfilBo;
+import mx.com.evoti.dao.FiniquitoDao;
+import mx.com.evoti.dao.exception.IntegracionException;
 import mx.com.evoti.dto.DetalleCreditoDto;
 import mx.com.evoti.dto.MovimientosDto;
 import mx.com.evoti.dto.finiquito.AvalesCreditoDto;
@@ -266,5 +268,11 @@ public class FiniquitoService {
         creditoBo.updtCreditoEstatus(credito.getCreId(), Constantes.CRE_EST_INCOBRABLE, fechaIncobrable);
         creditoBo.updtEstatusAmoInt(credito.getCreId(), Constantes.AMO_ESTATUS_INCOB_12);
     }
+    
+    public void actualizarBajaEmpleadoConFiniquito(Integer usuId, double deudaCreditos, double ahorros, int estatus, Date fechaFiniquito) throws IntegracionException {
+        FiniquitoDao dao = new FiniquitoDao();
+        dao.actualizarBajaEmpleadoConFiniquito(usuId, deudaCreditos, ahorros, estatus, fechaFiniquito);
+    }
+
 
 } 

@@ -9,6 +9,10 @@ import mx.com.evoti.dto.DetalleCreditoDto;
 import mx.com.evoti.dto.TotalesAmortizacionDto;
 
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -126,69 +130,260 @@ public class CreditosDao extends ManagerDB implements Serializable {
      * @throws IntegracionException
      */
     public List<DetalleCreditoDto> getDetalleAdeudoCredito(int idUsuario, Date catAnterior, Date catSiguiente) throws IntegracionException {
-
+    try {
         super.beginTransaction();
 
-        SQLQuery query = session.createSQLQuery(String.format("select cre_id as creId, cre_clave as creClave, " +
-                " pro_descripcion as proDescripcion, cre_prestamo as crePrestamo, " +
-"                 cre_catorcenas as creCatorcenas, " +
-"                 IFNULL(cat_pendts.saldoPendiente,0) as saldoPendiente, " +
-"                 IFNULL(capital_pendt.saldoCapital,0) as saldoCapital, " +
-"                 IFNULL(cat_pendts.saldoPendiente,0)+IFNULL(capital_pendt.saldoCapital,0) as saldoTotal, " +
-"                 cre_est_nombre as creEstatusNombre, " +
-"                 cre_est_id as creEstatusId, " +
-"                 IFNULL(capital_pendt.catPendCap,0)+IFNULL(cat_pendts.catPendAdeudo,0) as catorcenasPendientes " +
-"                 from creditos_final left join ( " +
-"                 select amo_credito, sum(amo_monto_pago) as saldoPendiente, count(amo_id) as catPendAdeudo from amortizacion " +
-"                 where amo_estatus_int = 1 " +
-"                 and amo_fecha_pago <= '%1$s' " +
-"                 group by amo_credito ) cat_pendts on cat_pendts.amo_Credito = creditos_final.cre_id " +
-"                 left join ( " +
-"                 select amo_credito, sum(amo_amortizacion) as saldoCapital, count(amo_id) as catPendCap from amortizacion " +
-"                 where amo_estatus_int = 1 " +
-"                 and amo_fecha_pago >= '%2$s' " +
-"                 group by amo_credito) capital_pendt on capital_pendt.amo_credito = creditos_final.cre_id " +
-"                 inner join productos on creditos_final.cre_producto = productos.pro_id " +
-"                 inner join credito_estatus on credito_estatus.cre_est_id = creditos_final.cre_estatus " +
-"                where cre_usu_id =%3$s " +
-"                and cre_producto not in (4,5,11) " +
-"                " +
-"                UNION " +
-"                select cre_id as creId, cre_clave as creClave, " +
-"                pro_descripcion as proDescripcion, cre_prestamo as crePrestamo, " +
-"                IFNULL(cre_catorcenas, 1) as creCatorcenas, " +
-"                round(IFNULL(cat_pendts.saldoPendiente,0), 2) as saldoPendiente," +
-"                round(IFNULL(capital_pendt.saldoCapital,0),2) as saldoCapital," +
-"                round(IFNULL(cat_pendts.saldoPendiente,0)+IFNULL(capital_pendt.saldoCapital,0),2) as saldoTotal," +
-"                cre_est_nombre as creEstatusNombre, " +
-"                cre_est_id as creEstatusId, " +
-"                IFNULL(cre_catorcenas, 1) as catorcenasPendientes " +
-"                 from creditos_final left join ( " +
-"                select amo_credito, count(amo_id) as catPendAdeudo, " +
-"                s.sol_fecha_Creacion as FechaCreacion,c.cre_fecha_primer_pago as FechaPrimerPago,a.amo_interes as Interes," +
-"                 ((datediff('%1$s',s.sol_fecha_Creacion))/14)*((a.amo_interes)/ " +
-"                 ((datediff(c.cre_fecha_primer_pago,s.sol_fecha_Creacion))/14)) as saldoPendiente " +
-"                from amortizacion a left join creditos_final c on a.amo_credito=c.cre_id " +
-"                left join solicitudes s on c.cre_solicitud=s.sol_id " +
-"                where amo_estatus_int = 1 " +
-"                group by amo_credito " +
-"                ) cat_pendts on cat_pendts.amo_Credito = creditos_final.cre_id " +
-"                left join ( " +
-"                select amo_credito, sum(amo_capital) as saldoCapital, count(amo_id) as catPendCap from amortizacion " +
-"                where amo_estatus_int = 1 " +
-"                and amo_fecha_pago >= '%2$s' " +
-"                group by amo_credito) capital_pendt on capital_pendt.amo_credito = creditos_final.cre_id " +
-"                inner join productos on creditos_final.cre_producto = productos.pro_id " +
-"                inner join credito_estatus on credito_estatus.cre_est_id = creditos_final.cre_estatus " +
-"                where cre_usu_id =%3$s " +
-"                and cre_producto in (4,5,11) ", Util.generaFechaFormateada(catAnterior), Util.generaFechaFormateada(catSiguiente), idUsuario));
+        String fechaAnterior = Util.generaFechaFormateada(catAnterior);
+        String fechaSiguiente = Util.generaFechaFormateada(catSiguiente);
 
-        List<DetalleCreditoDto> lstPagos = query.setResultTransformer(Transformers.aliasToBean(DetalleCreditoDto.class)).list();
+        String sql = "SELECT cre_id AS creId, cre_clave AS creClave, " +
+                "pro_descripcion AS proDescripcion, cre_prestamo AS crePrestamo, " +
+                "cre_catorcenas AS creCatorcenas, " +
+                "IFNULL(cat_pendts.saldoPendiente,0) AS saldoPendiente, " +
+                "IFNULL(capital_pendt.saldoCapital,0) AS saldoCapital, " +
+                "IFNULL(cat_pendts.saldoPendiente,0)+IFNULL(capital_pendt.saldoCapital,0) AS saldoTotal, " +
+                "cre_est_nombre AS creEstatusNombre, " +
+                "cre_est_id AS creEstatusId, " +
+                "IFNULL(capital_pendt.catPendCap,0)+IFNULL(cat_pendts.catPendAdeudo,0) AS catorcenasPendientes " +
+                "FROM creditos_final " +
+                "LEFT JOIN ( " +
+                "  SELECT amo_credito, SUM(amo_monto_pago) AS saldoPendiente, COUNT(amo_id) AS catPendAdeudo " +
+                "  FROM amortizacion " +
+                "  WHERE amo_estatus_int = 1 AND amo_fecha_pago <= :fechaAnterior " +
+                "  GROUP BY amo_credito " +
+                ") cat_pendts ON cat_pendts.amo_credito = creditos_final.cre_id " +
+                "LEFT JOIN ( " +
+                "  SELECT amo_credito, SUM(amo_amortizacion) AS saldoCapital, COUNT(amo_id) AS catPendCap " +
+                "  FROM amortizacion " +
+                "  WHERE amo_estatus_int = 1 AND amo_fecha_pago >= :fechaSiguiente " +
+                "  GROUP BY amo_credito " +
+                ") capital_pendt ON capital_pendt.amo_credito = creditos_final.cre_id " +
+                "INNER JOIN productos ON creditos_final.cre_producto = productos.pro_id " +
+                "INNER JOIN credito_estatus ON credito_estatus.cre_est_id = creditos_final.cre_estatus " +
+                "WHERE cre_usu_id = :idUsuario AND cre_producto NOT IN (4,5,11) " +
+                "UNION " +
+                "SELECT cre_id AS creId, cre_clave AS creClave, " +
+                "pro_descripcion AS proDescripcion, cre_prestamo AS crePrestamo, " +
+                "IFNULL(cre_catorcenas, 1) AS creCatorcenas, " +
+                "ROUND(IFNULL(cat_pendts.saldoPendiente, 0), 2) AS saldoPendiente, " +
+                "ROUND(IFNULL(capital_pendt.saldoCapital, 0), 2) AS saldoCapital, " +
+                "ROUND(IFNULL(cat_pendts.saldoPendiente, 0) + IFNULL(capital_pendt.saldoCapital, 0), 2) AS saldoTotal, " +
+                "cre_est_nombre AS creEstatusNombre, " +
+                "cre_est_id AS creEstatusId, " +
+                "IFNULL(cre_catorcenas, 1) AS catorcenasPendientes " +
+                "FROM creditos_final " +
+                "LEFT JOIN ( " +
+                "  SELECT amo_credito, COUNT(amo_id) AS catPendAdeudo, " +
+                "         s.sol_fecha_Creacion AS FechaCreacion, c.cre_fecha_primer_pago AS FechaPrimerPago, " +
+                "         ANY_VALUE(a.amo_interes) AS Interes, " +
+                "         ((DATEDIFF(:fechaAnterior, s.sol_fecha_Creacion))/14) * " +
+                "         (ANY_VALUE(a.amo_interes) / ((DATEDIFF(c.cre_fecha_primer_pago, s.sol_fecha_Creacion))/14)) AS saldoPendiente " +
+                "  FROM amortizacion a " +
+                "  LEFT JOIN creditos_final c ON a.amo_credito = c.cre_id " +
+                "  LEFT JOIN solicitudes s ON c.cre_solicitud = s.sol_id " +
+                "  WHERE amo_estatus_int = 1 " +
+                "  GROUP BY amo_credito " +
+                ") cat_pendts ON cat_pendts.amo_credito = creditos_final.cre_id " +
+                "LEFT JOIN ( " +
+                "  SELECT amo_credito, SUM(amo_capital) AS saldoCapital, COUNT(amo_id) AS catPendCap " +
+                "  FROM amortizacion " +
+                "  WHERE amo_estatus_int = 1 AND amo_fecha_pago >= :fechaSiguiente " +
+                "  GROUP BY amo_credito " +
+                ") capital_pendt ON capital_pendt.amo_credito = creditos_final.cre_id " +
+                "INNER JOIN productos ON creditos_final.cre_producto = productos.pro_id " +
+                "INNER JOIN credito_estatus ON credito_estatus.cre_est_id = creditos_final.cre_estatus " +
+                "WHERE cre_usu_id = :idUsuario AND cre_producto IN (4,5,11)";
 
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setParameter("fechaAnterior", fechaAnterior);
+        query.setParameter("fechaSiguiente", fechaSiguiente);
+        query.setParameter("idUsuario", idUsuario);
+
+        List<DetalleCreditoDto> resultados = query.setResultTransformer(Transformers.aliasToBean(DetalleCreditoDto.class)).list();
+
+        return resultados;
+    } catch (Exception ex) {
+        throw new IntegracionException("Error al obtener el detalle de adeudo de crédito", ex);
+    } finally {
         super.endTransaction();
-        return lstPagos;
-
     }
+}
+
+
+   @SuppressWarnings("unchecked")
+    public List<DetalleCreditoDto> getDetalleAdeudoCreditoFiniquito(
+            int  usuId,
+            Date catAnterior,
+            Date catSiguiente) throws IntegracionException {
+
+        LOGGER.info("► Inicia getDetalleAdeudoCreditoFiniquito para usuId=" + usuId);
+
+        super.beginTransaction();
+        try {
+            /* 1. Fechas ------------------------------------------------------- */
+            String fAnt = Util.generaFechaFormateada(catAnterior);
+            String fSig = Util.generaFechaFormateada(catSiguiente);
+
+            /* 2. Créditos base ------------------------------------------------ */
+            final String SQL_CREDITOS =
+                "SELECT cf.cre_id, cf.cre_clave, p.pro_descripcion,  " +
+                "       cf.cre_prestamo, COALESCE(cf.cre_catorcenas,1), " +
+                "       ce.cre_est_nombre, ce.cre_est_id " +
+                "FROM   creditos_final cf " +
+                "       JOIN productos       p  ON cf.cre_producto = p.pro_id " +
+                "       JOIN credito_estatus ce ON cf.cre_estatus  = ce.cre_est_id " +
+                "WHERE  cf.cre_usu_id = :uid   AND cf.cre_producto %s";
+
+            List<Object[]> filasCreditosNorm = session.createSQLQuery(
+                    String.format(SQL_CREDITOS, "NOT IN (4,5,11)"))
+                .setParameter("uid", usuId)
+                .list();
+            LOGGER.info("   → creditosNormales  filas = " + filasCreditosNorm.size());
+
+            List<Object[]> filasCreditosEsp = session.createSQLQuery(
+                    String.format(SQL_CREDITOS, "IN (4,5,11)"))
+                .setParameter("uid", usuId)
+                .list();
+            LOGGER.info("   → creditosEspeciales filas = " + filasCreditosEsp.size());
+
+            /* 3-A. Pendientes ------------------------------------------------- */
+            List<Object[]> pendientesRows = session.createSQLQuery(
+                "SELECT amo_credito, SUM(amo_monto_pago), COUNT(amo_id) " +
+                "FROM   amortizacion " +
+                "WHERE  amo_estatus_int = 1 AND amo_fecha_pago <= :fAnt " +
+                "GROUP  BY amo_credito")
+                .setParameter("fAnt", fAnt)
+                .list();
+            LOGGER.info("   → pendientes         filas = " + pendientesRows.size());
+
+            /* 3-B. Capitales -------------------------------------------------- */
+            List<Object[]> capitalRows = session.createSQLQuery(
+                "SELECT amo_credito, SUM(amo_amortizacion), COUNT(amo_id) " +
+                "FROM   amortizacion " +
+                "WHERE  amo_estatus_int = 1 AND amo_fecha_pago >= :fSig " +
+                "GROUP  BY amo_credito")
+                .setParameter("fSig", fSig)
+                .list();
+            LOGGER.info("   → capitales          filas = " + capitalRows.size());
+
+            /* 3-C. Interés proyectado ---------------------------------------- */
+            List<Object[]> interesRows = session.createSQLQuery(
+                "SELECT a.amo_credito, ANY_VALUE(a.amo_interes), " +
+                "       ((DATEDIFF(:fAnt, s.sol_fecha_creacion))/14) * " +
+                "       (ANY_VALUE(a.amo_interes) / " +
+                "        ((DATEDIFF(c.cre_fecha_primer_pago, s.sol_fecha_creacion))/14)) " +
+                "         AS saldo_proyectado " +
+                "FROM   amortizacion a " +
+                "       JOIN creditos_final c ON c.cre_id = a.amo_credito " +
+                "       JOIN solicitudes    s ON s.sol_id = c.cre_solicitud " +
+                "WHERE  a.amo_estatus_int = 1 " +
+                "GROUP  BY a.amo_credito")
+                .setParameter("fAnt", fAnt)
+                .list();
+            LOGGER.info("   → intereses          filas = " + interesRows.size());
+
+            /* 4. Mapas rápidos ----------------------------------------------- */
+            Map<Integer, Aggregate> mapPend    = toAggregateMap(pendientesRows);
+            Map<Integer, Aggregate> mapCapital = toAggregateMap(capitalRows);
+
+            Map<Integer, Aggregate> mapInteres = new HashMap<>();
+            for (Object[] r : interesRows) {
+                int    creId = ((Number) r[0]).intValue();
+                double saldo = r[2] != null ? ((Number) r[2]).doubleValue() : 0d;
+                mapInteres.put(creId, new Aggregate(saldo, 0));
+            }
+
+            /* 5. Construcción de DTOs ---------------------------------------- */
+            List<DetalleCreditoDto> resultado = new ArrayList<>();
+
+            for (Object[] r : filasCreditosNorm) {
+                resultado.add(crearDtoDesdeRow(r, mapPend, mapCapital, null));
+            }
+            for (Object[] r : filasCreditosEsp) {
+                resultado.add(crearDtoDesdeRow(r, mapInteres, mapCapital, r));
+            }
+
+            LOGGER.info("► Fin getDetalleAdeudoCreditoFiniquito – DTOs=" + resultado.size());
+            return resultado;
+
+        } catch (Exception ex) {
+            LOGGER.error("✖ Error en getDetalleAdeudoCreditoFiniquito", ex);
+            throw new IntegracionException("Error al obtener detalle de adeudo de crédito", ex);
+        } finally {
+            super.endTransaction();
+        }
+    }
+
+    /* ========================================================================== */
+    /* Utilidades privadas                                                        */
+    /* ========================================================================== */
+
+    /** Convierte filas  [creditoId, suma, conteo]  →  Map<credId,Aggregate>. */
+    private Map<Integer, Aggregate> toAggregateMap(List<Object[]> rows) {
+        Map<Integer, Aggregate> map = new HashMap<>();
+        for (Object[] r : rows) {
+            int     cred   = ((Number) r[0]).intValue();
+            double  suma   = r[1] != null ? ((Number) r[1]).doubleValue() : 0d;
+            long    conteo = r[2] != null ? ((Number) r[2]).longValue()   : 0L;
+            map.put(cred, new Aggregate(suma, conteo));
+        }
+        return map;
+    }
+
+    /** Construye un DetalleCreditoDto a partir de la fila base y los agregados. */
+    private DetalleCreditoDto crearDtoDesdeRow(
+            Object[] baseRow,
+            Map<Integer, Aggregate> mapPend,
+            Map<Integer, Aggregate> mapCapital,
+            Object[] filaEspecial /* null para créditos normales */) {
+
+        int    creId         = ((Number) baseRow[0]).intValue();
+        String creClave      = (String)  baseRow[1];
+        String proDesc       = (String)  baseRow[2];
+        double crePrestamo   = baseRow[3] != null ? ((Number) baseRow[3]).doubleValue() : 0d;
+        BigInteger creCatorcenas = (baseRow[4] != null) ? new BigInteger(((Number) baseRow[4]).toString()) : BigInteger.ONE;
+        String estatusNom    = (String)  baseRow[5];
+        int    estatusId     = ((Number) baseRow[6]).intValue();
+
+        Aggregate pend = mapPend   .getOrDefault(creId, new Aggregate());
+        Aggregate cap  = mapCapital.getOrDefault(creId, new Aggregate());
+
+        DetalleCreditoDto dto = new DetalleCreditoDto();
+        dto.setCreId(creId);
+        dto.setCreClave(creClave);
+        dto.setProDescripcion(proDesc);
+        dto.setCrePrestamo(crePrestamo);
+        dto.setCreCatorcenas(creCatorcenas);
+        dto.setSaldoPendiente(pend.sum);
+        dto.setSaldoCapital(cap.sum);
+        dto.setSaldoTotal(pend.sum + cap.sum);
+        dto.setCreEstatusNombre(estatusNom);
+        dto.setCreEstatusId(estatusId);
+
+        // ► catorcenas pendientes:
+        //   - normales: pend.count + cap.count
+        //   - especiales: la propia catorcena del crédito (filaEspecial != null)
+        BigInteger catPend;
+        if (filaEspecial == null) {                     // créditos normales
+            long totalCats = pend.count + cap.count;
+            catPend = BigInteger.valueOf(totalCats);
+        } else {                                        // créditos especiales
+            catPend = creCatorcenas;                    // ya es BigInteger
+        }
+        dto.setCatorcenasPendientes(catPend);
+
+        return dto;
+    }
+
+    /** Estructura auxiliar - suma y conteo por crédito. */
+    private static class Aggregate {
+        double sum;
+        long   count;
+        Aggregate() { this(0,0); }
+        Aggregate(double s, long c) { sum = s; count = c; }
+    }
+
+
 
     /**
      * Obtiene el detalle de un credito de un usuario, regresando información
@@ -537,18 +732,18 @@ public class CreditosDao extends ManagerDB implements Serializable {
 
             SQLQuery query = session.createSQLQuery(String.format(
             "SELECT "
-            +"cre_id AS creId,"
-            +"cre_clave AS creClave,"
-            +"pro_descripcion AS proDescripcion,"
-            +"cre_prestamo AS crePrestamo,"
-            +"IFNULL(cre_catorcenas, 1) AS creCatorcenas,"
-            +"cre_est_nombre AS creEstatusNombre,"
-            +"cre_est_id AS creEstatusId"
+            +"cre_id AS creId, "
+            +"cre_clave AS creClave, "
+            +"pro_descripcion AS proDescripcion, "
+            +"cre_prestamo AS crePrestamo, "
+            +"IFNULL(cre_catorcenas, 1) AS creCatorcenas, "
+            +"cre_est_nombre AS creEstatusNombre, "
+            +"cre_est_id AS creEstatusId  "
             +"FROM creditos_final "
             +"INNER JOIN productos ON creditos_final.cre_producto = productos.pro_id "
             +"INNER JOIN credito_estatus ON creditos_final.cre_estatus = credito_estatus.cre_est_id "
             +"WHERE cre_usu_id = %1$s "
-            +"AND cre_producto NOT IN (4,5,11)",
+            +"AND cre_producto NOT IN (4,5,11) ",
             usuId));
 
             List<DetalleCreditoDto> results = query.setResultTransformer(Transformers.aliasToBean(DetalleCreditoDto.class)).list();
@@ -604,8 +799,35 @@ public class CreditosDao extends ManagerDB implements Serializable {
     }
 }
 
+    public static void main(String[] args) {
+       
+        CreditosDao dao = new CreditosDao();
+        List<Integer> idsCredito = Arrays.asList(7911);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
 
-    public static void main(String args[]) {
+             HibernateUtil.buildSessionFactory2();
+            Date catAnterior = sdf.parse("2024-08-08");
+            Date catSiguiente = sdf.parse("2024-08-22");
+
+            Map<Integer, TotalesAmortizacionDto> resultados = dao.getTotalesAmortizacion(idsCredito, catAnterior, catSiguiente);
+            
+            for (Map.Entry<Integer, TotalesAmortizacionDto> entry : resultados.entrySet()) {
+                TotalesAmortizacionDto dto = entry.getValue();
+                System.out.println("Credito ID: " + dto.getCreditoId());
+                System.out.println("Saldo Pendiente: " + dto.getSaldoPendiente());
+                System.out.println("Catorcenas Pendientes Adeudo: " + dto.getCatPendAdeudo());
+                System.out.println("Saldo Capital: " + dto.getSaldoCapital());
+                System.out.println("Catorcenas Pendientes Capital: " + dto.getCatPendCap());
+            }
+
+                HibernateUtil.closeSessionFactory();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+/*
         try {
             HibernateUtil.buildSessionFactory2();
             CreditosDao dao = new CreditosDao();
@@ -618,7 +840,10 @@ public class CreditosDao extends ManagerDB implements Serializable {
 
         } catch (IntegracionException ex) {
             ex.printStackTrace();
-        }
+        } 
+*/
+
     }
+
 
 }

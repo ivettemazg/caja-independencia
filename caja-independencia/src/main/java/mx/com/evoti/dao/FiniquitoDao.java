@@ -6,6 +6,11 @@
 package mx.com.evoti.dao;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import org.hibernate.Query;
+import org.hibernate.HibernateException;
+
 import mx.com.evoti.dao.exception.IntegracionException;
 import mx.com.evoti.hibernate.pojos.BajaEmpleados;
 
@@ -40,5 +45,37 @@ public class FiniquitoDao extends ManagerDB implements Serializable {
         super.executeUpdate(hql);
     }
     
-    
+    public void actualizarBajaEmpleadoConFiniquito(Integer usuId, double deudaCreditos, double ahorros, int estatus, Date fechaFiniquito) throws IntegracionException {
+        try {
+            this.beginTransaction();
+
+            String hql = "FROM BajaEmpleados WHERE baeIdEmpleado = :usuId ORDER BY bae_id DESC";
+            Query consulta = this.session.createQuery(hql)
+                    .setParameter("usuId", usuId)
+                    .setMaxResults(1);
+
+            BajaEmpleados baja = (BajaEmpleados) consulta.uniqueResult();
+
+            if (baja == null) {
+                throw new IntegracionException("No se encontró un registro en baja_empleados para el usuario: " + usuId);
+            }
+
+            baja.setBaeDeudaCreditos(deudaCreditos);
+            baja.setBaeAhorros(ahorros);
+            baja.setBaeEstatus(estatus);
+            baja.setBaeFechaAdministracion(fechaFiniquito);
+            baja.setBaeFechaPdf(new Date());      // opcional
+            baja.setBaeFechaDeposito(new Date()); // opcional
+
+            this.session.update(baja);
+            this.session.getTransaction().commit();
+            this.session.flush();
+
+        } catch (HibernateException ex) {
+            this.session.getTransaction().rollback();
+            throw new IntegracionException("Error al actualizar baja_empleados", ex);
+        } finally {
+            this.endTransaction();
+        }
+    }
 }

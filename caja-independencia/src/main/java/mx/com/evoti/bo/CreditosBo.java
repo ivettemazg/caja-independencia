@@ -171,7 +171,8 @@ public class CreditosBo implements Serializable, AmortizacionTransformerImpl {
      */
     private List<DetalleCreditoDto> getDetalleAdeudoCredito(int idUsuario, Date catAnterior, Date catSiguiente) throws BusinessException {
         try {
-            return creditoDao.getDetalleAdeudoCredito(idUsuario, catAnterior, catSiguiente);
+           // return creditoDao.getDetalleAdeudoCredito(idUsuario, catAnterior, catSiguiente);
+            return creditoDao.getDetalleAdeudoCreditoFiniquito(idUsuario, catAnterior, catSiguiente);
         } catch (IntegracionException ex) {
             throw new BusinessException(ex.getMessage(), ex);
         }

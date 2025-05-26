@@ -49,6 +49,7 @@ public class DetalleAdeudoCreditosBean extends BaseBean implements Serializable{
      * de ajustar
      */
     public void obtieneCreditosDetalle(){
+        System.out.println("DENTRO DE OBTIENE CREDITOS DETALLE");
         try {
            creditos = finiquitosBo.obtCreditosDetalleFiniquito(usuario);
           

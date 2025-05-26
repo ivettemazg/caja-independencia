@@ -136,67 +136,44 @@ public class BajaEmpleadoBean extends BaseBean implements Serializable {
         nombreCompleto = usuarioBaja.getUsuNombre() + " " + usuarioBaja.getUsuPaterno() + " " + usuarioBaja.getUsuMaterno();
     }
 
+
+    private static final double CENTAVOS_IGNORABLES = 5.0;
+
     /**
      * Actualiza el estatus de un usuario a 0 - Baja
      */
     public void darDeBaja() {
+        LOGGER.info("► Inicia proceso de baja – usuId=" + usuarioBaja.getUsuId());
 
         try {
-
-            /**
-             * *
-             * Genera baja
-             */
+            // 1. Construir baja básica con estatus inicial
             BajaEmpleados baja = new BajaEmpleados();
             baja.setBaeFechaBaja(this.fechaBaja);
             baja.setBaeIdEmpleado(usuarioBaja.getUsuId());
+            baja.setBaeEstatus(Constantes.BAJA_INICIADA);
 
-            List<DetalleCreditoDto> creditos = creditoBo.obtCreditosDetalle(usuarioBaja);
-            List<MovimientosDto> ahorros = movsBo.getAhorrosByUsuId(usuarioBaja.getUsuId());
-
-            Double saldoTotal = 0.0;
-            Double totalAhorro = 0.0;
-            for (DetalleCreditoDto cred : creditos) {
-                saldoTotal += cred.getSaldoTotal();
-            }
-
-            for (MovimientosDto mov : ahorros) {
-                totalAhorro += mov.getTotalMovimiento();
-            }
-
-            //Cuando el saldo del credito es mayor a 10
-            if (saldoTotal >= 5) {
-                baja.setBaeEstatus(Constantes.BAJA_PENDIENTE);
-            }
-
-            //Si ya no tiene saldo en credito pero si tiene ahorro
-            if (saldoTotal <= 5 && totalAhorro >= 5) {
-                baja.setBaeEstatus(Constantes.BAJA_AHORROSXDEVOLVER);
-            }
-            
-            //Cuando no tiene saldo en credito ni en ahorro
-            if(saldoTotal <= 5 && totalAhorro <= 5){
-                baja.setBaeEstatus(Constantes.BAJA_COMPLETADA);
-            }
-            
-
-            baja.setBaeDeudaCreditos(Util.round(saldoTotal));
-            baja.setBaeAhorros(Util.round(totalAhorro));
-
+            // 2. Persistir baja y actualizar usuario
             finBo.insertBajaEmpleado(baja);
+            LOGGER.info("   → Baja insertada con estatus=BAJA_INICIADA");
 
             usuarioBaja.setUsuEstatus(Constantes.USU_BAJA_0);
             usuarioBaja.setUsuFechaBaja(this.fechaBaja);
-
             finBo.updtEstatusUsuario(usuarioBaja);
+            LOGGER.info("   → Estatus usuario actualizado a USU_BAJA_0");
 
+            // 3. Mensajes y navegación
             super.muestraMensajeExito("El usuario fue dado de baja", "", "msjDadoBaja");
             super.hideShowDlg("PF('dlgMessageExito').show()");
+
+            LOGGER.info("► Fin proceso de baja (OK)");
+
         } catch (BusinessException ex) {
-            LOGGER.error(ex.getMessage(), ex);
+            LOGGER.error("✖ Error en darDeBaja: " + ex.getMessage(), ex);
+            super.muestraMensajeError("Error al dar de baja:", "", "msjDadoBaja");
         }
     }
 
+    
     public void goToFiniquito() {
         HttpSession session = super.getSession();
         session.setAttribute("usuBajaId", usuarioBaja.getUsuId());

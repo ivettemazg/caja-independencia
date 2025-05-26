@@ -19,10 +19,6 @@
         <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
         <param-value>/WEB-INF/primefaces-spark.taglib.xml</param-value>
     </context-param>
-    <context-param>
-        <param-name>log4j-config-location</param-name>
-        <param-value>/WEB-INF/Log4J.properties</param-value>
-    </context-param>
    
     <listener>
         <listener-class>mx.com.evoti.hibernate.config.ContextListener</listener-class>
