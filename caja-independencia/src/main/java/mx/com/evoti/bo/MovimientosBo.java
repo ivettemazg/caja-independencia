@@ -42,6 +42,7 @@ public class MovimientosBo implements Serializable {
      */
     public List<MovimientosDto> getAhorrosByUsuId(Integer usuId) throws BusinessException {
         try {
+            //Obtiene ahorro fijo y no fijo
             List<MovimientosDto> aFNF = movDao.getAFANFyR(usuId);
 
             aFNF.forEach(x -> {
@@ -63,6 +64,7 @@ public class MovimientosBo implements Serializable {
 
             List<MovimientosDto> aV = movDao.getAVyR(usuId);
 
+            //Obtiene ahorro voluntario
             aV.forEach(x -> {
                 if (x.getMovProducto().equals(3) && x.getMovAr().equals(1)) {
                     x.setMovProductoStr("VOLUNTARIO APORTACION");

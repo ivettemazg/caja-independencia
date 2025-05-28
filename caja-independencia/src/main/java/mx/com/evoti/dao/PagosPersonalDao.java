@@ -12,6 +12,7 @@ import mx.com.evoti.dto.PagosPersonalDto;
 import mx.com.evoti.hibernate.pojos.Pagos;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -20,22 +21,44 @@ import org.hibernate.transform.Transformers;
 public class PagosPersonalDao extends ManagerDB implements Serializable {
 
     private static final long serialVersionUID = 3938836229899238731L;
+        private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(PagosPersonalDao.class);
 
+
+    @SuppressWarnings("unchecked")
     public List<PagosPersonalDto> obtienePagosAgrupados(Integer usuId) throws IntegracionException {
 
+        LOGGER.info("► Inicia obtienePagosAgrupados – usuId=" + usuId);
+
         super.beginTransaction();
-        String sql = String.format("select pag_estatus as claveEstatus,pag_est_nombre as estatus,"
-                + "sum(pag_deposito) as deposito,sum(pag_acumulado) as acumulado,count(*) as numeroPagos "
-                + "from pagos p left join pagos_estatus e on p.pag_estatus=e.pag_est_id where pag_usu_id=%1$s "
-                + "group by pag_est_nombre order by pag_estatus", usuId);
+        try {
+            String sql =
+                "SELECT p.pag_estatus        AS claveEstatus, " +
+                "       e.pag_est_nombre     AS estatus, " +
+                "       SUM(p.pag_deposito)  AS deposito, " +
+                "       SUM(p.pag_acumulado) AS acumulado, " +
+                "       COUNT(*)             AS numeroPagos " +
+                "FROM   pagos p " +
+                "LEFT   JOIN pagos_estatus e ON e.pag_est_id = p.pag_estatus " +
+                "WHERE  p.pag_usu_id = :usuId " +
+                "GROUP  BY p.pag_estatus, e.pag_est_nombre " +
+                "ORDER  BY p.pag_estatus";
 
-        SQLQuery query = session.createSQLQuery(sql);
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setParameter("usuId", usuId);
+            List<PagosPersonalDto> pagos = query
+                .setResultTransformer(Transformers.aliasToBean(PagosPersonalDto.class))
+                .list();
 
-        List<PagosPersonalDto> pagos = query.setResultTransformer(Transformers.aliasToBean(PagosPersonalDto.class)).list();
+            LOGGER.info("   → filas devueltas = " + pagos.size());
+            return pagos;
 
-        super.endTransaction();
-        return pagos;
-
+        } catch (Exception ex) {
+            LOGGER.error("✖ Error en obtienePagosAgrupados", ex);
+            throw new IntegracionException("Error al obtener pagos agrupados", ex);
+        } finally {
+            super.endTransaction();
+            LOGGER.info("► Fin obtienePagosAgrupados");
+        }
     }
 
     public void savePago(Pagos pago) throws IntegracionException {

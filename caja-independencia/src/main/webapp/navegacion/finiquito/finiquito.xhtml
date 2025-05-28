@@ -50,6 +50,8 @@
 
     <ui:define name="content">
         <h:form id="frmCreditoDetalle">
+        <p:remoteCommand name="refrescarVistaFiniquito" actionListener="#{finBean.ejecutarRefrescoDesdeVista}" update="frmCreditoDetalle"/>
+
             <f:event type="preRenderComponent" listener="#{finBean.init}"/>
             <div class="layout-portlets-box">
                 <p:fieldset legend="Creditos" toggleable="true" toggleSpeed="500">
@@ -62,7 +64,7 @@
                         
                     </h:panelGrid>
                     <ui:insert name="creditosFiniq" >
-                        <ui:include src="../common/creditos-adeudo-tbl.xhtml"/>
+                        <ui:include src="../common/creditos-adeudo-tbl-finiquitos.xhtml"/>
                     </ui:insert>
 
                     <p:contextMenu for="tblCreditoAdeudos" style="width : 200px" >  
@@ -115,7 +117,7 @@
                             id="fechaDev" pattern="dd/MM/yyyy" locale="es" required="true" yearRange="c-3:c+3" />
 
                         <p:commandButton value="Devolver"  actionListener="#{finBean.aplicaDevolucion}"
-                                         oncomplete="PF('dlgDevolucionesW').hide(); PF('statusDialog').hide()"
+                                         oncomplete="PF('dlgDevolucionesW').hide(); PF('statusDialog').hide(); refrescarVistaFiniquito();"
                                          onstart="PF('statusDialog').show()"
                                          update=":frmDlgAjustar:tblAhorros :frmDlgAjustar:ipMontoDeuda 
                                          :frmDlgAjustar:ipFiniquito :frmDlgAjustar:msj :frmDlgAjustar:btnAjusta
@@ -171,7 +173,8 @@
                                       icon="fa fa-wrench Fs14 white"
                                       update=":frmDlgAjustar:msj"
                                         onstart="PF('statusDialog').show()"
-                                        oncomplete="PF('statusDialog').hide()"/>
+                                        oncomplete="PF('statusDialog').hide(); refrescarVistaFiniquito();"
+                                        />
 
 
 
@@ -291,10 +294,11 @@
 
                     <h:panelGrid columns ="2"> 
                         <p:commandButton id="cbAjusteCreditosAvales" value="Transferir" actionListener="#{finBean.transfiereCreditos()}"
-                                         rendered="#{finBean.rdrBtnTransferir}"
-                                         update=":frmDlgTransferir:msjDlgAjusteCredito"
-                                           onstart="PF('statusDialog').show()"
-                                        oncomplete="PF('statusDialog').hide()"
+                                        rendered="#{finBean.rdrBtnTransferir}"
+                                        update=":frmDlgTransferir:msjDlgAjusteCredito"
+                                        onstart="PF('statusDialog').show()"
+                                        oncomplete="PF('statusDialog').hide(); refrescarVistaFiniquito();"
+
                                          />
 
 
@@ -308,7 +312,8 @@
                                          rendered="#{finBean.rdrBtnIncobrable}"
                                          update=":frmDlgTransferir:msjDlgAjusteCredito"
                                            onstart="PF('statusDialog').show()"
-                                        oncomplete="PF('statusDialog').hide()"
+                                        oncomplete="PF('statusDialog').hide(); refrescarVistaFiniquito();"
+
                                          />
 
                     </h:panelGrid> 

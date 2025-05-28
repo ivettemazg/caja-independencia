@@ -21,6 +21,7 @@ import mx.com.evoti.service.finiquito.ValidadorFiniquito;
 import mx.com.evoti.util.Constantes;
 import mx.com.evoti.util.Util;
 
+import org.primefaces.event.RowEditEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,6 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     private Integer origen;
 
     public void init() {
-
         finiquitoService = new FiniquitoService();
         try {
             Integer idUsuBaja = (Integer) getSession().getAttribute("usuBajaId");
@@ -80,28 +80,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             this.usuarioBaja = finiquitoService.cargarUsuario(idUsuBaja);
             this.usuBajaNombreCompleto = usuarioBaja.getUsuNombre() + " " + usuarioBaja.getUsuPaterno() + " " + usuarioBaja.getUsuMaterno();
 
-            detAdCreBean.setUsuario(usuarioBaja);
-            detAdCreBean.obtieneCreditosDetalle();
-            this.creditos = detAdCreBean.getCreditos();
-
-            if (creditos == null) {
-                creditos = new java.util.ArrayList<>();
-            }
-
-            boolean todosPagados = creditos.stream().allMatch(c -> ValidadorFiniquito.estaPagado(c.getCreEstatusId()));
-            LOGGER.debug("***************** Todos pagados: {}", todosPagados);
-            boolean hayActivos = creditos.stream().anyMatch(c -> ValidadorFiniquito.estaActivo(c.getCreEstatusId()));
-            LOGGER.debug("***************** Hay activos: {}", hayActivos);
-
-            this.rdrTblMovimientos = creditos.isEmpty() || (todosPagados && !hayActivos);
-            LOGGER.debug("***************** rdrTblMovimientos: {}", rdrTblMovimientos);
-            this.origen = rdrTblMovimientos ? 1 : 2;
-
-            this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
-            this.sumaTotalDevolucion = movimientos.stream()
-                    .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
-                    .sum();
-
+            refrescarVista();
         } catch (BusinessException ex) {
             LOGGER.error("Error inicializando bean de finiquito", ex);
             muestraMensajeError("Error al cargar información de baja", ex.getMessage(), null);
@@ -112,9 +91,6 @@ public class FiniquitoBean extends BaseBean implements Serializable {
         try {
                 LOGGER.debug("***************** OBTIENETOTALESMOVIMIENTO++++++++++++++++++++++++++++++");
                 this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
-                this.sumaTotalDevolucion = movimientos.stream()
-                    .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
-                    .sum();
     
         } catch (BusinessException ex) {
             LOGGER.error(ex.getMessage(), ex);
@@ -187,7 +163,37 @@ public class FiniquitoBean extends BaseBean implements Serializable {
         }
     }
 
-     public void devolverTotalAhorro() {
+
+    public void onEdit(RowEditEvent event) {
+        try {
+            MovimientosDto mov = (MovimientosDto) event.getObject();
+
+            if (origen == 1) {
+                finiquitoService.devolverAhorroConBancos(mov, usuarioBaja);
+                muestraMensajeExito("La devolución fue realizada", "", null);
+            } else {
+                finiquitoService.devolverAhorroAbonoCredito(mov, usuarioBaja, movimientos, saldoCredito);
+            }
+
+            this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
+            updtComponent("frmAhoO1:tblAhorros");
+        } catch (BusinessException ex) {
+            LOGGER.error("Error en edición de fila de ahorros", ex);
+            muestraMensajeError("Error aplicando devolución", ex.getMessage(), null);
+        }
+    }
+
+    public void onEditTransfiere(RowEditEvent event) {
+
+        AvalesCreditoDto aval = (AvalesCreditoDto) event.getObject();
+
+        LOGGER.debug("" + aval.getMontoCredito());
+        LOGGER.debug("" + aval.getPrimerCatorcena());
+        LOGGER.debug("" + aval.getCatorcenas());
+
+    }
+
+    public void devolverTotalAhorro() {
         try {
             for (MovimientosDto dto : movimientos) {
                 dto.setDevolucion(dto.getTotalMovimiento());
@@ -197,9 +203,6 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             }
 
             this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
-            this.sumaTotalDevolucion = movimientos.stream()
-                .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
-                .sum();
 
             updtComponent("frmCreditoDetalle:tblAhorros");
             updtComponent("frmCreditoDetalle:otEst");
@@ -303,6 +306,28 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     }
 
 
+        public void refrescarVista() {
+        try {
+            detAdCreBean.setUsuario(usuarioBaja);
+            detAdCreBean.obtieneCreditosDetalle();
+            this.creditos = detAdCreBean.getCreditos();
+
+            if (creditos == null) {
+                creditos = new java.util.ArrayList<>();
+            }
+
+            boolean todosPagados = creditos.stream().allMatch(c -> ValidadorFiniquito.estaPagado(c.getCreEstatusId()));
+            boolean hayActivos = creditos.stream().anyMatch(c -> ValidadorFiniquito.estaActivo(c.getCreEstatusId()));
+
+            this.rdrTblMovimientos = creditos.isEmpty() || (todosPagados && !hayActivos);
+            this.origen = rdrTblMovimientos ? 1 : 2;
+
+            this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
+        } catch (BusinessException ex) {
+            LOGGER.error("Error refrescando vista", ex);
+            muestraMensajeError("Error actualizando vista", ex.getMessage(), null);
+        }
+    }
 
 
     public void setDetAdCreBean(DetalleAdeudoCreditosBean detAdCreBean) {
@@ -380,8 +405,13 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     public Integer getOrigen() { return origen; }
     public void setOrigen(Integer origen) { this.origen = origen; }
 
-    public Double getSumaTotalDevolucion() {
-    return sumaTotalDevolucion;
+    public double getSumaTotalDevolucion() {
+        if (movimientos == null) {
+            return 0.0;
+        }
+        return movimientos.stream()
+                .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
+                .sum();
     }
 
     public void setSumaTotalDevolucion(Double sumaTotalDevolucion) {
