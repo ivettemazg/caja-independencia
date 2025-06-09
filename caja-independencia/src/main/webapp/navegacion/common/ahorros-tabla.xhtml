@@ -11,11 +11,14 @@
                  >  
 
         <p:ajax event="rowEdit" listener="#{finBean.onEdit}" 
-                update=":frmDlgAjustar:tblAhorros :frmDlgAjustar:ipMontoDeuda 
-                :frmDlgAjustar:ipFiniquito :frmDlgAjustar:msj :frmDlgAjustar:btnAjusta
-                :frmCreditoDetalle:growlDevsAho"
+                update=":frmDlgAjustar:tblAhorros
+                        :frmDlgAjustar:ipFiniquito :frmDlgAjustar:msj
+                        :frmCreditoDetalle:growlDevsAho :frmDlgAjustar:pgResumenAjuste 
+                        :frmDlgAjustar:pgDlgAjustar1"
+
                 onstart="PF('statusDialog').show()"
-                oncomplete="PF('statusDialog').hide()"/>  
+                oncomplete="PF('statusDialog').hide()" />
+
 
         <p:column style='position: relative'>  
             <f:facet name="header"  >  
@@ -32,6 +35,12 @@
                 <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
             </h:outputText> 
         </p:column> 
+
+        <p:column headerText="Saldo restante">
+            <h:outputText value="#{mov.totalMovimiento - mov.devolucion}">
+                <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+            </h:outputText>
+        </p:column>
 
         <p:column headerText="Cantidad a devolver" style='position: relative'>  
 

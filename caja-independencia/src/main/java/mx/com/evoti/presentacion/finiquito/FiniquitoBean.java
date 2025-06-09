@@ -1,6 +1,5 @@
 package mx.com.evoti.presentacion.finiquito;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -8,11 +7,13 @@ import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.dto.DetalleCreditoDto;
 import mx.com.evoti.dto.MovimientosDto;
 import mx.com.evoti.dto.finiquito.AvalesCreditoDto;
+import mx.com.evoti.hibernate.pojos.Movimientos;
 import mx.com.evoti.hibernate.pojos.Usuarios;
 import mx.com.evoti.presentacion.BaseBean;
 import mx.com.evoti.presentacion.admon.DetalleAdeudoCreditosBean;
@@ -52,9 +53,27 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     private Double adeudoTotalCredito;
     private Double adeudoAjustado;
     private Double montoFiniquito;
-    private Double saldoCredito;
     private Date fechaFiniquito;
     private Date fechaIncobrable;
+    private Double deudaOriginal; 
+    private Double totalAplicadoDesdeAhorros;
+
+
+    public Double getDeudaOriginal() {
+        return deudaOriginal;
+    }
+
+    public void setDeudaOriginal(Double deudaOriginal) {
+        this.deudaOriginal = deudaOriginal;
+    }
+
+    public Double getTotalAplicadoDesdeAhorros() {
+        return totalAplicadoDesdeAhorros;
+    }
+
+    public void setTotalAplicadoDesdeAhorros(Double totalAplicadoDesdeAhorros) {
+        this.totalAplicadoDesdeAhorros = totalAplicadoDesdeAhorros;
+    }
 
     private Boolean rdrTblMovimientos;
     private Boolean rdrFiniquito;
@@ -109,80 +128,266 @@ public class FiniquitoBean extends BaseBean implements Serializable {
                 return;
             }
 
+            // Inicializar campos nuevos de resumen
+            this.deudaOriginal = credito.getSaldoTotal();
             this.adeudoTotalCredito = Util.round(credito.getSaldoTotal());
             this.adeudoAjustado = Util.round(credito.getSaldoTotal());
-            this.saldoCredito = Util.round(credito.getSaldoTotal());
+            this.totalAplicadoDesdeAhorros = 0.0;
+
             this.montoFiniquito = 0.0;
+
+            // Limpiar devoluciones previas si existen
+            for (MovimientosDto mov : movimientos) {
+                mov.setDevolucion(null);
+                mov.setDevolucionFecha(null);
+                mov.setEditadoFiniquitos(false);
+            }
 
             boolean tieneAhorros = ValidadorFiniquito.tieneAhorrosSuficientes(movimientos);
             this.rdrFiniquito = !tieneAhorros && adeudoTotalCredito > 1;
             this.rdrBtnAjustar = this.rdrFiniquito;
             this.editTable = tieneAhorros && adeudoTotalCredito > 1;
 
+            // Datos auxiliares para amortización
             detAdCreBean.getAmortizacionPagoCap();
             detAdCreBean.getAmortizacionesPendientes();
+
+            // Asegurar actualización del resumen visual
+            super.updtComponent("frmDlgAjustar:pgResumenAjuste");
+
         } catch (Exception ex) {
             LOGGER.error("Error al inicializar dialogo de ajuste", ex);
             muestraMensajeError("No fue posible cargar el diálogo de ajuste", ex.getMessage(), null);
         }
     }
 
+
     public void aplicaDevolucion() {
         try {
-            if (origen == 1) {
-                finiquitoService.devolverAhorroConBancos(movDevSelected, usuarioBaja);
-            } else {
-                finiquitoService.devolverAhorroAbonoCredito(movDevSelected, usuarioBaja, movimientos, saldoCredito);
+            if (movDevSelected != null) {
+                if (movDevSelected.getDevolucion() == null) {
+                    movDevSelected.setDevolucion(movDevSelected.getTotalMovimiento());
+                }
+                if (movDevSelected.getDevolucionFecha() == null) {
+                    movDevSelected.setDevolucionFecha(new Date());
+                }
+
+                // Determina el tipo de movimiento según el origen
+                String tipoMovimiento = (origen == 1) ? Constantes.MOV_TIPO_DEVOLUCION : Constantes.MOV_ABONOCREDITO;
+                boolean afectarBanco = (origen == 1);
+
+                Movimientos mov = finiquitoService.crearMovimientoDesdeDto(movDevSelected, tipoMovimiento);
+                finiquitoService.guardarMovimientoIndividual(mov, afectarBanco);
+
+                muestraMensajeExito("La devolución fue realizada exitosamente", "", null);
             }
+
             this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
+
+            // Recalcular total abono
+            double montoAbonoCredito = movimientos.stream()
+                    .mapToDouble(m -> m.getDevolucion() != null ? m.getDevolucion() : 0.0)
+                    .sum();
+
+            this.rdrBtnAjustar = montoAbonoCredito > 5.0;
+            this.adeudoAjustado = this.adeudoAjustado - montoAbonoCredito;
+
             updtComponent("frmCreditoDetalle:tblAhorros");
-            muestraMensajeExito("La devolución fue realizada", "", null);
-        } catch (BusinessException ex) {
+            updtComponent("frmDlgAjustar:btnAjusta");
+            updtComponent("frmDlgAjustar:pgResumenAjuste");
+
+        } catch (Exception ex) {
             LOGGER.error("Error aplicando devolución", ex);
             muestraMensajeError("Error aplicando devolución", ex.getMessage(), null);
         }
     }
+
+
+
+    public void onEdit(RowEditEvent event) {
+            try {
+                MovimientosDto mov = (MovimientosDto) event.getObject();
+
+                if (mov.getDevolucion() == null || mov.getDevolucion() < 0) {
+                    mov.setDevolucion(0.0);
+                }
+
+                // Ajustar valores válidos dentro del rango
+                double max = mov.getTotalMovimiento() != null ? mov.getTotalMovimiento() : 0.0;
+                if (mov.getDevolucion() > max) {
+                    mov.setDevolucion(max);
+                }
+
+                // Si no tiene fecha, asignar fecha actual
+                if (mov.getDevolucionFecha() == null) {
+                    mov.setDevolucionFecha(new Date());
+                }
+
+                // Marcar como editado para ser considerado en el ajuste
+                mov.setEditadoFiniquitos(true);
+
+                // Recalcular totales y estado del botón
+                recalcularTotales();
+
+                // Actualizar UI
+                updtComponent("frmDlgAjustar:btnAjusta");
+                updtComponent("frmDlgAjustar:pgDlgAjustar1");
+                updtComponent("frmDlgAjustar:pgResumenAjuste");
+
+            } catch (Exception ex) {
+                LOGGER.error("Error en edición de fila de ahorros", ex);
+                muestraMensajeError("Error aplicando devolución", ex.getMessage(), null);
+            }
+        }
+
 
     public void ajustaCredito() {
         try {
             DetalleCreditoDto credito = detAdCreBean.getCreditoSelected();
 
             if (Boolean.TRUE.equals(rdrFiniquito)) {
-                finiquitoService.aplicarFiniquito(usuarioBaja, credito, montoFiniquito, fechaFiniquito, detAdCreBean);
-                muestraMensajeExito("El crédito fue ajustado por finiquito", "", null);
+                aplicarModoFiniquito(credito);
             } else {
-                finiquitoService.aplicarAbono(usuarioBaja, movimientos, saldoCredito, detAdCreBean);
-                muestraMensajeExito("El crédito fue ajustado por abono", "", null);
+                if (!aplicarModoAbono(credito)) {
+                    return; // Detuvo el flujo por validación o error
+                }
             }
 
-            this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
-            updtComponent("frmCreditoDetalle:tblCreditoAdeudos");
+            actualizarVistaPostAjuste();
+
+            updtComponent("frmCreditoDetalle:growlDevsAho");
+            super.hideShowDlg("PF('dlgAjustaCreditoW').hide()");
+
         } catch (BusinessException ex) {
             LOGGER.error("Error al ajustar crédito", ex);
             muestraMensajeError("Error al ajustar crédito", ex.getMessage(), null);
         }
     }
 
+    private void aplicarModoFiniquito(DetalleCreditoDto credito) throws BusinessException {
+        finiquitoService.aplicarFiniquito(usuarioBaja, credito, montoFiniquito, fechaFiniquito, detAdCreBean);
+        muestraMensajeExito("El crédito fue ajustado por finiquito", "", null);
+    }
 
-    public void onEdit(RowEditEvent event) {
+    private boolean aplicarModoAbono(DetalleCreditoDto credito) {
+        List<MovimientosDto> abonosValidos = movimientos.stream()
+            .filter(m -> Boolean.TRUE.equals(m.isEditadoFiniquitos()) &&
+                        m.getDevolucion() != null && m.getDevolucion() > 0)
+            .peek(m -> {
+                if (m.getDevolucionFecha() == null) {
+                    m.setDevolucionFecha(new Date());
+                }
+            })
+            .collect(Collectors.toList());
+
+        if (abonosValidos.isEmpty()) {
+            muestraMensajeGen("No hay devoluciones válidas", "Debes registrar al menos una devolución válida para continuar", null, FacesMessage.SEVERITY_WARN);
+            return false;
+        }
+
+        double totalAbono = abonosValidos.stream()
+            .mapToDouble(MovimientosDto::getDevolucion)
+            .sum();
+
+        if (totalAbono > adeudoTotalCredito) {
+            muestraMensajeError("Error de validación", "El total de devoluciones excede el monto adeudado", null);
+            return false;
+        }
+
         try {
-            MovimientosDto mov = (MovimientosDto) event.getObject();
-
             if (origen == 1) {
-                finiquitoService.devolverAhorroConBancos(mov, usuarioBaja);
-                muestraMensajeExito("La devolución fue realizada", "", null);
+                for (MovimientosDto dto : abonosValidos) {
+                    Movimientos movimiento = finiquitoService.crearMovimientoDesdeDto(dto, Constantes.MOV_TIPO_DEVOLUCION);
+                    finiquitoService.guardarMovimientoIndividual(movimiento, true);
+                }
+                muestraMensajeExito("Las devoluciones fueron aplicadas", "", null);
             } else {
-                finiquitoService.devolverAhorroAbonoCredito(mov, usuarioBaja, movimientos, saldoCredito);
+                double saldoRestante = adeudoTotalCredito - totalAplicadoDesdeAhorros;
+                finiquitoService.aplicarAbono(usuarioBaja, abonosValidos, saldoRestante, detAdCreBean);
+                muestraMensajeExito("El crédito fue ajustado por abono", "", null);
             }
+        } catch (BusinessException e) {
+            LOGGER.error("Error guardando abono", e);
+            muestraMensajeError("Error guardando abono", e.getMessage(), null);
+            return false;
+        }
 
+        return true;
+    }
+
+    private void actualizarVistaPostAjuste() {
+        try {
             this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
-            updtComponent("frmAhoO1:tblAhorros");
-        } catch (BusinessException ex) {
-            LOGGER.error("Error en edición de fila de ahorros", ex);
-            muestraMensajeError("Error aplicando devolución", ex.getMessage(), null);
+            detAdCreBean.obtieneCreditosDetalle();
+            this.creditos = detAdCreBean.getCreditos();
+
+            updtComponent("frmCreditoDetalle:tblCreditoAdeudos");
+            updtComponent("frmCreditoDetalle:tblAhorros");
+
+        } catch (BusinessException e) {
+            LOGGER.error("Error actualizando vista post-ajuste", e);
+            muestraMensajeError("Error post-ajuste", e.getMessage(), null);
         }
     }
 
+
+    private void recalcularTotales() {
+        double totalAbono = movimientos.stream()
+            .filter(m -> m.getDevolucion() != null && m.getDevolucion() > 0)
+            .mapToDouble(MovimientosDto::getDevolucion)
+            .sum();
+
+        this.totalAplicadoDesdeAhorros = totalAbono;
+        this.adeudoAjustado = this.adeudoTotalCredito - totalAbono;
+        this.rdrBtnAjustar = totalAbono > 5.0;
+
+        updtComponent("frmDlgAjustar:pgResumenAjuste"); // asegúrate que el contenedor se actualiza
+    }
+
+
+    public double sumaTotalAplicado() {
+        return movimientos.stream()
+                .mapToDouble(m -> m.getDevolucion() != null ? m.getDevolucion() : 0.0)
+                .sum();
+    }
+
+    public void setDevolucionTotal(MovimientosDto mov) {
+        mov.setDevolucion(mov.getTotalMovimiento());
+        mov.setDevolucionFecha(new Date());
+        mov.setEditadoFiniquitos(true);
+        recalcularTotales();
+    }
+
+    public void devolverTotalAhorro() {
+        try {
+            for (MovimientosDto dto : movimientos) {
+                dto.setDevolucion(dto.getTotalMovimiento());
+                dto.setDevolucionFecha(new Date());
+                dto.setEditadoFiniquitos(true);
+            }
+
+            // Recalcular total de devoluciones
+            double totalAbono = movimientos.stream()
+                .mapToDouble(m -> m.getDevolucion() != null ? m.getDevolucion() : 0.0)
+                .sum();
+
+            this.rdrBtnAjustar = totalAbono > 5.0;
+            this.adeudoAjustado = this.adeudoTotalCredito - totalAbono;
+
+            updtComponent("frmCreditoDetalle:tblAhorros");
+            updtComponent("frmDlgAjustar:btnAjusta");
+            updtComponent("frmDlgAjustar:pgDlgAjustar1");
+            updtComponent("frmDlgAjustar:pgResumenAjuste");
+
+
+        } catch (Exception ex) {
+            LOGGER.error("Error al preparar devolución total", ex);
+            muestraMensajeError("Error preparando devolución", ex.getMessage(), null);
+        }
+    }
+
+
+    
     public void onEditTransfiere(RowEditEvent event) {
 
         AvalesCreditoDto aval = (AvalesCreditoDto) event.getObject();
@@ -193,31 +398,12 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     }
 
-    public void devolverTotalAhorro() {
-        try {
-            for (MovimientosDto dto : movimientos) {
-                dto.setDevolucion(dto.getTotalMovimiento());
-                dto.setTotalMovimiento(0.0);
-                dto.setDevolucionFecha(new Date());
-                finiquitoService.devolverAhorroConBancos(dto, usuarioBaja);
-            }
-
-            this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
-
-            updtComponent("frmCreditoDetalle:tblAhorros");
-            updtComponent("frmCreditoDetalle:otEst");
-        } catch (BusinessException ex) {
-            LOGGER.error("Error al devolver total de ahorros", ex);
-            muestraMensajeError("Error en devolución", ex.getMessage(), null);
-        }
-    }
 
     public void initDlgTransferir() {
         try {
             DetalleCreditoDto credito = detAdCreBean.getCreditoSelected();
             this.cveCredSeleccionado = credito.getCreClave();
-            this.adeudoTotalCredito = credito.getSaldoTotal();
-
+            
             if (!ValidadorFiniquito.esCreditoAjustable(credito.getCreEstatusId())) {
                 muestraMensajeGen("El crédito se encuentra " + credito.getCreEstatusNombre(), "Por lo tanto no puede ser transferido", null, FacesMessage.SEVERITY_WARN);
                 updtComponent("frmDlgTransferir:msjDlgAjusteCredito");
@@ -230,7 +416,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             this.rdrBtnTransferir = !avales.isEmpty();
             this.rdrBtnIncobrable = avales.isEmpty();
 
-            finiquitoService.asignarMontosAvalesProporcion(avales, adeudoTotalCredito);
+            finiquitoService.asignarMontosAvalesProporcion(avales, credito.getSaldoTotal());
         } catch (BusinessException ex) {
             LOGGER.error("Error al cargar diálogo de transferencia", ex);
             muestraMensajeError("Error al transferir crédito", ex.getMessage(), null);
@@ -329,6 +515,10 @@ public class FiniquitoBean extends BaseBean implements Serializable {
         }
     }
 
+    public void ejecutarRefrescoDesdeVista() {
+        refrescarVista();
+    }
+
 
     public void setDetAdCreBean(DetalleAdeudoCreditosBean detAdCreBean) {
         this.detAdCreBean = detAdCreBean;
@@ -371,9 +561,6 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public Double getMontoFiniquito() { return montoFiniquito; }
     public void setMontoFiniquito(Double montoFiniquito) { this.montoFiniquito = montoFiniquito; }
-
-    public Double getSaldoCredito() { return saldoCredito; }
-    public void setSaldoCredito(Double saldoCredito) { this.saldoCredito = saldoCredito; }
 
     public Date getFechaFiniquito() { return fechaFiniquito; }
     public void setFechaFiniquito(Date fechaFiniquito) { this.fechaFiniquito = fechaFiniquito; }

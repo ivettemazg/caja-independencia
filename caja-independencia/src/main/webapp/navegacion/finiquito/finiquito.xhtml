@@ -92,7 +92,11 @@
                     </ui:insert>
                 </p:fieldset>
             </div>
-            <p:growl id="growlDevsAho" sticky="true" life="11000" />
+                <p:growl id="growlDevsAho"
+                        sticky="true"
+                        life="11000"
+                        showDetail="true"
+                        autoUpdate="true" />
         </h:form>
         
         
@@ -119,8 +123,8 @@
                         <p:commandButton value="Devolver"  actionListener="#{finBean.aplicaDevolucion}"
                                          oncomplete="PF('dlgDevolucionesW').hide(); PF('statusDialog').hide(); refrescarVistaFiniquito();"
                                          onstart="PF('statusDialog').show()"
-                                         update=":frmDlgAjustar:tblAhorros :frmDlgAjustar:ipMontoDeuda 
-                                         :frmDlgAjustar:ipFiniquito :frmDlgAjustar:msj :frmDlgAjustar:btnAjusta
+                                         update=":frmDlgAjustar:tblAhorros 
+                                         :frmDlgAjustar:ipFiniquito :frmDlgAjustar:msj :frmDlgAjustar:btnAjusta :frmDlgAjustar:pgResumenAjuste
                                          :frmCreditoDetalle:growlDevsAho  :frmCreditoDetalle:tblAhorros">
                         </p:commandButton>
                 </h:panelGrid>
@@ -130,7 +134,7 @@
 
 
 
-        <p:dialog id="dlgAjustaCredito" widgetVar="dlgAjustaCreditoW" width="850" height="380"
+        <p:dialog id="dlgAjustaCredito" widgetVar="dlgAjustaCreditoW" width="950" height="480"
                   minimizable="false" maximizable="false" modal="true" 
                   header="Ajuste de créditos">
             <h:form id="frmDlgAjustar">
@@ -146,12 +150,27 @@
                     <ui:include src="../common/ahorros-tabla.xhtml"/>
                 </ui:insert>
 
+                <h:panelGrid id="pgResumenAjuste" columns="2" style="margin-top: 15px; font-weight: bold;" cellpadding="5">
+                    <h:outputText value="Deuda original:" />
+                    <h:outputText value="#{finBean.deudaOriginal}">
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                    </h:outputText>
+
+                    <h:outputText value="Total aplicado desde ahorros:" />
+                    <h:outputText value="#{finBean.totalAplicadoDesdeAhorros}">
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                    </h:outputText>
+
+                    <h:outputText value="Monto restante del crédito:" />
+                    <h:outputText value="#{finBean.adeudoAjustado}">
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
+                    </h:outputText>
+                </h:panelGrid>
+
+
+
                 <p:spacer height="20"/>
                 <h:panelGrid id="pgDlgAjustar1" columns="2" cellpadding="2" cellspacing="5" >
-                    <p:outputLabel for="ipMontoDeuda" value="Monto Adeudo :  " />  
-                    <h:outputText id="ipMontoDeuda" value="#{finBean.adeudoAjustado}" > 
-                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
-                    </h:outputText>  
 
                     <p:outputLabel for="ipFiniquito" value="Descuento empresa :  " rendered ="#{finBean.rdrFiniquito}"/>  
                     <p:inputNumber id="ipFiniquito" value="#{finBean.montoFiniquito}" 
@@ -171,13 +190,12 @@
                     <p:commandButton  value="Ajustar" rendered="#{finBean.rdrBtnAjustar}"
                                       actionListener="#{finBean.ajustaCredito()}"
                                       icon="fa fa-wrench Fs14 white"
-                                      update=":frmDlgAjustar:msj"
+                                      update=":frmDlgAjustar:msj :frmDlgAjustar:tblAhorros 
+                                      :frmDlgAjustar:pgResumenAjuste :frmCreditoDetalle:tblAhorros
+                                       :frmCreditoDetalle:growlDevsAho"
                                         onstart="PF('statusDialog').show()"
-                                        oncomplete="PF('statusDialog').hide(); refrescarVistaFiniquito();"
+                                        oncomplete="PF('statusDialog').hide();"
                                         />
-
-
-
                 </h:panelGrid>
 
                 <p:messages id ="msj"/>

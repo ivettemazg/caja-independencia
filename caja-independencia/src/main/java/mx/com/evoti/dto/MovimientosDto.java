@@ -33,6 +33,21 @@ public class MovimientosDto implements Serializable{
      private Double totalMovimiento;
      private String empAbreviacion;
      private Integer movCambioanfaf;
+    private boolean editadoFiniquitos;
+
+    /**
+    * @return the editadoFiniquitos
+    */
+    public boolean isEditadoFiniquitos() {
+       return editadoFiniquitos;
+    }
+
+    /**
+    * @param editadoFiniquitos the editadoFiniquitos to set
+    */
+    public void setEditadoFiniquitos(boolean editadoFiniquitos) {
+       this.editadoFiniquitos = editadoFiniquitos;
+    }
 
 
      /**
@@ -320,4 +335,6 @@ public class MovimientosDto implements Serializable{
     public void setMovCambioanfaf(Integer movCambioanfaf) {
         this.movCambioanfaf = movCambioanfaf;
     }
+
+      
 }
