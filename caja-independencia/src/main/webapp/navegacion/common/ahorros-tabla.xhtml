@@ -84,19 +84,4 @@
         </p:column> 
 
     </p:dataTable> 
-    <p:spacer height="20"/>
-    <h:panelGrid id="pgDevolucionesTotales" columns="3" cellpadding="10" cellspacing="10" >
-        
-       <h:outputText id = "otLblTotalDevolucion" value="Total de la Devolución " style="font-weight: bold" />  
-       <h:outputText id= "otEst" value="#{finBean.sumaTotalDevolucion}" >  
-            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" type="currency" currencySymbol="$"/>
-       </h:outputText> 
-        
-      <p:commandButton  value="Devolver total de ahorros" 
-                        actionListener="#{finBean.devolverTotalAhorro}"
-                        icon="fa fa-wrench Fs14 white"
-                        update=":frmCreditoDetalle:tblAhorros :frmCreditoDetalle:otEst"
-                        onstart="PF('statusDialog').show()"
-                        oncomplete="PF('statusDialog').hide(); refrescarVistaFiniquito();"/>
-    </h:panelGrid>
 </ui:composition>

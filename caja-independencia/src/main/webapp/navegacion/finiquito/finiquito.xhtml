@@ -76,7 +76,7 @@
                                     oncomplete="PF('statusDialog').hide(); PF('dlgAjustaCreditoW').show()"
                                     />  
                         <p:menuitem value="Transferir crédito" icon="fa fa-arrow-right"
-                                    actionListener="#{finBean.initDlgTransferir()}"
+                                    actionListener="#{finBean.initDlgTransferir()}"                                    
                                     oncomplete="PF('dlgTransferirW').show(); PF('statusDialog').hide()"
                                     onstart="PF('statusDialog').show()"
                                     update=":frmDlgTransferir" 
@@ -316,7 +316,6 @@
                                         update=":frmDlgTransferir:msjDlgAjusteCredito"
                                         onstart="PF('statusDialog').show()"
                                         oncomplete="PF('statusDialog').hide(); refrescarVistaFiniquito();"
-
                                          />
 
 

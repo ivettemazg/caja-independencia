@@ -5,6 +5,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +15,7 @@ import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.dto.DetalleCreditoDto;
 import mx.com.evoti.dto.MovimientosDto;
 import mx.com.evoti.dto.finiquito.AvalesCreditoDto;
+import mx.com.evoti.hibernate.pojos.Bancos;
 import mx.com.evoti.hibernate.pojos.Movimientos;
 import mx.com.evoti.hibernate.pojos.Usuarios;
 import mx.com.evoti.presentacion.BaseBean;
@@ -192,6 +195,8 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             this.rdrBtnAjustar = montoAbonoCredito > 5.0;
             this.adeudoAjustado = this.adeudoAjustado - montoAbonoCredito;
 
+            actualizarBajaEmpleadoFinal();
+
             updtComponent("frmCreditoDetalle:tblAhorros");
             updtComponent("frmDlgAjustar:btnAjusta");
             updtComponent("frmDlgAjustar:pgResumenAjuste");
@@ -254,6 +259,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             }
 
             actualizarVistaPostAjuste();
+            actualizarBajaEmpleadoFinal();
 
             updtComponent("frmCreditoDetalle:growlDevsAho");
             super.hideShowDlg("PF('dlgAjustaCreditoW').hide()");
@@ -332,6 +338,13 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
 
     private void recalcularTotales() {
+        if (movimientos == null || movimientos.isEmpty()) {
+            totalAplicadoDesdeAhorros = 0.0;
+            adeudoAjustado = adeudoTotalCredito;
+            rdrBtnAjustar = false;
+            return;
+        }
+
         double totalAbono = movimientos.stream()
             .filter(m -> m.getDevolucion() != null && m.getDevolucion() > 0)
             .mapToDouble(MovimientosDto::getDevolucion)
@@ -341,7 +354,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
         this.adeudoAjustado = this.adeudoTotalCredito - totalAbono;
         this.rdrBtnAjustar = totalAbono > 5.0;
 
-        updtComponent("frmDlgAjustar:pgResumenAjuste"); // asegúrate que el contenedor se actualiza
+        updtComponent("frmDlgAjustar:pgResumenAjuste");
     }
 
 
@@ -360,34 +373,24 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public void devolverTotalAhorro() {
         try {
-            for (MovimientosDto dto : movimientos) {
-                dto.setDevolucion(dto.getTotalMovimiento());
-                dto.setDevolucionFecha(new Date());
-                dto.setEditadoFiniquitos(true);
-            }
+            // Ejecuta devolución total en el servicio
+            finiquitoService.devolverTotalesAhorros(usuarioBaja, movimientos);
 
-            // Recalcular total de devoluciones
-            double totalAbono = movimientos.stream()
-                .mapToDouble(m -> m.getDevolucion() != null ? m.getDevolucion() : 0.0)
-                .sum();
-
-            this.rdrBtnAjustar = totalAbono > 5.0;
-            this.adeudoAjustado = this.adeudoTotalCredito - totalAbono;
-
+            // Refresca la lista de movimientos y recalcúla totales
+            movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
+            recalcularTotales();
+            actualizarBajaEmpleadoFinal();
+            // Actualiza componentes de la vista
             updtComponent("frmCreditoDetalle:tblAhorros");
-            updtComponent("frmDlgAjustar:btnAjusta");
-            updtComponent("frmDlgAjustar:pgDlgAjustar1");
             updtComponent("frmDlgAjustar:pgResumenAjuste");
 
-
-        } catch (Exception ex) {
-            LOGGER.error("Error al preparar devolución total", ex);
-            muestraMensajeError("Error preparando devolución", ex.getMessage(), null);
+            muestraMensajeExito("Todas las devoluciones fueron aplicadas correctamente", "", null);
+        } catch (BusinessException ex) {
+            LOGGER.error("Error al devolver total de ahorro", ex);
+            muestraMensajeError("Error procesando devoluciones", ex.getMessage(), null);
         }
     }
 
-
-    
     public void onEditTransfiere(RowEditEvent event) {
 
         AvalesCreditoDto aval = (AvalesCreditoDto) event.getObject();
@@ -428,6 +431,9 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             DetalleCreditoDto credito = detAdCreBean.getCreditoSelected();
             finiquitoService.transferir(credito, avales);
             this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
+        
+            actualizarVistaPostAjuste();
+            actualizarBajaEmpleadoFinal();
             muestraMensajeExito("El crédito fue transferido", "", null);
         } catch (BusinessException ex) {
             LOGGER.error("Error al transferir crédito", ex);
@@ -461,10 +467,10 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public void actualizarBajaEmpleadoFinal() {
         try {
-            double saldoCreditos = creditos.stream()
+            double saldoCreditos = this.creditos.stream()
                     .mapToDouble(c -> c.getSaldoTotal() != null ? c.getSaldoTotal() : 0.0)
                     .sum();
-            double saldoAhorros = movimientos.stream()
+            double saldoAhorros = this.movimientos.stream()
                     .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
                     .sum();
 

@@ -70,31 +70,34 @@ public class AltasUsuarioDao extends ManagerDB implements Serializable {
      * @throws IntegracionException
      */
     public List<MovimientosDto> obtenerHistorialCambiosAltas() throws IntegracionException {
-
         try {
             super.beginTransaction();
 
-            Query query = session.createQuery(
-                    String.format(
-                            "select mov.movNombreEmpleado as movNombreEmpleado, mov.movClaveEmpleado as movClaveEmpleado, "
-                            + "mov.movFecha as movFecha, emp.empAbreviacion as empAbreviacion, "
-                            + "mov.movArhId as movArhId, mov.movEmpresa as movEmpresa "
-                            + "from Movimientos mov, Empresas emp "
-                            + "where emp.empId = mov.movEmpresa  "
-                            + "and mov.movUsuId is null "
-                            + "and mov.movNombreEmpleado is not null "
-                            + "group by  mov.movClaveEmpleado, mov.movFecha,emp.empAbreviacion,mov.movArhId,"
-                            + "mov.movEmpresa"));
+            String sql = 
+                "SELECT ANY_VALUE(mov.mov_nombre_empleado) AS movNombreEmpleado, " +
+                "       mov.mov_clave_empleado            AS movClaveEmpleado, " +
+                "       mov.mov_fecha                     AS movFecha, " +
+                "       emp.emp_abreviacion               AS empAbreviacion, " +
+                "       mov.mov_arh_id                    AS movArhId, " +
+                "       mov.mov_empresa                   AS movEmpresa " +
+                "FROM   movimientos mov " +
+                "JOIN   empresas emp ON emp.emp_id = mov.mov_empresa " +
+                "WHERE  mov.mov_usu_id IS NULL " +
+                "  AND  mov.mov_nombre_empleado IS NOT NULL " +
+                "GROUP BY mov.mov_clave_empleado, mov.mov_fecha, emp.emp_abreviacion, " +
+                "         mov.mov_arh_id, mov.mov_empresa";
 
-            List<MovimientosDto> movimientos = query.setResultTransformer(Transformers.aliasToBean(MovimientosDto.class)).list();
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setResultTransformer(Transformers.aliasToBean(MovimientosDto.class));
 
+            List<MovimientosDto> movimientos = query.list();
             return movimientos;
-        } catch (Exception he) {
-            throw new IntegracionException(he);
+
+        } catch (Exception e) {
+            throw new IntegracionException("Error al obtener historial de cambios de altas", e);
         } finally {
             super.endTransaction();
         }
-
     }
 
     /**

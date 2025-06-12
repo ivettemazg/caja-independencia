@@ -44,6 +44,7 @@
       <p:commandButton  value="Devolver total de ahorros" 
                         actionListener="#{finBean.devolverTotalAhorro}"
                         icon="fa fa-wrench Fs14 white"
+                        disabled="#{finBean.sumaTotalDevolucion == 0}"
                         update=":frmCreditoDetalle:tblAhorros :frmCreditoDetalle:otEst"
                         onstart="PF('statusDialog').show()"
                         oncomplete="PF('statusDialog').hide(); refrescarVistaFiniquito();"

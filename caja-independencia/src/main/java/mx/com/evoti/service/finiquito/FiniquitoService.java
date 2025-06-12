@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import mx.com.evoti.bo.administrador.finiquito.FiniquitosBo;
 import mx.com.evoti.bo.bancos.BancosBo;
 import mx.com.evoti.bo.CatorcenasBo;
@@ -272,6 +274,36 @@ public class FiniquitoService {
     public void actualizarBajaEmpleadoConFiniquito(Integer usuId, double deudaCreditos, double ahorros, int estatus, Date fechaFiniquito) throws IntegracionException {
         FiniquitoDao dao = new FiniquitoDao();
         dao.actualizarBajaEmpleadoConFiniquito(usuId, deudaCreditos, ahorros, estatus, fechaFiniquito);
+    }
+
+    // Nuevo método para centralizar la devolución total de ahorros:
+    public void devolverTotalesAhorros(Usuarios usuario, List<MovimientosDto> dtos) throws BusinessException {
+        if (dtos == null || dtos.isEmpty()) {
+            return;
+        }
+
+        // Usamos un solo ID de relación para agrupar todas las devoluciones
+        BigInteger idRelacion = new BigInteger(Util.genUUID().toString());
+
+        // Preparamos la lista de movimientos a guardar
+        List<Movimientos> movs = dtos.stream()
+            .peek(dto -> {
+                dto.setDevolucion(dto.getTotalMovimiento());
+                if (dto.getDevolucionFecha() == null) {
+                    dto.setDevolucionFecha(new Date());
+                }
+            })
+            .map(dto -> crearMovimientoDesdeDto(dto, Constantes.MOV_TIPO_DEVOLUCION))
+            .collect(Collectors.toList());
+
+        // Guardamos todos los movimientos en lote
+        movimientosBo.guardaDevoluciones(movs);
+
+        // Generamos y guardamos los registros en bancos
+        for (Movimientos mov : movs) {
+            Bancos banco = generarBancoDesdeMovimiento(mov, idRelacion.longValue());
+            bancoBo.guardaBancoCEdoCta(banco, idRelacion.longValue());
+        }
     }
 
 

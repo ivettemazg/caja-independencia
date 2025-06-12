@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+
 import mx.com.evoti.bo.CreditosBo;
 import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.dao.AmortizacionDao;
@@ -483,17 +485,35 @@ public class FiniquitosBo implements PagoCapitalFiniquitoBoImpl, Serializable {
                 idsCredito.add(dto.getCreId());
             }
 
-            // Paso 3: Obtener totales de amortización por crédito
+            /*  Paso 3: Obtener totales de amortización por crédito, unicamente traerá valores cuando los créditos tengan estatus iguales o 
+            *   equivalentes a "ACTIVOS"
+            */
             Map<Integer, TotalesAmortizacionDto> totalesMap = creditosDao.getTotalesAmortizacion(idsCredito, catAnterior, catSiguiente);
 
-            // Paso 4: Combinar resultados
+            // Definir los estados de crédito que se consideran "cero" porque ya no están activos y por lo tanto no tienen saldo pendiente
+            final Set<Integer> ESTATUS_ZERO = Set.of(
+                Constantes.CRE_EST_PAGADO,
+                Constantes.CRE_EST_CANCELADO,
+                Constantes.CRE_EST_TRANSFERIDO
+            );
+
+              // Paso 4: Combinar resultados
             for (DetalleCreditoDto credito : creditos) {
                 TotalesAmortizacionDto totales = totalesMap.get(credito.getCreId());
-                if (totales != null) {
-                    credito.setSaldoPendiente(totales.getSaldoPendiente());
-                    credito.setSaldoCapital(totales.getSaldoCapital());
-                    credito.setSaldoTotal(totales.getSaldoPendiente() + totales.getSaldoCapital());
-                   
+                
+                // Si el crédito está en uno de los estados de “cero”, ponemos todos los saldos a 0
+                if (ESTATUS_ZERO.contains(credito.getCreEstatusId())) {
+                    credito.setSaldoPendiente(0.0);
+                    credito.setSaldoCapital(0.0);
+                    credito.setSaldoTotal(0.0);
+                }
+                // Si no, y existe información de totales, la aplicamos
+                else if (totales != null) {
+                    double pendiente = totales.getSaldoPendiente();
+                    double capital  = totales.getSaldoCapital();
+                    credito.setSaldoPendiente(pendiente);
+                    credito.setSaldoCapital(capital);
+                    credito.setSaldoTotal(pendiente + capital);
                 }
             }
 
