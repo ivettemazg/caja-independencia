@@ -118,98 +118,6 @@ public class CreditosDao extends ManagerDB implements Serializable {
 
     }
 
-    /**
-     * Obtiene el detalle de los creditos de un usuario, regresando información
-     * como saldos por catorcenas pendientes y por capital, dicha consulta es
-     * utilizable en finiquitos y en solicitudes pendientes
-     *
-     * @param idUsuario
-     * @param catAnterior
-     * @param catSiguiente
-     * @return
-     * @throws IntegracionException
-     */
-    public List<DetalleCreditoDto> getDetalleAdeudoCredito(int idUsuario, Date catAnterior, Date catSiguiente) throws IntegracionException {
-    try {
-        super.beginTransaction();
-
-        String fechaAnterior = Util.generaFechaFormateada(catAnterior);
-        String fechaSiguiente = Util.generaFechaFormateada(catSiguiente);
-
-        String sql = "SELECT cre_id AS creId, cre_clave AS creClave, " +
-                "pro_descripcion AS proDescripcion, cre_prestamo AS crePrestamo, " +
-                "cre_catorcenas AS creCatorcenas, " +
-                "IFNULL(cat_pendts.saldoPendiente,0) AS saldoPendiente, " +
-                "IFNULL(capital_pendt.saldoCapital,0) AS saldoCapital, " +
-                "IFNULL(cat_pendts.saldoPendiente,0)+IFNULL(capital_pendt.saldoCapital,0) AS saldoTotal, " +
-                "cre_est_nombre AS creEstatusNombre, " +
-                "cre_est_id AS creEstatusId, " +
-                "IFNULL(capital_pendt.catPendCap,0)+IFNULL(cat_pendts.catPendAdeudo,0) AS catorcenasPendientes " +
-                "FROM creditos_final " +
-                "LEFT JOIN ( " +
-                "  SELECT amo_credito, SUM(amo_monto_pago) AS saldoPendiente, COUNT(amo_id) AS catPendAdeudo " +
-                "  FROM amortizacion " +
-                "  WHERE amo_estatus_int = 1 AND amo_fecha_pago <= :fechaAnterior " +
-                "  GROUP BY amo_credito " +
-                ") cat_pendts ON cat_pendts.amo_credito = creditos_final.cre_id " +
-                "LEFT JOIN ( " +
-                "  SELECT amo_credito, SUM(amo_amortizacion) AS saldoCapital, COUNT(amo_id) AS catPendCap " +
-                "  FROM amortizacion " +
-                "  WHERE amo_estatus_int = 1 AND amo_fecha_pago >= :fechaSiguiente " +
-                "  GROUP BY amo_credito " +
-                ") capital_pendt ON capital_pendt.amo_credito = creditos_final.cre_id " +
-                "INNER JOIN productos ON creditos_final.cre_producto = productos.pro_id " +
-                "INNER JOIN credito_estatus ON credito_estatus.cre_est_id = creditos_final.cre_estatus " +
-                "WHERE cre_usu_id = :idUsuario AND cre_producto NOT IN (4,5,11) " +
-                "UNION " +
-                "SELECT cre_id AS creId, cre_clave AS creClave, " +
-                "pro_descripcion AS proDescripcion, cre_prestamo AS crePrestamo, " +
-                "IFNULL(cre_catorcenas, 1) AS creCatorcenas, " +
-                "ROUND(IFNULL(cat_pendts.saldoPendiente, 0), 2) AS saldoPendiente, " +
-                "ROUND(IFNULL(capital_pendt.saldoCapital, 0), 2) AS saldoCapital, " +
-                "ROUND(IFNULL(cat_pendts.saldoPendiente, 0) + IFNULL(capital_pendt.saldoCapital, 0), 2) AS saldoTotal, " +
-                "cre_est_nombre AS creEstatusNombre, " +
-                "cre_est_id AS creEstatusId, " +
-                "IFNULL(cre_catorcenas, 1) AS catorcenasPendientes " +
-                "FROM creditos_final " +
-                "LEFT JOIN ( " +
-                "  SELECT amo_credito, COUNT(amo_id) AS catPendAdeudo, " +
-                "         s.sol_fecha_Creacion AS FechaCreacion, c.cre_fecha_primer_pago AS FechaPrimerPago, " +
-                "         ANY_VALUE(a.amo_interes) AS Interes, " +
-                "         ((DATEDIFF(:fechaAnterior, s.sol_fecha_Creacion))/14) * " +
-                "         (ANY_VALUE(a.amo_interes) / ((DATEDIFF(c.cre_fecha_primer_pago, s.sol_fecha_Creacion))/14)) AS saldoPendiente " +
-                "  FROM amortizacion a " +
-                "  LEFT JOIN creditos_final c ON a.amo_credito = c.cre_id " +
-                "  LEFT JOIN solicitudes s ON c.cre_solicitud = s.sol_id " +
-                "  WHERE amo_estatus_int = 1 " +
-                "  GROUP BY amo_credito " +
-                ") cat_pendts ON cat_pendts.amo_credito = creditos_final.cre_id " +
-                "LEFT JOIN ( " +
-                "  SELECT amo_credito, SUM(amo_capital) AS saldoCapital, COUNT(amo_id) AS catPendCap " +
-                "  FROM amortizacion " +
-                "  WHERE amo_estatus_int = 1 AND amo_fecha_pago >= :fechaSiguiente " +
-                "  GROUP BY amo_credito " +
-                ") capital_pendt ON capital_pendt.amo_credito = creditos_final.cre_id " +
-                "INNER JOIN productos ON creditos_final.cre_producto = productos.pro_id " +
-                "INNER JOIN credito_estatus ON credito_estatus.cre_est_id = creditos_final.cre_estatus " +
-                "WHERE cre_usu_id = :idUsuario AND cre_producto IN (4,5,11)";
-
-        SQLQuery query = session.createSQLQuery(sql);
-        query.setParameter("fechaAnterior", fechaAnterior);
-        query.setParameter("fechaSiguiente", fechaSiguiente);
-        query.setParameter("idUsuario", idUsuario);
-
-        List<DetalleCreditoDto> resultados = query.setResultTransformer(Transformers.aliasToBean(DetalleCreditoDto.class)).list();
-
-        return resultados;
-    } catch (Exception ex) {
-        throw new IntegracionException("Error al obtener el detalle de adeudo de crédito", ex);
-    } finally {
-        super.endTransaction();
-    }
-}
-
-
    @SuppressWarnings("unchecked")
     public List<DetalleCreditoDto> getDetalleAdeudoCreditoFiniquito(
             int  usuId,
@@ -743,7 +651,8 @@ public class CreditosDao extends ManagerDB implements Serializable {
             +"INNER JOIN productos ON creditos_final.cre_producto = productos.pro_id "
             +"INNER JOIN credito_estatus ON creditos_final.cre_estatus = credito_estatus.cre_est_id "
             +"WHERE cre_usu_id = %1$s "
-            +"AND cre_producto NOT IN (4,5,11) ",
+          //  +"AND cre_producto NOT IN (4,5,11) "
+            ,
             usuId));
 
             List<DetalleCreditoDto> results = query.setResultTransformer(Transformers.aliasToBean(DetalleCreditoDto.class)).list();

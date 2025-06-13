@@ -40,30 +40,7 @@ public class SolCreditosActivosBean extends BaseBean implements Serializable{
 
     public SolCreditosActivosBean() {
         creditoBo = new CreditosBo();
-    }
-    
- 
-     /**
-     * Obtiene los créditos con su respectivo detalle para mostrar en la tabla de creditos pendientes
-     * de ajustar
-     */
-    public void obtieneCreditosDetalle(){
-        try {
-            List<DetalleCreditoDto> credsAux= creditoBo.obtCreditosDetalle(usuario);
-           
-            creditos = new ArrayList<>();
-            
-           for(DetalleCreditoDto credito : credsAux){
-               if(credito.getCreEstatusId()== Constantes.CRE_EST_ACTIVO){
-                   creditos.add(credito);
-               }
-           }
-       
-        } catch (BusinessException ex) {
-           LOGGER.error(ex.getMessage(), ex);
-        }
-    }
-    
+    } 
     
      /**
      * Actualiza la variable creditoSelected justo despues de haber hecho un ajuste del mismo
