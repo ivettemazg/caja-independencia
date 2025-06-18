@@ -292,6 +292,9 @@ public class FiniquitoService {
                 if (dto.getDevolucionFecha() == null) {
                     dto.setDevolucionFecha(new Date());
                 }
+                if(dto.getMovEmpresa() == null) {
+                    dto.setMovEmpresa(usuario.getEmpresas().getEmpId());
+                }
             })
             .map(dto -> crearMovimientoDesdeDto(dto, Constantes.MOV_TIPO_DEVOLUCION))
             .collect(Collectors.toList());

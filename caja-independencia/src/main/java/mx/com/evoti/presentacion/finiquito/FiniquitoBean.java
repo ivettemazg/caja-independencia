@@ -351,7 +351,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             .sum();
 
         this.totalAplicadoDesdeAhorros = totalAbono;
-        this.adeudoAjustado = this.adeudoTotalCredito - totalAbono;
+        this.adeudoAjustado = this.adeudoTotalCredito != null ? this.adeudoTotalCredito : 0.0 - totalAbono;
         this.rdrBtnAjustar = totalAbono > 5.0;
 
         updtComponent("frmDlgAjustar:pgResumenAjuste");

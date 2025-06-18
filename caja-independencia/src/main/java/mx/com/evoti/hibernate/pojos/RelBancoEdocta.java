@@ -17,7 +17,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="rel_banco_edocta"
-    ,catalog="pruebas_migracion"
+    ,catalog="sindicato"
 )
 public class RelBancoEdocta  implements java.io.Serializable {
 
