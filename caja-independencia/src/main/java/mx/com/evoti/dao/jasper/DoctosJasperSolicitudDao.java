@@ -14,6 +14,7 @@ import mx.com.evoti.dto.common.AmortizacionDto;
 import mx.com.evoti.dto.jasper.FondeoDto;
 import mx.com.evoti.dto.jasper.PendienteDto;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
 
@@ -117,28 +118,35 @@ public class DoctosJasperSolicitudDao extends ManagerDB implements Serializable 
         try {
             super.beginTransaction();
 
-            SQLQuery query = session.createSQLQuery(String.format("select sol_monto_solicitado as montoSolicitado,"
-                    + "UPPER(CONCAT_WS(' ',usu_paterno,usu_materno,usu_nombre)) as nombre,"
-                    + "UPPER(u.usu_calle) as calle,"
-                    + "UPPER(u.usu_numext) as numext,UPPER(u.usu_colonia) as colonia,"
-                    + "UPPER(u.usu_cp) as cp,UPPER(u.usu_municipio) as municipio,"
-                    + "u.usu_estado as estado,DATE_ADD(c.cre_fecha_primer_pago, "
-                    + "INTERVAL cre_catorcenas*14 DAY) as fechaUltimoPago,cre_clave as claveCredito "
-                    + "from solicitudes s inner join usuarios u on s.sol_usu_id=u.usu_id "
-                    + "inner join creditos_final c on s.sol_id=c.cre_solicitud where sol_id=%1$s "
-                    + "group by sol_monto_solicitado,CONCAT_WS(' ',usu_paterno,usu_materno,usu_nombre)",
-                    solicitud));
+            String sql =
+                "SELECT s.sol_monto_solicitado                           AS montoSolicitado, " +
+                "       UPPER(CONCAT_WS(' ', u.usu_paterno, u.usu_materno, u.usu_nombre)) AS nombre, " +
+                "       UPPER(u.usu_calle)                                AS calle, " +
+                "       UPPER(u.usu_numext)                               AS numext, " +
+                "       UPPER(u.usu_colonia)                              AS colonia, " +
+                "       UPPER(u.usu_cp)                                   AS cp, " +
+                "       UPPER(u.usu_municipio)                            AS municipio, " +
+                "       u.usu_estado                                      AS estado, " +
+                "       DATE_ADD(ANY_VALUE(c.cre_fecha_primer_pago), " +
+                "                INTERVAL ANY_VALUE(c.cre_catorcenas)*14 DAY) AS fechaUltimoPago, " +
+                "       ANY_VALUE(c.cre_clave)                            AS claveCredito " +
+                "FROM   solicitudes s " +
+                "JOIN   usuarios u ON s.sol_usu_id = u.usu_id " +
+                "JOIN   creditos_final c ON s.sol_id = c.cre_solicitud " +
+                "WHERE  s.sol_id = :solicitud";
 
-            FondeoDto fondeo = (FondeoDto) query.setResultTransformer(Transformers.aliasToBean(FondeoDto.class)).uniqueResult();
+            Query query = session.createSQLQuery(sql)
+                .setParameter("solicitud", solicitud)
+                .setResultTransformer(Transformers.aliasToBean(FondeoDto.class));
 
+            FondeoDto fondeo = (FondeoDto) query.uniqueResult();
             return fondeo;
 
-        } catch (Exception he) {
-            throw new IntegracionException(he);
+        } catch (Exception e) {
+            throw new IntegracionException("Error al obtener datos del Anexo C", e);
         } finally {
             super.endTransaction();
         }
-
     }
 
     public List<UsuarioDto> obtieneAvalesAnexoC(Long solicitud) throws IntegracionException {
