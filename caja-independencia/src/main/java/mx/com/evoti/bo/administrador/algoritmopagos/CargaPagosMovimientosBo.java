@@ -45,7 +45,7 @@ public class CargaPagosMovimientosBo implements Serializable {
     }
 
     public Boolean validaArchivoExiste(String nombreArchivo) throws BusinessException {
-        LOGGER.error("Dentro de validarArchivoExiste()");
+        LOGGER.info("Dentro de validarArchivoExiste()");
         ArchivosHistorial archivo;
        
         try {

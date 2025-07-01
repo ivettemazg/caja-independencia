@@ -103,8 +103,16 @@ Desde la ubicación de `CATALINA_HOME/bin`:
 ```bash
 cd /opt/homebrew/Cellar/tomcat@8/8.5.100/libexec/bin
 
+##Lanza catalina en segundo plano
 export JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
 ./startup.sh
+
+##Para ver los logs en este sera necesario abrir una terminal separada y ejecutar 
+tail -f /opt/homebrew/Cellar/tomcat@8/*/libexec/logs/catalina.out
+
+##Este ejecutará catalina desde la terminal integrada en vsc y se verán ahí los logs
+export JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
+./catalina.sh run
 ```
 
 Luego, inicia la depuración desde tu IDE.

@@ -48,7 +48,7 @@ public class CambiosEmpresaDao extends ManagerDB implements Serializable {
 
             Query query = session.createQuery(
                     String.format(
-                            "select mov.movId as movId,mov.movNombreEmpleado as movNombreEmpleado, "
+                            "select mov.movNombreEmpleado as movNombreEmpleado, "
                                     + "mov.movClaveEmpleado as movClaveEmpleado, "
                             + "mov.movFecha as movFecha, emp.empAbreviacion as empAbreviacion,"
                             + "mov.movEmpresa as movEmpresa, mov.movArhId as movArhId "
@@ -56,7 +56,7 @@ public class CambiosEmpresaDao extends ManagerDB implements Serializable {
                             + "where emp.empId = mov.movEmpresa  "
                             + "and mov.movFecha = '%1$s' "
                             + "and mov.movUsuId is null "
-                            + "group by  mov.movClaveEmpleado, mov.movFecha,emp.empAbreviacion,mov.movArhId", catorcena));
+                            + "group by  mov.movNombreEmpleado, mov.movClaveEmpleado, mov.movFecha,emp.empAbreviacion, mov.movEmpresa, mov.movArhId", catorcena));
 
             List<MovimientosDto> movimientos = query.setResultTransformer(Transformers.aliasToBean(MovimientosDto.class)).list();
 
@@ -228,10 +228,10 @@ public class CambiosEmpresaDao extends ManagerDB implements Serializable {
 
             Query query = session.createSQLQuery(
                     String.format(
-                            "select mov.mov_Nombre_Empleado as movNombreEmpleado, mov.mov_Clave_Empleado as movClaveEmpleado, "
-                            + "mov.mov_Fecha as movFecha,mov.mov_Empresa as movEmpresa, mov.mov_Arh_Id as movArhId  "
-                            + "from Movimientos mov where mov.mov_Usu_Id = %1$s "
-                            + "and mov.mov_Arh_Id is not null "
+                            "select mov.mov_nombre_empleado as movNombreEmpleado, mov.mov_clave_empleado as movClaveEmpleado, "
+                            + "mov.mov_fecha as movFecha,mov.mov_empresa as movEmpresa, mov.mov_arh_id as movArhId  "
+                            + "from movimientos mov where mov.mov_usu_id = %1$s "
+                            + "and mov.mov_arh_id is not null "
                             + "and mov.mov_id <> %2$s "
                             + "order by mov_fecha desc", idUsuario, movId));
 

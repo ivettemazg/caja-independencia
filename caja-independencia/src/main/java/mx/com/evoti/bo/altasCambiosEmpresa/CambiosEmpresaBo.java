@@ -110,6 +110,7 @@ public class CambiosEmpresaBo implements Serializable {
 
     }
 
+
     /**
      * Aplica todos los movimientos que corresponden a cambios de empresa en la
      * base de datos
