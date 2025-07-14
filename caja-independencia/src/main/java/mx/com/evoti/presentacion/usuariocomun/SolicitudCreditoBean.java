@@ -244,7 +244,7 @@ public class SolicitudCreditoBean extends BaseBean implements Serializable {
                 rendererSolAguinaldo = Boolean.FALSE;
                 catorcenasMax = 130;
                 iTipoSolicitud = Constantes.AU;
-                topeMaximoPermitido=200000;
+                topeMaximoPermitido=300000;
                 break;
 
             case "fa":
