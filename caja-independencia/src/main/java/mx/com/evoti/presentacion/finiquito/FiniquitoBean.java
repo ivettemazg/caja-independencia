@@ -52,6 +52,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     private MovimientosDto movDevSelected;
     private String cveCredSeleccionado;
 
+    private Double saldoATransferir;
     private Double sumaTotalDevolucion;
     private Double adeudoTotalCredito;
     private Double adeudoAjustado;
@@ -140,10 +141,12 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             this.montoFiniquito = 0.0;
 
             // Limpiar devoluciones previas si existen
-            for (MovimientosDto mov : movimientos) {
-                mov.setDevolucion(null);
-                mov.setDevolucionFecha(null);
-                mov.setEditadoFiniquitos(false);
+            if (movimientos != null && !movimientos.isEmpty()) {
+                for (MovimientosDto mov : movimientos) {
+                    mov.setDevolucion(null);
+                    mov.setDevolucionFecha(null);
+                    mov.setEditadoFiniquitos(false);
+                }
             }
 
             boolean tieneAhorros = ValidadorFiniquito.tieneAhorrosSuficientes(movimientos);
@@ -340,19 +343,22 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     private void recalcularTotales() {
         if (movimientos == null || movimientos.isEmpty()) {
             totalAplicadoDesdeAhorros = 0.0;
-            adeudoAjustado = adeudoTotalCredito;
+            adeudoAjustado = (adeudoTotalCredito != null ? adeudoTotalCredito : 0.0);
             rdrBtnAjustar = false;
             return;
         }
 
         double totalAbono = movimientos.stream()
-            .filter(m -> m.getDevolucion() != null && m.getDevolucion() > 0)
+            .filter(m -> m.getDevolucion() != null && m.getDevolucion() > 0) // contar solo devoluciones válidas
             .mapToDouble(MovimientosDto::getDevolucion)
             .sum();
 
-        this.totalAplicadoDesdeAhorros = totalAbono;
-        this.adeudoAjustado = this.adeudoTotalCredito != null ? this.adeudoTotalCredito : 0.0 - totalAbono;
-        this.rdrBtnAjustar = totalAbono > 5.0;
+        totalAplicadoDesdeAhorros = Util.round(totalAbono);
+
+        double base = (adeudoTotalCredito != null ? adeudoTotalCredito : 0.0);
+        adeudoAjustado = Util.round(Math.max(0.0, base - totalAbono)); // corregido: (base) - totalAbono
+
+        rdrBtnAjustar = totalAbono > 5.0;
 
         updtComponent("frmDlgAjustar:pgResumenAjuste");
     }
@@ -413,6 +419,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
                 return;
             }
 
+            this.saldoATransferir = credito.getSaldoTotal();
             this.avales = finiquitoService.obtenerAvales(credito.getCreId());
             this.catorcenasSiguientes = finiquitoService.obtenerCatorcenas();
             this.rdrTblAvales = !avales.isEmpty();
@@ -435,6 +442,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             actualizarVistaPostAjuste();
             actualizarBajaEmpleadoFinal();
             muestraMensajeExito("El crédito fue transferido", "", null);
+            super.hideShowDlg("PF('dlgTransferirW').hide()");
         } catch (BusinessException ex) {
             LOGGER.error("Error al transferir crédito", ex);
             muestraMensajeError("Error al transferir crédito", ex.getMessage(), null);
@@ -447,6 +455,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
             finiquitoService.marcarIncobrable(credito, fechaIncobrable);
             this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
             muestraMensajeExito("El estatus del crédito se cambió a Incobrable", "", null);
+            super.hideShowDlg("PF('dlgTransferirW').hide()");
         } catch (BusinessException ex) {
             LOGGER.error("Error al mandar a incobrable", ex);
             muestraMensajeError("Error al mandar a incobrable", ex.getMessage(), null);
@@ -597,6 +606,9 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public Integer getOrigen() { return origen; }
     public void setOrigen(Integer origen) { this.origen = origen; }
+
+    public Double getSaldoATransferir() { return saldoATransferir;}
+    public void setSaldoATransferir(Double saldoATransferir) { this.saldoATransferir = saldoATransferir; }
 
     public double getSumaTotalDevolucion() {
         if (movimientos == null) {
