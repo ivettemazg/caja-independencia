@@ -19,3 +19,6 @@ buildNumber.properties
 
 # Ignorar archivos del sistema
 .DS_Storea
+.DS_Store
+caja-independencia/.DS_Store
+CajaIndependencia/.DS_Store
