@@ -137,30 +137,47 @@ public class UsuariosDao extends ManagerDB implements Serializable{
         return usuarios;
      }
       
-      public List<UsuarioBajaDto> getUsrsBajaPendiente(Integer estatus) throws IntegracionException{
-          super.beginTransaction(); 
-          
-         Query qry = session.createSQLQuery(
-                String.format("select usu.usu_id as usuId, usu.usu_clave_empleado as usuClaveEmpleado, " +
-                        "emp.emp_abreviacion as empAbreviacion, " +
-                        "concat(usu.usu_nombre, ' ', usu.usu_paterno,' ', usu.usu_materno) as usuNombreCompleto, " +
-                        "usu.usu_fecha_baja as usuFechaBaja, bae.bae_deuda_creditos as baeDeudaCreditos, " +
-                        "bae.bae_ahorros as baeAhorros " +
-                        "from usuarios usu, empresas emp, baja_empleados bae, creditos_final cre " +
-                        "where cre.cre_usu_id = usu.usu_id " +
-                        "and bae.bae_estatus = %1$s " +
-                        "and usu.usu_fecha_baja is not null " +
-                        "and usu.usu_id = bae.bae_id_empleado " +
-                        "and usu.usu_empresa = emp.emp_id " +
-                        "and cre.cre_estatus in (1, 6, 7) "  +
-                        "order by usu.usu_fecha_baja desc ", estatus));
+    public List<UsuarioBajaDto> getUsrsBajaPendiente(Integer estatus) throws IntegracionException {
+        try {
+            super.beginTransaction();
 
-        List<UsuarioBajaDto> usuarios = qry.setResultTransformer(Transformers.aliasToBean(UsuarioBajaDto.class)).list();
-          System.out.println(usuarios.size());
-        super.endTransaction();
-       
-        return usuarios;
-     } 
+            final String sql =
+                "SELECT " +
+                "  usu.usu_id               AS usuId, " +
+                "  usu.usu_clave_empleado   AS usuClaveEmpleado, " +
+                "  emp.emp_abreviacion      AS empAbreviacion, " +
+                "  CONCAT(usu.usu_nombre, ' ', usu.usu_paterno, ' ', usu.usu_materno) AS usuNombreCompleto, " +
+                "  usu.usu_fecha_baja       AS usuFechaBaja, " +
+                "  bae.bae_deuda_creditos   AS baeDeudaCreditos, " +
+                "  bae.bae_ahorros          AS baeAhorros " +
+                "FROM usuarios usu " +
+                "JOIN empresas emp " +
+                "  ON usu.usu_empresa = emp.emp_id " +
+                "JOIN baja_empleados bae " +
+                "  ON bae.bae_id_empleado = usu.usu_id " +
+                " AND bae.bae_estatus = :estatus " +
+                "WHERE usu.usu_fecha_baja IS NOT NULL " +
+                "  AND EXISTS ( " +
+                "      SELECT 1 " +
+                "      FROM creditos_final cre " +
+                "      WHERE cre.cre_usu_id = usu.usu_id " +
+                "        AND cre.cre_estatus IN (1, 6, 7) " +
+                "  ) " +
+                "ORDER BY usu.usu_fecha_baja DESC";
+
+            Query qry = session.createSQLQuery(sql)
+                .setParameter("estatus", estatus)
+                .setResultTransformer(Transformers.aliasToBean(UsuarioBajaDto.class));
+
+            List<UsuarioBajaDto> usuarios = qry.list();
+            return usuarios;
+
+        } catch (Exception e) {
+            throw new IntegracionException("Error al obtener usuarios con baja pendiente", e);
+        } finally {
+            super.endTransaction();
+        }
+    }
       
     
        public UsuarioDto getUsrActualizado(Integer idUsuario) throws IntegracionException {

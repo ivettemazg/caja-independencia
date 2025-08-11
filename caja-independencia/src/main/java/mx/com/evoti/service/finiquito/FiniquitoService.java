@@ -97,12 +97,13 @@ public class FiniquitoService {
         }
 
         if (!abonosCredito.isEmpty()) {
-            movimientosBo.guardaDevoluciones(abonosCredito);
 
-            finiquitoBo.ajustaCredito(detAdCreBean.getAmoPagoCapital(),
-                                      detAdCreBean.getAmoPendientesAnteriores(),
-                                      montoAbonoCredito,
-                                      Constantes.AMO_ESTATUS_ABONO_CRE_8);
+            movimientosBo.guardaDevoluciones(abonosCredito);
+            finiquitoBo.ajustaCredito(
+                detAdCreBean.getAmoPagoCapital(), 
+                detAdCreBean.getAmoPendientesAnteriores(),
+                montoAbonoCredito,
+                Constantes.AMO_ESTATUS_ABONO_CRE_8);
         }
     }
 
