@@ -355,6 +355,27 @@ public class SolicitudBo implements Serializable {
         }
     }
 
+     /**
+     * Valida si el usuario tiene solicitudes que no ha terminado de llenar
+     *
+     * @param idUsuario
+     * @return
+     * @throws mx.com.evoti.bo.exception.BusinessException
+     */
+    public List<SolicitudCreditoDto> consultarSolicitudesIncompletasByUsuario(Integer idUsuario) throws BusinessException {
+        try {
+          
+            List<SolicitudCreditoDto> lista = null;
+            lista = solDao.consultaSolicitudesIncompletasXEmpl(idUsuario);
+
+            return lista;
+        } catch (IntegracionException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new BusinessException("Error al consultar las solicitudes incompletas", ex);
+        }
+    }
+
+
     private List<CreditosFinal> obtieneCreditos(int usuId) throws BusinessException {
         List<CreditosFinal> creds = null;
         try {

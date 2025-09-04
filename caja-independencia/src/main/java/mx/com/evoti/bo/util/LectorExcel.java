@@ -15,17 +15,19 @@ import java.util.List;
 import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.dto.MovimientosDto;
 import mx.com.evoti.dto.PagoDto;
+import mx.com.evoti.dto.FormatoArchivoValidacion;
 import mx.com.evoti.util.Util;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellType;
+// import org.apache.poi.ss.util.CellRangeAddress; // No se usa actualmente
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,14 +58,11 @@ public class LectorExcel implements Serializable{
         List listaDatosCelda = new ArrayList();
         List lstTransformadaFinal = new ArrayList();
 
-        if (rutaArchivo.contains(".xlsx")) {
+        if (rutaArchivo != null && rutaArchivo.toLowerCase().endsWith(".xlsx")) {
             lstTransformadaFinal = leerXslx(rutaArchivo, listaDatosCelda, tipoArchivo);
             antiguo = false;
-
-        } else if (rutaArchivo.contains(".xls")) {
-            lstTransformadaFinal = leerXls(rutaArchivo, listaDatosCelda);
-            antiguo = true;
-
+        } else {
+            throw new BusinessException("Solo se admiten archivos .xlsx.");
         }
 
         /**
@@ -76,55 +75,196 @@ public class LectorExcel implements Serializable{
 
     private static List leerXslx(String nombreArchivo, List<List> lstDatosCelda, int tipoArchivo) throws BusinessException {
         List lstResultadosFinal = new ArrayList();
-        try {
+        try (FileInputStream fileInputStream = new FileInputStream(nombreArchivo);
+             XSSFWorkbook libroExcel = new XSSFWorkbook(fileInputStream)) {
 
-            /**
-             * Crea una nueva instancia de la clase FileInputStream
-             */
-            FileInputStream fileInputStream = new FileInputStream(nombreArchivo);
-
-            /**
-             * Crea una nueva instancia de la clase XSSFWorkBook
-             */
-            XSSFWorkbook libroExcel = new XSSFWorkbook(fileInputStream);
             XSSFSheet hoja = libroExcel.getSheetAt(0);
 
-            /**
-             * Iterar las filas y las celdas de la hoja de cálculo para obtener
-             * toda la data.
-             */
+            // Iterar filas y celdas
             Iterator filaIterator = hoja.rowIterator();
-
             while (filaIterator.hasNext()) {
-
                 XSSFRow fila = (XSSFRow) filaIterator.next();
                 Iterator filaIt = fila.cellIterator();
                 List<XSSFCell> lstCeldaTemp = new ArrayList<>();
 
                 while (filaIt.hasNext()) {
                     XSSFCell celda = (XSSFCell) filaIt.next();
-
                     lstCeldaTemp.add(celda);
                 }
 
+                // Omitir filas completamente vacías (sin celdas definidas)
+                if (lstCeldaTemp.isEmpty()) {
+                    continue;
+                }
+
                 if (tipoArchivo == 1) {
-                    /**Valida que el archivo de pagos tenga las 5 columnas necesarias*/
+                    // Valida que el archivo de pagos tenga las 5 columnas necesarias
                     transformCellToPagoDto(lstCeldaTemp, lstResultadosFinal);
                 } else {
-                    /**Valida que el archivo de aportaciones tenga las 6 columnas necesarias*/
+                    // Valida que el archivo de aportaciones tenga las 6 columnas necesarias
                     transformCellToAportacionDto(lstCeldaTemp, lstResultadosFinal);
                 }
 
-
                 lstDatosCelda.add(lstCeldaTemp);
                 System.out.println(lstCeldaTemp.size());
-
             }
 
         } catch (IOException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
         return lstResultadosFinal;
+    }
+
+    /**
+     * Valida el formato de un archivo Excel antes de procesarlo.
+     * Reglas inferidas por los archivos adjuntos:
+     *  - Tipo 1 (Pagos): columnas [0..4] -> [ClaveEmpleado(NUM), Fecha(DATE), Monto(NUM/CURRENCY), Empresa(NUM), Nombre(TEXT)]
+     *  - Tipo 2 (Aportaciones): columnas [0..5] -> anteriores + Producto(NUM)
+     * Además contabiliza filas vacías (sin celdas definidas) para avisar al usuario.
+     *
+     * No modifica datos; solo reporta si el archivo es válido y cuántas filas vacías trae.
+     */
+    public static FormatoArchivoValidacion validarFormatoExcel(String rutaArchivo, int tipoArchivo) throws BusinessException {
+        FormatoArchivoValidacion res = new FormatoArchivoValidacion();
+        res.setValido(true);
+        res.setFilasVacias(0);
+
+        try (FileInputStream fis = new FileInputStream(rutaArchivo); XSSFWorkbook wb = new XSSFWorkbook(fis)) {
+            XSSFSheet sheet = wb.getSheetAt(0);
+
+            int erroresMaxAMostrar = 10;
+            int filasConsideradas = 0;
+            int filasConCol6Presente = 0;
+            int filasConCol6Numerica = 0;
+
+            Iterator<?> filaIterator = sheet.rowIterator();
+            while (filaIterator.hasNext()) {
+                XSSFRow row = (XSSFRow) filaIterator.next();
+
+                // Detectar fila totalmente vacía (sin celdas físicas)
+                if (row == null || row.getPhysicalNumberOfCells() == 0) {
+                    res.setFilasVacias(res.getFilasVacias() + 1);
+                    continue;
+                }
+
+                filasConsideradas++;
+                // Para detectar tipo por estructura (columna 6 = producto)
+                  XSSFCell c6 = row.getCell(5);
+                if (c6 != null) {
+                    try {
+                        // normalizar tipo (manejar fórmulas)
+                        CellType t = c6.getCellType();
+                        if (t == CellType.FORMULA) {
+                            t = c6.getCachedFormulaResultType();
+                        }
+                        // contar como presente si no es BLANK
+                        if (t != CellType.BLANK) {
+                            filasConCol6Presente++;
+                        }
+                        if (t == CellType.NUMERIC) {
+                            filasConCol6Numerica++;
+                        }
+                    } catch (Exception e) {
+                        // ignorar fallas de lectura para heurística
+                    }
+                }
+
+                // Validar columnas requeridas por tipo
+                int requeridas = (tipoArchivo == 1) ? 5 : 6;
+                for (int i = 0; i < requeridas; i++) {
+                    XSSFCell cell = row.getCell(i);
+                    int fila1 = row.getRowNum() + 1; // 1-based
+                    int col1 = i + 1; // 1-based
+
+                    if (cell == null) {
+                        if (res.getErrores().size() < erroresMaxAMostrar) {
+                            res.addError("Celda vacía en columna " + col1 + ", fila " + fila1 + ".");
+                        }
+                        continue;
+                    }
+
+                    try {
+                        switch (i) {
+                            case 0: // Clave empleado NUM
+                                cell.getNumericCellValue();
+                                break;
+                            case 1: // Fecha DATE (Excel almacena como NUMERIC con formato)
+                                cell.getDateCellValue();
+                                break;
+                            case 2: // Monto NUM (acepta currency como texto)
+                                try {
+                                    limpiaMontos(cell.getStringCellValue());
+                                } catch (IllegalStateException iseMonto) {
+                                    cell.getNumericCellValue();
+                                }
+                                break;
+                            case 3: // Empresa NUM
+                                cell.getNumericCellValue();
+                                break;
+                            case 4: // Nombre TEXT
+                                cell.getStringCellValue();
+                                break;
+                            case 5: // Producto NUM (solo para tipo 2)
+                                if (tipoArchivo == 2) {
+                                    cell.getNumericCellValue();
+                                }
+                                break;
+                        }
+                    } catch (IllegalStateException ise) {
+                        if (res.getErrores().size() < erroresMaxAMostrar) {
+                            res.addError("Valor con tipo incorrecto en columna " + col1 + ", fila " + fila1 + ".");
+                        }
+                    } catch (Exception ex) {
+                        if (res.getErrores().size() < erroresMaxAMostrar) {
+                            res.addError("Valor inválido en columna " + col1 + ", fila " + fila1 + ".");
+                        }
+                    }
+                }
+            }
+
+            // Heurística de detección de tipo real del archivo por presencia de columna 6 (Producto)
+            double ratioPresente = (filasConsideradas == 0) ? 0.0 : (double) filasConCol6Presente / (double) filasConsideradas;
+            double ratioNumerica = (filasConsideradas == 0) ? 0.0 : (double) filasConCol6Numerica / (double) filasConsideradas;
+            Integer tipoDetectado = null; // 1 = Pagos, 2 = Aportaciones
+            if (ratioNumerica >= 0.8) {
+                tipoDetectado = 2;
+            } else if (ratioPresente <= 0.2) {
+                tipoDetectado = 1;
+            }
+
+            if (tipoDetectado != null && tipoDetectado.intValue() != tipoArchivo) {
+                res.setValido(false);
+                String esperado = (tipoArchivo == 1) ? "Pagos" : "Aportaciones";
+                String detectado = (tipoDetectado == 1) ? "Pagos" : "Aportaciones";
+                res.setMensajeUsuario("Ha seleccionado '" + esperado + "', pero el archivo parece ser de '" + detectado + "'. Suba el archivo correcto o cambie el tipo seleccionado.");
+                return res;
+            }
+
+            if (!res.getErrores().isEmpty()) {
+                res.setValido(false);
+                StringBuilder sb = new StringBuilder();
+                sb.append("El formato del archivo no es válido. Corrija los siguientes puntos y vuelva a intentar. ");
+                for (int i = 0; i < res.getErrores().size(); i++) {
+                    sb.append("\n").append("• ").append(res.getErrores().get(i));
+                }
+                if (res.getErrores().size() == erroresMaxAMostrar) {
+                    sb.append("\n").append("(Se omitieron errores adicionales)");
+                }
+                res.setMensajeUsuario(sb.toString());
+            } else {
+                String tipoDesc = (tipoArchivo == 1) ? "Pagos" : "Aportaciones";
+                if (res.getFilasVacias() > 0) {
+                    res.setMensajeUsuario("Formato correcto para " + tipoDesc + ". Se detectaron " + res.getFilasVacias() + " filas vacías; serán ignoradas.");
+                } else {
+                    res.setMensajeUsuario("Formato correcto para " + tipoDesc + ".");
+                }
+            }
+
+        } catch (IOException io) {
+            throw new BusinessException("No fue posible leer el archivo para validación.", io);
+        }
+
+        return res;
     }
 
     /**

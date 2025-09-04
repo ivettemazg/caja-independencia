@@ -20,6 +20,7 @@ import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.dto.MovimientosDto;
 import mx.com.evoti.dto.ArchivoDto;
 import mx.com.evoti.dto.PagoDto;
+import mx.com.evoti.dto.FormatoArchivoValidacion;
 import mx.com.evoti.presentacion.BaseBean;
 import mx.com.evoti.util.Constantes;
 import org.primefaces.context.RequestContext;
@@ -101,8 +102,19 @@ public class CargaArchivoPagMovsBean extends BaseBean implements Serializable {
            
             UploadedFile file = event.getFile();
             nombreArchivo = file.getFileName().toLowerCase().trim();
+            // Validación temprana de extensión: solo .xlsx permitido
+            if (!nombreArchivo.endsWith(".xlsx")) {
+                muestraMensajeError("Solo se admiten archivos .xlsx.", null);
+                return;
+            }
+            
             finalPath = Constantes.PATH_DOCTOS +File.separator +nombreArchivo;
 
+           //**************************************Descomentar en pruebas locales con mac
+            //finalPath = creandoPathMac(file);
+            //***************************************************************************** */
+        
+           
             Boolean archivoExiste = bo.validaArchivoExiste(nombreArchivo);
                 LOGGER.info(finalPath);
                 LOGGER.info("#####################################");
@@ -116,6 +128,22 @@ public class CargaArchivoPagMovsBean extends BaseBean implements Serializable {
                  */
                
                 gestionarArchivo(file.getContents(), finalPath);
+                //**************************************Descomentar en pruebas locales con mac
+                //gestionarArchivoBorrar(file.getContents(), finalPath);
+                //***************************************************************************** */
+
+
+                // Validar formato antes de procesar (solo .xlsx)
+                if (finalPath != null && finalPath.toLowerCase().endsWith(".xlsx")) {
+                    FormatoArchivoValidacion validacion = mx.com.evoti.bo.util.LectorExcel.validarFormatoExcel(finalPath, tipoArchivo);
+                    if (!validacion.isValido()) {
+                        muestraMensajeError(validacion.getMensajeUsuario(), null);
+                        return;
+                    } else {
+                        // Mostrar aviso informativo de formato correcto y filas vacías si aplica
+                        muestraMensajeInfo(validacion.getMensajeUsuario());
+                    }
+                }
 
                 /*
                 Si el archivo es nuevo entonces procesa el contenido del excel y se guarda 
@@ -132,6 +160,29 @@ public class CargaArchivoPagMovsBean extends BaseBean implements Serializable {
         }
        
     }
+
+
+    public String creandoPathMac( UploadedFile file){
+        
+        nombreArchivo = file.getFileName().toLowerCase().trim();
+       
+        // Usar directorio temporal del sistema (más seguro)
+        String tempDir = System.getProperty("java.io.tmpdir");
+        LOGGER.info("Temp directory: " + tempDir);
+        
+        File uploadsDir = new File(tempDir, "sindicato_uploads");
+        if (!uploadsDir.exists()) {
+            boolean created = uploadsDir.mkdirs();
+            LOGGER.info("Directorio uploads creado: " + created + " en: " + uploadsDir.getAbsolutePath());
+        } else {
+            LOGGER.info("Directorio uploads ya existe: " + uploadsDir.getAbsolutePath());
+        }
+
+        // Construir el path completo
+        return uploadsDir.getAbsolutePath() + File.separator + nombreArchivo;
+    }
+
+
     
     /**
      * Metodo que guarda el archivo en la ruta especificada
@@ -155,10 +206,53 @@ public class CargaArchivoPagMovsBean extends BaseBean implements Serializable {
         }
        
     }
+
+    public void gestionarArchivoBorrar(byte[] datos, String rutaArchivo) {
+    LOGGER.info("Guardando el archivo en: " + rutaArchivo);
+    File file = new File(rutaArchivo);
+    
+    // Verificar información del archivo
+    LOGGER.info("Directorio padre: " + file.getParent());
+    LOGGER.info("¿Existe el directorio padre?: " + file.getParentFile().exists());
+    
+    try {
+        // IMPORTANTE: Crear el directorio padre si no existe
+        File parentDir = file.getParentFile();
+        if (!parentDir.exists()) {
+            boolean created = parentDir.mkdirs();
+            LOGGER.info("Directorio padre creado: " + created + " en: " + parentDir.getAbsolutePath());
+        }
+        
+        // Ahora crear el archivo
+        boolean fileCreated = file.createNewFile();
+        LOGGER.info("Archivo creado: " + fileCreated);
+        
+        FileOutputStream fout = new FileOutputStream(file);
+        fout.write(datos);
+        fout.close();
+        
+        LOGGER.info("Archivo guardado exitosamente");
+        LOGGER.info("¿Existe el archivo?: " + file.exists());
+        LOGGER.info("Tamaño del archivo: " + file.length() + " bytes");
+        LOGGER.info("Ruta absoluta: " + file.getAbsolutePath());
+        
+    } catch (FileNotFoundException ex) {
+        LOGGER.error("FileNotFoundException: " + ex.getMessage());
+    } catch (IOException ex) {
+        LOGGER.error("IOException: " + ex.getMessage());
+    }
+}
+
+
     
       public void muestraMensajeExito(UploadedFile file) {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "El archivo " + file.getFileName() + " se guardó correctamente.", "");
         FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public void muestraMensajeInfo(String mensaje) {
+        FacesMessage infoMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, "");
+        FacesContext.getCurrentInstance().addMessage(null, infoMsg);
     }
 
     public void muestraMensajeError(String error, String for_) {

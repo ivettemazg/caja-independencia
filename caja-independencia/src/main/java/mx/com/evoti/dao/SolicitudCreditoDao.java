@@ -74,6 +74,41 @@ public class SolicitudCreditoDao extends ManagerDB implements Serializable, Soli
 
     }
 
+     /**
+     * Obtiene las solicitudes
+     *
+     * @param idEmpleado
+     * @return
+     * @throws mx.com.evoti.dao.exception.IntegracionException
+     */
+    public List<SolicitudCreditoDto> consultaSolicitudesIncompletasXEmpl(int idEmpleado) throws IntegracionException {
+        try {
+            super.beginTransaction();
+
+            SQLQuery query = session.createSQLQuery(String.format("select sol_id as solId,"
+                    + "sol_clave_empleado as solClaveEmpleado, sol_pago_credito as solPagoCredito, "
+                    + "sol_monto_solicitado as solMontoSolicitado, sol_catorcenas as solCatorcenas, "
+                    + "sol_estatus as solEstatus, sol_pago_total as solPagoTotal, "
+                    + "sol_fecha_creacion as solFechaCreacion,"
+                    + "sol_usu_id as solUsuId "
+                    + "from solicitudes "
+                    + "where sol_estatus = 1 "
+                    + "and sol_usu_id= %1$s ",
+                    idEmpleado));
+
+            List<SolicitudCreditoDto> solsPndts = query.setResultTransformer(Transformers.aliasToBean(SolicitudCreditoDto.class)).list();
+
+            return solsPndts;
+
+        } catch (Exception he) {
+            throw new IntegracionException(he);
+        } finally {
+            super.endTransaction();
+        }
+
+    }
+
+
     /**
      * Guarda la solicitud
      *

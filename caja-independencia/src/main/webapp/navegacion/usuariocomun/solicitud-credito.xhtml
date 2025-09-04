@@ -81,7 +81,7 @@
                                             />
                                 </p:selectOneButton>
 
-                                <p:messages autoUpdate="true" for="valIniMsj"></p:messages>
+                                <p:messages autoUpdate="true" for="valIniMsj" escape="false"></p:messages>
                             </div>
                         </div>
                     </div>
@@ -198,7 +198,10 @@
 
                                 <p:commandButton value="CONTINUAR EL LLENADO DE SU SOLICITUD" id="creaSolicitud" 
                                                  action="#{solCreditoBean.creaSolicitud()}" 
-                                                 disabled="#{solCreditoBean.dsblBtnCrear}" >
+                                                 disabled="#{solCreditoBean.dsblBtnCrear}" 
+                                                 disableOnAjax="true"
+                                                 onclick="this.disabled=true"
+                                                 >
                                       <p:confirm header="Crear solicitud" 
                                               message="Al aceptar se estará creando una solicitud la cual deberá 
                                               llenar con la infomación requerida en la misma" 

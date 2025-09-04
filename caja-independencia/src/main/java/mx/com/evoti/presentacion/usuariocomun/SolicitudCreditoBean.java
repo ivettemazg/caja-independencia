@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -19,6 +21,7 @@ import mx.com.evoti.bo.CatorcenasBo;
 import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.bo.usuarioComun.SolicitudBo;
 import mx.com.evoti.dto.UsuarioDto;
+import mx.com.evoti.dto.usuariocomun.SolicitudCreditoDto;
 import mx.com.evoti.presentacion.BaseBean;
 import mx.com.evoti.presentacion.NavigationBean;
 import mx.com.evoti.presentacion.common.AmortizacionBean;
@@ -94,13 +97,51 @@ public class SolicitudCreditoBean extends BaseBean implements Serializable {
                     usrHabilitado = 1;
                 }
 
+                List<SolicitudCreditoDto> lista = solBo.consultarSolicitudesIncompletasByUsuario(usuarioDto.getId());
+
                 /**
                  * Valida que el usuario ya haya actualizado sus datos en el sistema
                  */
                 if (usuarioDto.getPrimeraVez() == 1) {
                     FacesMessage errorMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Para poder solicitar un crédito, es necesario que complete su información en la pantalla de \"Mi Perfil\"", "");
                     FacesContext.getCurrentInstance().addMessage("valIniMsj", errorMsg);
-
+                /**
+                 * Valida que no haya solicitudes incompletas, si las hay les avisa para que las completen
+                 */
+                }else if(!lista.isEmpty()){
+                    StringBuilder mensaje = new StringBuilder();
+    
+                    if(lista.size() == 1) {
+                        mensaje.append("Usted tiene una solicitud incompleta:");
+                    } else {
+                        mensaje.append("Usted tiene ").append(lista.size()).append(" solicitudes incompletas:");
+                    }
+                    
+                    mensaje.append("<br/><br/>");
+                    
+                    for(int i = 0; i < lista.size(); i++) {
+                        SolicitudCreditoDto solicitud = lista.get(i);
+                        mensaje.append("• Solicitud #").append(solicitud.getSolId());
+                        
+                        if(solicitud.getSolFechaCreacion() != null) {
+                            mensaje.append("    Fecha: ").append(new java.text.SimpleDateFormat("dd/MM/yyyy").format(solicitud.getSolFechaCreacion()));
+                        }
+                        
+                        if(solicitud.getSolMontoSolicitado() != null) {
+                            mensaje.append("    Monto: $").append(String.format("%,.2f", solicitud.getSolMontoSolicitado()));
+                        }
+                        
+                        if(i < lista.size() - 1) {
+                            mensaje.append("<br/>");
+                        }
+                    }
+                    
+                    mensaje.append("<br/><br/>Por favor termine el llenado de su solicitud incompleta desde la pantalla de <b>\"Mis Solicitudes\"</b>, dando click en el folio de la solicitud.");
+                    
+                    FacesMessage errorMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, mensaje.toString(), "");
+                    errorMsg.setDetail("");  // Para permitir HTML
+                    FacesContext.getCurrentInstance().addMessage("valIniMsj", errorMsg);
+            
                 }else if(usuarioDto.getOmitirValidaciones().equals(1) && usuarioDto.getHabilitado() == 1){
                     this.dsblBtnAg = Boolean.TRUE;
                     this.dsblBtnAu = Boolean.TRUE;
@@ -183,6 +224,7 @@ public class SolicitudCreditoBean extends BaseBean implements Serializable {
                 
                 BigInteger idSolicitud = new BigInteger(solBo.creaSolicitud(usuarioDto, montoSolicitado, deducciones, catorcenas, faCatorcena, tipoSolicitud, interesTotal, pagoCatorcenal, amortizacionBean.getUltimaFechaFaAG()).toString());
                 super.getSession().setAttribute("idSolicitud", idSolicitud);
+                
                 navigationBean.goToDetalleSolicitud();
             } catch (BusinessException ex) {
                 LOGGER.error(ex.getMessage(), ex);
