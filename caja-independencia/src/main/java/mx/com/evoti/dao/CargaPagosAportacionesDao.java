@@ -453,4 +453,35 @@ public class CargaPagosAportacionesDao extends ManagerDB implements Serializable
         super.executeUpdateSql(sql);
     }
 
+    public void actualizaMovimientosNoFijosSinAhorroFijo(Integer idArchivo) throws IntegracionException {
+        String actualizaUsuariosConId = String.format(
+                "update movimientos m "
+                + "join (select min(base.mov_id) as movId "
+                + "      from movimientos base "
+                + "      where base.mov_arh_id = %1$s "
+                + "        and base.mov_producto = 2 "
+                + "        and base.mov_usu_id is not null "
+                + "        and not exists (select 1 from movimientos fijo "
+                + "                        where fijo.mov_usu_id = base.mov_usu_id "
+                + "                          and fijo.mov_producto = 1) "
+                + "      group by base.mov_usu_id) candidatos on candidatos.movId = m.mov_id "
+                + "set m.mov_producto = 1, "
+                + "    m.mov_cambioanfaf = 1 "
+                + "where m.mov_arh_id = %1$s "
+                + "  and m.mov_producto = 2",
+                idArchivo);
+
+        String actualizaSinUsuario = String.format(
+                "update movimientos "
+                + "set mov_producto = 1, "
+                + "    mov_cambioanfaf = 1 "
+                + "where mov_arh_id = %1$s "
+                + "  and mov_producto = 2 "
+                + "  and mov_usu_id is null",
+                idArchivo);
+
+        super.executeUpdateSql(actualizaUsuariosConId);
+        super.executeUpdateSql(actualizaSinUsuario);
+    }
+
 }

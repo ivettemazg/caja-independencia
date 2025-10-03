@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="mx.com.evoti.hibernate.pojos.Configuracion" table="configuracion">
+        <id name="conId" type="int">
+            <column name="con_id" />
+            <generator class="assigned" />
+        </id>
+        <property name="conFaHabilitado" type="int">
+            <column name="con_fa_habilitado" />
+        </property>
+        <property name="conAgHabilitado" type="int">
+            <column name="con_ag_habilitado" />
+        </property>
+        <property name="conFechaMod" type="timestamp">
+            <column name="con_fecha_mod" />
+        </property>
+    </class>
+</hibernate-mapping>
+

@@ -5,11 +5,8 @@
 package mx.com.evoti.bo.administrador.algoritmopagos;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 import mx.com.evoti.bo.bancos.BancosBo;
 import mx.com.evoti.bo.exception.BusinessException;
@@ -121,10 +118,12 @@ public class CargaPagosMovimientosBo implements Serializable {
                     dao.updateUsuIdMov(idArchivo);
                     
                     //Actualización de ahorros no fijos cuando no existe ahorro fijo
+                    LOGGER.info("Iniciando actualización de ahorros fijos y no fijos");
                     actualizacionAFyNF(idArchivo);
                      /**
                      * Guarda en bancos el registro correspondiente al archivo
                      */
+                    LOGGER.info("Guardando en bancos el registro del archivo de aportaciones");
                     guardaEnBancos(idArchivo, tipoArchivo, archivo);
                     
                 } catch (IntegracionException ex) {
@@ -319,23 +318,7 @@ public class CargaPagosMovimientosBo implements Serializable {
      * @throws mx.com.evoti.dao.exception.IntegracionException 
      */
     public void actualizacionAFyNF(Integer idArchivo) throws IntegracionException {
-         //obtener usuarios con aportaciones no fijas 2
-         List<MovimientosDto> aNoFijas = dao.getANoFijo(idArchivo);
-         //recorrer lsita de usuarios con aportaciones no fijas y validar si tienen fijas
-         for(MovimientosDto mov : aNoFijas){
-             
-             List<MovimientosDto> aF = dao.getAFijo(mov.getMovUsuId());
-             
-             //Cuando no tiene ahorro fijo
-             if(aF.isEmpty()){
-                 mov.setMovProducto(1);
-                 mov.setMovCambioanfaf(1);
-                 
-                 dao.updtMovimiento(mov);
-                 
-             }
-             
-         }
+        dao.actualizaMovimientosNoFijosSinAhorroFijo(idArchivo);
     }
 
      

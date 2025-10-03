@@ -65,6 +65,7 @@
             </p:submenu>
             <p:separator rendered="#{navigationController.usuario.rol != 'Usuario'}"/>
             <p:submenu label="Administrador" icon="fa fa-money" rendered="#{navigationController.usuario.rol != 'Usuario'}">
+                <p:menuitem value="Panel de administrador" action="#{navigationController.goToAdminPanel()}" icon="fa fa-cogs"/>
                 <p:menuitem value="Bitacora de movimientos" action="#{navigationController.goToBitacoraMovimientos()}" icon="ui-icon-document"/>
             </p:submenu>
         </ps:menu>

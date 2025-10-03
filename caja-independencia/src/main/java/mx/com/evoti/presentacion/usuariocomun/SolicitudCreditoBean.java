@@ -20,6 +20,8 @@ import javax.faces.event.AjaxBehaviorEvent;
 import mx.com.evoti.bo.CatorcenasBo;
 import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.bo.usuarioComun.SolicitudBo;
+import mx.com.evoti.bo.administracion.ConfiguracionBo;
+import mx.com.evoti.hibernate.pojos.Configuracion;
 import mx.com.evoti.dto.UsuarioDto;
 import mx.com.evoti.dto.usuariocomun.SolicitudCreditoDto;
 import mx.com.evoti.presentacion.BaseBean;
@@ -71,6 +73,7 @@ public class SolicitudCreditoBean extends BaseBean implements Serializable {
 
     private final SolicitudBo solBo;
     private final CatorcenasBo catBo;
+    private final ConfiguracionBo cfgBo;
 
     private UsuarioDto usuarioDto;
     private boolean julioSigAno;
@@ -79,6 +82,7 @@ public class SolicitudCreditoBean extends BaseBean implements Serializable {
         usuarioDto = (UsuarioDto) super.getSession().getAttribute("usuario");
         solBo = new SolicitudBo();
         catBo = new CatorcenasBo();
+        cfgBo = new ConfiguracionBo();
         tipoSolicitud = "";
         rdrPnlSimulador = false;
         topeMaximoPermitido = 125000;
@@ -142,7 +146,7 @@ public class SolicitudCreditoBean extends BaseBean implements Serializable {
                     errorMsg.setDetail("");  // Para permitir HTML
                     FacesContext.getCurrentInstance().addMessage("valIniMsj", errorMsg);
             
-                }else if(usuarioDto.getOmitirValidaciones().equals(1) && usuarioDto.getHabilitado() == 1){
+                } else if (Integer.valueOf(1).equals(usuarioDto.getOmitirValidaciones()) && usrHabilitado == 1) {
                     this.dsblBtnAg = Boolean.TRUE;
                     this.dsblBtnAu = Boolean.TRUE;
                     this.dsblBtnFa = Boolean.TRUE;
@@ -169,6 +173,21 @@ public class SolicitudCreditoBean extends BaseBean implements Serializable {
                     this.dsblBtnAu = solBo.isDsblBtnAu();
                     this.dsblBtnFa = solBo.isDsblBtnFa();
                     this.dsblBtnNo = solBo.isDsblBtnNo();
+
+                    //Aplica banderas globales de configuración (FA/AG)
+                    try {
+                        Configuracion cfg = cfgBo.getConfig();
+                        boolean faEnabled = cfg.getConFaHabilitado() == null ? true : cfg.getConFaHabilitado() == 1;
+                        boolean agEnabled = cfg.getConAgHabilitado() == null ? true : cfg.getConAgHabilitado() == 1;
+                        this.dsblBtnFa = this.dsblBtnFa && faEnabled;
+                        this.dsblBtnAg = this.dsblBtnAg && agEnabled;
+                        if (!faEnabled || !agEnabled) {
+                            FacesMessage warn = new FacesMessage(FacesMessage.SEVERITY_WARN, "Algunos tipos de crédito están temporalmente deshabilitados por mantenimiento", "");
+                            FacesContext.getCurrentInstance().addMessage("valIniMsj", warn);
+                        }
+                    } catch (BusinessException bex) {
+                        LOGGER.error(bex.getMessage(), bex);
+                    }
 
                     if (!solBo.getMsjNotificacion().isEmpty()) {
                         muestraMensajeValidaciones();

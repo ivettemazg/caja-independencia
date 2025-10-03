@@ -295,13 +295,22 @@ public class NavigationBean extends BaseBean implements Serializable{
         }
     }
     
-     public void goToBitacoraMovimientos(){
+    public void goToBitacoraMovimientos(){
         try {
             ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
             ec.redirect(ec.getRequestContextPath() + "/navegacion/administracion/reporte-bitacora.xhtml");
             
         } catch (IOException ex) {
              LOGGER.error(ex.getMessage(), ex);
+        }
+   }
+    
+     public void goToAdminPanel(){
+        try {
+            ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+            ec.redirect(ec.getRequestContextPath() + "/navegacion/administracion/panel.xhtml");
+        } catch (IOException ex) {
+            LOGGER.error(ex.getMessage(), ex);
         }
    }
     

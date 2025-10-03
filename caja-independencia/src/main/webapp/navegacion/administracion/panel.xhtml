@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        <f:event type="preRenderComponent" listener="#{adminPanelBean.init}"/>
+
+        <div class="layout-portlets-box">
+            <div class="Container100 Responsive100">
+                <div class="ContainerIndent">
+                    <h3 class="BigTopic">
+                        <div class="Wid50 Responsive50 Fleft">Panel de administrador</div>
+                    </h3>
+
+                    <p:tabView id="adminTabs">
+                        <p:tab title="Créditos">
+                            <h:form id="frmCredFlags">
+                                <p:panelGrid columns="2" layout="grid" styleClass="FormContent" style="border:0;background:none;">
+                                    <h:outputText value="Habilitar crédito de Fondo de Ahorro"/>
+                                    <p:selectBooleanButton value="#{adminPanelBean.faHabilitado}" onLabel="Sí" offLabel="No"/>
+
+                                    <h:outputText value="Habilitar crédito de Aguinaldo"/>
+                                    <p:selectBooleanButton value="#{adminPanelBean.agHabilitado}" onLabel="Sí" offLabel="No"/>
+                                </p:panelGrid>
+                                <p:spacer height="10"/>
+                                <p:commandButton value="Guardar" actionListener="#{adminPanelBean.guardarBanderas}"
+                                                update="@form :frmMensajes" onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"/>
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab title="Empleados">
+                            <h:form id="frmBusquedaEmp">
+                                <p:panelGrid columns="4" layout="grid" styleClass="FormContent" style="border:0;background:none;">
+                                    <h:outputText value="Clave de empleado"/>
+                                    <p:inputText value="#{adminPanelBean.claveEmpleado}" required="true"/>
+                                    <h:outputText value="Empresa"/>
+                                    <p:selectOneMenu value="#{adminPanelBean.empresa}" converter="empConverter" required="true">
+                                        <f:selectItem itemLabel="Seleccione" itemValue=""/>
+                                        <f:selectItems value="#{adminPanelBean.empresas}" var="emp" itemLabel="#{emp.empAbreviacion}" itemValue="#{emp}"/>
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+                                <p:commandButton value="Buscar" actionListener="#{adminPanelBean.buscarEmpleado}"
+                                                 update="@form :adminTabs:frmPerfilAdmin :frmMensajes" onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"/>
+                            </h:form>
+
+                            <h:form id="frmPerfilAdmin">
+                                <p:panelGrid rendered="#{adminPanelBean.mostrarPerfil}" style="border:0;background:none;">
+                                    <p:panelGrid columns="3" layout="grid" styleClass="FormContent" style="border:0;background:none;">
+                                        <h:outputText value="Habilitado para créditos:"/>
+                                        <h:outputText value="#{adminPanelBean.usuario.usuHabilitado == 1 ? 'HABILITADO' : 'DESHABILITADO'}"/>
+                                <p:commandButton value="Bloquear/Desbloquear" actionListener="#{adminPanelBean.toggleHabilitado}"
+                                                         update="@form :frmMensajes"/>
+                                    </p:panelGrid>
+
+                                    <ui:insert name="perfilAdmin">
+                                        <ui:include src="../usuariocomun/perfil.xhtml"/>
+                                    </ui:insert>
+
+                                    <p:separator/>
+                                    <p:panelGrid columns="3" layout="grid" styleClass="FormContent" style="border:0;background:none;">
+                                        <h:outputText value="Nuevo password (opcional)"/>
+                                        <p:password value="#{adminPanelBean.nuevoPassword}" feedback="false"/>
+                                        <p:commandButton value="Resetear contraseña" actionListener="#{adminPanelBean.resetearPassword}"
+                                                         update="@form :frmMensajes"/>
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                            </h:form>
+                        </p:tab>
+                    </p:tabView>
+
+                    <h:form id="frmMensajes">
+                        <p:messages autoUpdate="true" closable="true"/>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>
