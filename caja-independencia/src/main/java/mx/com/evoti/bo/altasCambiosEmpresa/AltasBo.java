@@ -109,6 +109,7 @@ public class AltasBo implements Serializable {
         usuario.setUsuRol(Constantes.ROL_USR_USR_I);
         usuario.setUsuHabilitado(1);
         usuario.setUsuEstatus(1);
+        usuario.setUsuOmitirValidaciones(0);
         return usuario;
     }
 
