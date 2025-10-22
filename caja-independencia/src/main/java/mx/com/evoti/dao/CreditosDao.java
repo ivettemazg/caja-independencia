@@ -674,12 +674,13 @@ public class CreditosDao extends ManagerDB implements Serializable {
         });
         super.beginTransaction();
 
-        String sql = ""
+       String sql = ""
             + "SELECT "
             + "    amo_credito AS creditoId,"
             + "    SUM(CASE WHEN amo_fecha_pago <= :catAnterior THEN amo_monto_pago ELSE 0 END) AS saldoPendiente,"
             + "    SUM(CASE WHEN amo_fecha_pago <= :catAnterior THEN 1 ELSE 0 END) AS catPendAdeudo,"
-            + "    SUM(CASE WHEN amo_fecha_pago >= :catSiguiente THEN amo_amortizacion ELSE 0 END) AS saldoCapital,"
+            + "    SUM(CASE WHEN amo_fecha_pago >= :catSiguiente THEN "
+            + "         CASE WHEN amo_amortizacion > 0 THEN amo_amortizacion ELSE amo_monto_pago END ELSE 0 END) AS saldoCapital,"
             + "    SUM(CASE WHEN amo_fecha_pago >= :catSiguiente THEN 1 ELSE 0 END) AS catPendCap "
             + "FROM amortizacion "
             + "WHERE amo_estatus_int = 1 "
