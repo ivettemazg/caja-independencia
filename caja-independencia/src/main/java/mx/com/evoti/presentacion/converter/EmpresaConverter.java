@@ -23,17 +23,27 @@ public class EmpresaConverter implements Converter{
 
     @Override
     public EmpresasDto getAsObject(FacesContext fc, UIComponent uic, String string) {
-
-        
-          String [] propiedadesDto = string.split(",");
-           EmpresasDto estado;
-        try{
-        estado = new EmpresasDto(Integer.parseInt(propiedadesDto[0]),propiedadesDto[1]);
-        }catch(NumberFormatException nfe){
-            LOGGER.error(nfe.getMessage(), "No se pudo convertir el valor");
+        if (string == null) {
             return null;
         }
-        return estado;
+
+        String valor = string.trim();
+        if (valor.isEmpty() || "Seleccione".equalsIgnoreCase(valor)) {
+            return null;
+        }
+
+        String[] propiedadesDto = valor.split(",", 2);
+        if (propiedadesDto.length < 2) {
+            LOGGER.error("Formato inválido para EmpresaConverter: {}", valor);
+            return null;
+        }
+
+        try {
+            return new EmpresasDto(Integer.parseInt(propiedadesDto[0]), propiedadesDto[1]);
+        } catch (NumberFormatException nfe) {
+            LOGGER.error("No se pudo convertir el valor '{}' a empresa válida", valor, nfe);
+            return null;
+        }
     }
 
     @Override

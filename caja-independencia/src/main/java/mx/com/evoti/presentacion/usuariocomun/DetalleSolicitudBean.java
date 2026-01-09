@@ -46,6 +46,11 @@ public class DetalleSolicitudBean extends BaseBean implements Serializable {
     private UsuarioDto usuario;
 
     public void init() {
+        if (!super.validateUser()) {
+            LOGGER.info("Se detectó sesión inválida al inicializar DetalleSolicitudBean");
+            return;
+        }
+
         try {
             LOGGER.info("Iniciando DetalleSolicitudBean");
 
@@ -57,6 +62,18 @@ public class DetalleSolicitudBean extends BaseBean implements Serializable {
             
             BigInteger idSolicitud = (BigInteger) super.getSession().getAttribute("idSolicitud");
             usuario = (UsuarioDto) super.getSession().getAttribute("usuario");
+
+            if (idSolicitud == null) {
+                LOGGER.warn("No se encontró idSolicitud en sesión; se detendrá la inicialización de DetalleSolicitudBean");
+                super.muestraMensajeError("La sesión ha expirado", "Seleccione nuevamente la solicitud.", null);
+                return;
+            }
+
+            if (usuario == null) {
+                LOGGER.warn("No se encontró usuario en sesión; se detendrá la inicialización de DetalleSolicitudBean");
+                super.muestraMensajeError("La sesión ha expirado", "Inicie sesión nuevamente.", null);
+                return;
+            }
             
             solicitud = detSolBo.getSolById(idSolicitud);   
             

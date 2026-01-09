@@ -5,8 +5,8 @@
  */
 package mx.com.evoti.hibernate.config;
 
+import java.time.Instant;
 import java.io.Serializable;
-
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -72,9 +72,13 @@ public class HibernateUtil implements Serializable{
         if (sessionFactory != null) {
             try {
                 if (!sessionFactory.isClosed()) {
-                    logger.info("Cerrando el pool de conexiones...");
+                    Instant inicioCierre = Instant.now();
+                    logger.info(String.format("Cerrando el pool de conexiones en %s (hilo=%s)",
+                            inicioCierre, Thread.currentThread().getName()));
                     sessionFactory.close();
                     sessionFactory = null;
+                    logger.info(String.format("SessionFactory cerrada correctamente en %s",
+                            Instant.now()));
                 }
             } catch (Exception e) {
                 logger.error("Error al cerrar la SessionFactory", e);

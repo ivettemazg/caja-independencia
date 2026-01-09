@@ -11,6 +11,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.transform.Transformers;
 
 /**
@@ -112,115 +113,192 @@ public class ManagerDB {
     }
 
     protected void executeUpdate(String hql) throws IntegracionException {
+        Transaction tx = null;
+        Session localSession = null;
         try {
-            Query createQuery;
-            this.beginTransaction();
-            createQuery = this.session.createQuery(hql);
+            localSession = HibernateUtil.getSessionFactory().openSession();
+            tx = localSession.beginTransaction();
+            Query createQuery = localSession.createQuery(hql);
             createQuery.executeUpdate();
-            this.session.flush();
-            this.session.getTransaction().commit();
-
+            localSession.flush();
+            tx.commit();
         } catch (HibernateException ex) {
-            this.session.getTransaction().rollback();
+            if (tx != null && tx.isActive()) {
+                try {
+                    tx.rollback();
+                } catch (Exception rollEx) {
+                    LOGGER.error("Error al hacer rollback de la transaccion", rollEx);
+                }
+            }
             throw new IntegracionException(LogError.QUERY + hql, ex);
         } finally {
-            this.endTransaction();
+            if (localSession != null && localSession.isOpen()) {
+                localSession.close();
+            }
         }
     }
 
     protected void executeUpdateSql(String sql) throws IntegracionException {
+        Transaction tx = null;
+        Session localSession = null;
         try {
-            SQLQuery sqQuery;
-            this.beginTransaction();
-            sqQuery = this.session.createSQLQuery(sql);
+            localSession = HibernateUtil.getSessionFactory().openSession();
+            tx = localSession.beginTransaction();
+            SQLQuery sqQuery = localSession.createSQLQuery(sql);
             sqQuery.executeUpdate();
-
-//                this.session.flush();
-            this.session.getTransaction().commit();
+            tx.commit();
 
         } catch (HibernateException ex) {
-            this.session.getTransaction().rollback();
+            if (tx != null && tx.isActive()) {
+                try {
+                    tx.rollback();
+                } catch (Exception rollEx) {
+                    LOGGER.error("Error al hacer rollback de la transaccion", rollEx);
+                }
+            }
             throw new IntegracionException(LogError.QUERY + sql, ex);
         } finally {
-            this.endTransaction();
+            if (localSession != null && localSession.isOpen()) {
+                localSession.close();
+            }
         }
     }
 
     public void updatePojo(Object pojo) throws IntegracionException {
-             
-        this.beginTransaction();
-
+        Transaction tx = null;
+        Session localSession = null;
         try {
-            session.update(pojo);
-            session.getTransaction().commit();
-            session.flush();
+            localSession = HibernateUtil.getSessionFactory().openSession();
+            tx = localSession.beginTransaction();
+            localSession.update(pojo);
+            localSession.flush();
+            tx.commit();
         } catch (HibernateException ex) {
-            session.getTransaction().rollback();
+            if (tx != null && tx.isActive()) {
+                try {
+                    tx.rollback();
+                } catch (Exception rollEx) {
+                    LOGGER.error("Error al hacer rollback de la transaccion", rollEx);
+                }
+            }
             throw new IntegracionException(ex.getMessage(), ex);
-        }catch (Exception ex){ 
-            session.getTransaction().rollback();
+        } catch (Exception ex) {
+            if (tx != null && tx.isActive()) {
+                try {
+                    tx.rollback();
+                } catch (Exception rollEx) {
+                    LOGGER.error("Error al hacer rollback de la transaccion", rollEx);
+                }
+            }
             throw new IntegracionException(ex.getMessage(), ex);
         } finally {
-            this.endTransaction();
+            if (localSession != null && localSession.isOpen()) {
+                localSession.close();
+            }
         }
 
     }
 
     public void savePojo(Object pojo) throws IntegracionException {
-       this.beginTransaction();
-
+        Transaction tx = null;
+        Session localSession = null;
         try {
-            session.save(pojo);
-            session.getTransaction().commit();
-            session.flush();
+            localSession = HibernateUtil.getSessionFactory().openSession();
+            tx = localSession.beginTransaction();
+            localSession.save(pojo);
+            localSession.flush();
+            tx.commit();
 
         } catch (HibernateException ex) {
-            session.getTransaction().rollback();
+            if (tx != null && tx.isActive()) {
+                try {
+                    tx.rollback();
+                } catch (Exception rollEx) {
+                    LOGGER.error("Error al hacer rollback de la transaccion", rollEx);
+                }
+            }
             throw new IntegracionException(ex.getMessage(), ex);
-        }catch (Exception ex){ 
-            session.getTransaction().rollback();
+        } catch (Exception ex) {
+            if (tx != null && tx.isActive()) {
+                try {
+                    tx.rollback();
+                } catch (Exception rollEx) {
+                    LOGGER.error("Error al hacer rollback de la transaccion", rollEx);
+                }
+            }
             throw new IntegracionException(ex.getMessage(), ex);
-        }finally {
-            this.endTransaction();
+        } finally {
+            if (localSession != null && localSession.isOpen()) {
+                localSession.close();
+            }
         }
 
     }
 
     public void savePojos(List<Object> pojos) throws IntegracionException {
-      this.beginTransaction();
-
+        Transaction tx = null;
+        Session localSession = null;
         try {
-            pojos.forEach(pojo -> session.save(pojo));
-            session.getTransaction().commit();
-            session.flush();
+            localSession = HibernateUtil.getSessionFactory().openSession();
+            tx = localSession.beginTransaction();
+            pojos.forEach(localSession::save);
+            localSession.flush();
+            tx.commit();
 
         } catch (HibernateException ex) {
-            session.getTransaction().rollback();
+            if (tx != null && tx.isActive()) {
+                try {
+                    tx.rollback();
+                } catch (Exception rollEx) {
+                    LOGGER.error("Error al hacer rollback de la transaccion", rollEx);
+                }
+            }
             throw new IntegracionException(ex.getMessage(), ex);
         } finally {
-           this.endTransaction();
+            if (localSession != null && localSession.isOpen()) {
+                localSession.close();
+            }
         }
 
     }
 
     public Object mergePojo(Object pojo) throws IntegracionException {
-        this.beginTransaction();
-
+        Transaction tx = null;
+        Session localSession = null;
         try {
-            pojo = session.merge(pojo);
-            session.flush();
-            session.getTransaction().commit();
+            localSession = HibernateUtil.getSessionFactory().openSession();
+            tx = localSession.beginTransaction();
+            pojo = localSession.merge(pojo);
+            localSession.flush();
+            tx.commit();
 
         } catch (HibernateException ex) {
-            session.getTransaction().rollback();
+            if (tx != null && tx.isActive()) {
+                try {
+                    tx.rollback();
+                } catch (Exception rollEx) {
+                    LOGGER.error("Error al hacer rollback de la transaccion", rollEx);
+                }
+            }
             throw new IntegracionException(ex.getMessage(), ex);
         } finally {
-            this.endTransaction();
+            if (localSession != null && localSession.isOpen()) {
+                localSession.close();
+            }
         }
         return pojo;
 
     }
 
+    /**
+     * Uso restringido.
+     * <p>
+     * La creación y cierre del {@link org.hibernate.SessionFactory} está
+     * centralizado en {@link mx.com.evoti.hibernate.config.ContextListener}.
+     * No invocar este método desde el flujo normal de la aplicación; únicamente
+     * existe para utilerías standalone o pruebas locales.
+     */
+    @Deprecated
     protected void closeSessionFactory() {
         HibernateUtil.closeSessionFactory();
     }

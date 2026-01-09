@@ -25,6 +25,10 @@
     <property name="hibernate.c3p0.idle_test_period">600</property>
     <property name="hibernate.c3p0.acquire_increment">5</property>
     <property name="hibernate.c3p0.validate">true</property>
+    <property name="hibernate.c3p0.preferredTestQuery">SELECT 1</property>
+    <property name="hibernate.c3p0.testConnectionOnCheckout">true</property>
+    <property name="hibernate.c3p0.unreturnedConnectionTimeout">600</property>
+    <property name="hibernate.c3p0.debugUnreturnedConnectionStackTraces">true</property>
 
     <!--<property name="hibernate.current_session_context_class">thread</property>-->
     <property name="show_sql">true</property>

@@ -480,6 +480,12 @@ public class SolicitudBo implements Serializable {
             Date fechaUltimoPago) throws BusinessException {
 
         try {
+            Solicitudes solicitudExistente = solDao.consultaSolicitudEnProceso(usuario.getId());
+            if (solicitudExistente != null) {
+                LOGGER.info("Solicitud pendiente ya existente para el usuario {} con id {}", usuario.getId(), solicitudExistente.getSolId());
+                return solicitudExistente.getSolId();
+            }
+
             Solicitudes solicitud = new Solicitudes();
             Usuarios usuSolicitud = new Usuarios(usuario.getId());
             Productos producto = new Productos();

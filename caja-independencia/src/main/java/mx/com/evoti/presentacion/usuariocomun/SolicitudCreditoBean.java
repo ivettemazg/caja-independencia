@@ -243,7 +243,7 @@ public class SolicitudCreditoBean extends BaseBean implements Serializable {
                 
                 BigInteger idSolicitud = new BigInteger(solBo.creaSolicitud(usuarioDto, montoSolicitado, deducciones, catorcenas, faCatorcena, tipoSolicitud, interesTotal, pagoCatorcenal, amortizacionBean.getUltimaFechaFaAG()).toString());
                 super.getSession().setAttribute("idSolicitud", idSolicitud);
-                
+
                 navigationBean.goToDetalleSolicitud();
             } catch (BusinessException ex) {
                 LOGGER.error(ex.getMessage(), ex);

@@ -108,6 +108,34 @@ public class SolicitudCreditoDao extends ManagerDB implements Serializable, Soli
 
     }
 
+    /**
+     * Obtiene la solicitud en estatus CREACION (1) del usuario, si existe.
+     *
+     * @param idUsuario identificador del usuario
+     * @return Solicitud en estatus 1 o {@code null} si no hay
+     * @throws IntegracionException cuando ocurre un problema con la consulta
+     */
+    public Solicitudes consultaSolicitudEnProceso(int idUsuario) throws IntegracionException {
+        try {
+            super.beginTransaction();
+
+            Query hql = session.createQuery("from Solicitudes "
+                    + "where usuarios.usuId = :idUsuario "
+                    + "and solicitudEstatus.solEstId = 1 "
+                    + "order by solFechaCreacion desc");
+
+            Solicitudes solicitud = (Solicitudes) hql.setInteger("idUsuario", idUsuario)
+                    .setMaxResults(1)
+                    .uniqueResult();
+
+            return solicitud;
+        } catch (Exception he) {
+            throw new IntegracionException(he);
+        } finally {
+            super.endTransaction();
+        }
+    }
+
 
     /**
      * Guarda la solicitud
