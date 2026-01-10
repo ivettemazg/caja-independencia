@@ -28,7 +28,6 @@ public class ReporteResultadoPagosBean extends BaseBean implements Serializable 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ReporteResultadoPagosBean.class);
     private static final long serialVersionUID = -7455685082343704755L;
 
-    private ReporteResultadosDao rrPagDao;
     private boolean rdrTablas;
     private Date fecha;
     private List<ResultadoPagosDto> pagosLst;
@@ -38,14 +37,10 @@ public class ReporteResultadoPagosBean extends BaseBean implements Serializable 
     private List<ResultadoAmoDto> amortizacionNoPagadosLst;
     private List<ResultadoAmoDto> amoNoPagadosLstFiltradas;
 
-    public ReporteResultadoPagosBean() {
-        rrPagDao = new ReporteResultadosDao();
-    }
-
-    
     public void obtenerResultados() {
         try {
             LOGGER.info("Dentro de obtenerResultados");
+            ReporteResultadosDao rrPagDao = new ReporteResultadosDao();
             pagosLst = rrPagDao.obtieneSituacionPagosXCatorcena(fecha);
             amortizacionLst = rrPagDao.obtieneResultadoAmortizacion(fecha);
             amortizacionNoPagadosLst = rrPagDao.obtieneCreditosNoPagados(fecha);

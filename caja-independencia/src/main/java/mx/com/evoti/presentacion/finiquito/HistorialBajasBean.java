@@ -30,19 +30,15 @@ public class HistorialBajasBean extends BaseBean implements Serializable {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(HistorialBajasBean.class);
     private static final long serialVersionUID = -2778736954390098395L;
 
-    private HistorialBajasBo bo;
     private List<UsuarioBajaDto> bajas;
     private UsuarioBajaDto bajaSelected;
 
     @ManagedProperty("#{navigationController}")
     private NavigationBean navigationBean;
 
-    public HistorialBajasBean() {
-        this.bo = new HistorialBajasBo();
-    }
-
     public void init() {
         try {
+            HistorialBajasBo bo = new HistorialBajasBo();
             bajas = bo.getBajaUsuarios(Constantes.BAJA_COMPLETADA);
         } catch (BusinessException ex) {
             LOGGER.error(ex.getMessage(), ex);

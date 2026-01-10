@@ -18,16 +18,10 @@ public class ReporteBitacoraBean extends BaseBean implements Serializable {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ReporteBitacoraBean.class);
 
     private List<TransaccionUsuarioDto> transacciones;
-    private TransaccionDao dao;
-    
-    public ReporteBitacoraBean() {
-        dao = new TransaccionDao();
-    }
-
     public void init() {
         try {
             System.out.println("init");
-
+            TransaccionDao dao = new TransaccionDao();
             transacciones = dao.getTransacciones();
         } catch (IntegracionException ex) {
             LOGGER.error(ex.getMessage(), ex);

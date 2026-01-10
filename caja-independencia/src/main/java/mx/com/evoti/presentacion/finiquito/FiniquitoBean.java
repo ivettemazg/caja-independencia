@@ -5,8 +5,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +13,6 @@ import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.dto.DetalleCreditoDto;
 import mx.com.evoti.dto.MovimientosDto;
 import mx.com.evoti.dto.finiquito.AvalesCreditoDto;
-import mx.com.evoti.hibernate.pojos.Bancos;
 import mx.com.evoti.hibernate.pojos.Movimientos;
 import mx.com.evoti.hibernate.pojos.Usuarios;
 import mx.com.evoti.presentacion.BaseBean;
@@ -39,8 +36,6 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     @ManagedProperty("#{detAdCreBean}")
     private DetalleAdeudoCreditosBean detAdCreBean;
 
-    private FiniquitoService finiquitoService;
-
     private Usuarios usuarioBaja;
     private String usuBajaNombreCompleto;
 
@@ -53,7 +48,6 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     private String cveCredSeleccionado;
 
     private Double saldoATransferir;
-    private Double sumaTotalDevolucion;
     private Double adeudoTotalCredito;
     private Double adeudoAjustado;
     private Double montoFiniquito;
@@ -89,8 +83,12 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     private Integer origen;
 
+    private FiniquitoService createFiniquitoService() {
+        return new FiniquitoService();
+    }
+
     public void init() {
-        finiquitoService = new FiniquitoService();
+        FiniquitoService finiquitoService = createFiniquitoService();
         try {
             Integer idUsuBaja = (Integer) getSession().getAttribute("usuBajaId");
 
@@ -112,6 +110,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public void obtieneTotalesMovimientos() {
         try {
+                FiniquitoService finiquitoService = createFiniquitoService();
                 LOGGER.debug("***************** OBTIENETOTALESMOVIMIENTO++++++++++++++++++++++++++++++");
                 this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
     
@@ -170,6 +169,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public void aplicaDevolucion() {
         try {
+            FiniquitoService finiquitoService = createFiniquitoService();
             if (movDevSelected != null) {
                 if (movDevSelected.getDevolucion() == null) {
                     movDevSelected.setDevolucion(movDevSelected.getTotalMovimiento());
@@ -274,11 +274,13 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     }
 
     private void aplicarModoFiniquito(DetalleCreditoDto credito) throws BusinessException {
+        FiniquitoService finiquitoService = createFiniquitoService();
         finiquitoService.aplicarFiniquito(usuarioBaja, credito, montoFiniquito, fechaFiniquito, detAdCreBean);
         muestraMensajeExito("El crédito fue ajustado por finiquito", "", null);
     }
 
     private boolean aplicarModoAbono(DetalleCreditoDto credito) {
+        FiniquitoService finiquitoService = createFiniquitoService();
         List<MovimientosDto> abonosValidos = movimientos.stream()
             .filter(m -> Boolean.TRUE.equals(m.isEditadoFiniquitos()) &&
                         m.getDevolucion() != null && m.getDevolucion() > 0)
@@ -326,6 +328,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     private void actualizarVistaPostAjuste() {
         try {
+            FiniquitoService finiquitoService = createFiniquitoService();
             this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
             detAdCreBean.obtieneCreditosDetalle();
             this.creditos = detAdCreBean.getCreditos();
@@ -379,6 +382,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public void devolverTotalAhorro() {
         try {
+            FiniquitoService finiquitoService = createFiniquitoService();
             // Ejecuta devolución total en el servicio
             finiquitoService.devolverTotalesAhorros(usuarioBaja, movimientos);
 
@@ -410,6 +414,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public void initDlgTransferir() {
         try {
+            FiniquitoService finiquitoService = createFiniquitoService();
             DetalleCreditoDto credito = detAdCreBean.getCreditoSelected();
             this.cveCredSeleccionado = credito.getCreClave();
             
@@ -435,6 +440,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public void transfiereCreditos() {
         try {
+            FiniquitoService finiquitoService = createFiniquitoService();
             DetalleCreditoDto credito = detAdCreBean.getCreditoSelected();
             finiquitoService.transferir(credito, avales);
             this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
@@ -451,6 +457,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public void mandarAIncobrable() {
         try {
+            FiniquitoService finiquitoService = createFiniquitoService();
             DetalleCreditoDto credito = detAdCreBean.getCreditoSelected();
             finiquitoService.marcarIncobrable(credito, fechaIncobrable);
             this.movimientos = finiquitoService.obtenerAhorrosPorUsuario(usuarioBaja.getUsuId());
@@ -476,6 +483,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public void actualizarBajaEmpleadoFinal() {
         try {
+            FiniquitoService finiquitoService = createFiniquitoService();
             double saldoCreditos = this.creditos.stream()
                     .mapToDouble(c -> c.getSaldoTotal() != null ? c.getSaldoTotal() : 0.0)
                     .sum();
@@ -509,6 +517,7 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
         public void refrescarVista() {
         try {
+            FiniquitoService finiquitoService = createFiniquitoService();
             detAdCreBean.setUsuario(usuarioBaja);
             detAdCreBean.obtieneCreditosDetalle();
             this.creditos = detAdCreBean.getCreditos();
@@ -609,19 +618,5 @@ public class FiniquitoBean extends BaseBean implements Serializable {
 
     public Double getSaldoATransferir() { return saldoATransferir;}
     public void setSaldoATransferir(Double saldoATransferir) { this.saldoATransferir = saldoATransferir; }
-
-    public double getSumaTotalDevolucion() {
-        if (movimientos == null) {
-            return 0.0;
-        }
-        return movimientos.stream()
-                .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
-                .sum();
-    }
-
-    public void setSumaTotalDevolucion(Double sumaTotalDevolucion) {
-        this.sumaTotalDevolucion = sumaTotalDevolucion;
-    }
-
 
 } 

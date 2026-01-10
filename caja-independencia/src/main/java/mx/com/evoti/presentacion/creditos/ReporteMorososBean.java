@@ -28,25 +28,15 @@ public class ReporteMorososBean extends BaseBean implements Serializable {
     private List<CreditoDto> credFiltered;
     private CreditoDto credSelected;
   
-    private ReporteMorososDao dao;
-    private AmortizacionDao amoDao;
-    private PagosDao pagDao;
     private Date fechaCorte;
     private boolean rendererTablaMorosos;
     private List<AmortizacionDto> amortizacion;
     private List<PagoDto> pagosSinRegistrar;
-   
-
-    
-    public ReporteMorososBean() {
-        dao = new ReporteMorososDao();
-        amoDao = new AmortizacionDao();
-        pagDao = new PagosDao();
-    }
 
     public void getReporte() {
         try {
             System.out.println("init");
+            ReporteMorososDao dao = new ReporteMorososDao();
             this.creditos = dao.getReporteMorosos(fechaCorte);
              rendererTablaMorosos = true;
         } catch (IntegracionException ex) {
@@ -54,12 +44,13 @@ public class ReporteMorososBean extends BaseBean implements Serializable {
         }
     }
     
-     public void obtieneTblAmortizacionPagos() {
+    public void obtieneTblAmortizacionPagos() {
 
         try {
-            
-           amortizacion=  amoDao.getAmortizacionXCredito(credSelected.getCreId());
-           pagosSinRegistrar = pagDao.getPagosSinRegistrar(credSelected.getCreUsuId());
+            AmortizacionDao amoDao = new AmortizacionDao();
+            PagosDao pagDao = new PagosDao();
+            amortizacion = amoDao.getAmortizacionXCredito(credSelected.getCreId());
+            pagosSinRegistrar = pagDao.getPagosSinRegistrar(credSelected.getCreUsuId());
         } catch (IntegracionException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
