@@ -619,4 +619,13 @@ public class FiniquitoBean extends BaseBean implements Serializable {
     public Double getSaldoATransferir() { return saldoATransferir;}
     public void setSaldoATransferir(Double saldoATransferir) { this.saldoATransferir = saldoATransferir; }
 
+    public double getSumaTotalDevolucion() {
+        if (movimientos == null) {
+            return 0.0;
+        }
+        return movimientos.stream()
+                .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
+                .sum();
+    }
+
 } 

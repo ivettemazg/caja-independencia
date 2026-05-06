@@ -157,7 +157,8 @@ public class BajaEmpleadoBean extends BaseBean implements Serializable {
 
             // 3. Mensajes y navegación
             super.muestraMensajeExito("El usuario fue dado de baja", "", "msjDadoBaja");
-            super.hideShowDlg("PF('dlgMessageExito').show()");
+            goToFiniquito();
+            LOGGER.info("→ Redireccion exitosa a finiquito (usuId=" + usuarioBaja.getUsuId() + ")");
 
             LOGGER.info("► Fin proceso de baja (OK)");
 

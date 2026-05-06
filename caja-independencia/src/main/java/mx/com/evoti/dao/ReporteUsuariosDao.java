@@ -7,9 +7,13 @@ package mx.com.evoti.dao;
 
 import java.io.Serializable;
 import java.util.List;
+import mx.com.evoti.dao.exception.LogError;
 import mx.com.evoti.dao.exception.IntegracionException;
 import mx.com.evoti.dto.ReporteUsuariosDto;
+import mx.com.evoti.hibernate.config.HibernateUtil;
+import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.slf4j.LoggerFactory;
 
@@ -28,13 +32,18 @@ public class ReporteUsuariosDao extends ManagerDB implements Serializable {
                 + "usu_fecha_ingreso as fechaIngresoCaja, usu_fecha_ingreso_empresa as fechaIngresoEmpresa, "
                 + "usu_fecha_baja as fechaBaja "
                 + "from usuarios u left join empresas e on u.usu_empresa=e.emp_id order by usu_id");
-
-        super.beginTransaction();
-        SQLQuery sqlQuery = session.createSQLQuery(sql);
-
-        List<ReporteUsuariosDto> results = sqlQuery.setResultTransformer(Transformers.aliasToBean(ReporteUsuariosDto.class)).list();
-        super.endTransaction();
-        return results;
+        Session localSession = null;
+        try {
+            localSession = HibernateUtil.getSessionFactory().openSession();
+            SQLQuery sqlQuery = localSession.createSQLQuery(sql);
+            return sqlQuery.setResultTransformer(Transformers.aliasToBean(ReporteUsuariosDto.class)).list();
+        } catch (HibernateException ex) {
+            throw new IntegracionException(LogError.QUERY + sql, ex);
+        } finally {
+            if (localSession != null && localSession.isOpen()) {
+                localSession.close();
+            }
+        }
     }
 
 }
