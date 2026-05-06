@@ -277,6 +277,38 @@ public class FiniquitoService {
         dao.actualizarBajaEmpleadoConFiniquito(usuId, deudaCreditos, ahorros, estatus, fechaFiniquito);
     }
 
+    public void actualizarSnapshotBajaInicial(Usuarios usuario) throws BusinessException {
+        if (usuario == null || usuario.getUsuId() == null) {
+            throw new BusinessException("Usuario invalido para actualizar baja inicial");
+        }
+
+        List<DetalleCreditoDto> creditos = finiquitoBo.obtCreditosDetalleFiniquito(usuario);
+        double saldoCreditos = creditos.stream()
+            .mapToDouble(c -> c.getSaldoTotal() != null ? c.getSaldoTotal() : 0.0)
+            .sum();
+
+        List<MovimientosDto> movimientos = movimientosBo.getAhorrosByUsuId(usuario.getUsuId());
+        double saldoAhorros = movimientos.stream()
+            .mapToDouble(m -> m.getTotalMovimiento() != null ? m.getTotalMovimiento() : 0.0)
+            .sum();
+
+        int estatus;
+        if (saldoCreditos >= 5.0) {
+            estatus = Constantes.BAJA_PENDIENTE;
+        } else if (saldoAhorros >= 5.0) {
+            estatus = Constantes.BAJA_AHORROSXDEVOLVER;
+        } else {
+            estatus = Constantes.BAJA_COMPLETADA;
+        }
+
+        finiquitoBo.updtBaeSaldoAhorro(
+            usuario.getUsuId(),
+            Util.round(saldoCreditos),
+            Util.round(saldoAhorros),
+            estatus
+        );
+    }
+
     // Nuevo método para centralizar la devolución total de ahorros:
     public void devolverTotalesAhorros(Usuarios usuario, List<MovimientosDto> dtos) throws BusinessException {
         if (dtos == null || dtos.isEmpty()) {

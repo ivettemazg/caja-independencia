@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -24,7 +23,6 @@ import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.bo.jasper.DoctosJasperSolicitudBo;
 import mx.com.evoti.bo.jasper.GeneradorReportesBo;
 import mx.com.evoti.bo.usuarioComun.DetalleSolicitudBo;
-import mx.com.evoti.bo.util.EnviaCorreo;
 import mx.com.evoti.dto.ImagenesDto;
 import mx.com.evoti.dto.UsuarioDto;
 import mx.com.evoti.dto.common.AmortizacionDto;
@@ -37,7 +35,6 @@ import mx.com.evoti.presentacion.NavigationBean;
 import mx.com.evoti.presentacion.common.GeneradorReportesBean;
 import mx.com.evoti.util.Constantes;
 import net.sf.jasperreports.engine.JRException;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -57,7 +54,6 @@ public class MisSolicitudesBean extends BaseBean implements Serializable {
     @ManagedProperty("#{navigationController}")
     private NavigationBean navigationBean;
 
-    private DetalleSolicitudBo detSolBo;
     private DoctosJasperSolicitudBo docJaspBo;
     private List<SolicitudCreditoDto> misSolicitudes;
 
@@ -72,7 +68,6 @@ public class MisSolicitudesBean extends BaseBean implements Serializable {
     private GeneradorReportesBo genRepBo;
 
     public MisSolicitudesBean() {
-        detSolBo = new DetalleSolicitudBo();
         docJaspBo = new DoctosJasperSolicitudBo();
         genRepBo = new GeneradorReportesBo();
     }
@@ -85,6 +80,7 @@ public class MisSolicitudesBean extends BaseBean implements Serializable {
         if(super.validateUser()){
             try {
                 UsuarioDto usrDto = (UsuarioDto) super.getSession().getAttribute("usuario");
+                DetalleSolicitudBo detSolBo = new DetalleSolicitudBo();
                 misSolicitudes = detSolBo.getSolsByUsuId(usrDto.getId());
             } catch (BusinessException ex) {
                 LOGGER.error("Error al obtener las solicitudes del usuario", ex);
@@ -233,7 +229,8 @@ public class MisSolicitudesBean extends BaseBean implements Serializable {
             System.out.println("#####################################");
 
             //Se actualiza la solicitud al estatus DOCUMENTOS ENVIADOS
-            detSolBo.updtEstatusSolicitud(solicitudSeleccionada.getSolId(), Constantes.SOL_EST_DOCTOS_ENV,null);
+            DetalleSolicitudBo detSolBo = new DetalleSolicitudBo();
+            detSolBo.updtEstatusSolicitud(solicitudSeleccionada.getSolId(), Constantes.SOL_EST_DOCTOS_ENV, null);
 
             ImagenesDto img = new ImagenesDto();
             img.setImagen(fileName);

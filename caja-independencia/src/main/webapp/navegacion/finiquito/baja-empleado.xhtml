@@ -111,22 +111,15 @@
                                              oncomplete="PF('statusDialog').hide()"
                                              update=":frmBajaEmpleado:dlgMsgExito"/>
 
-
-
                         </p:panelGrid>
 
-                        <p:dialog id="dlgMsgExito" widgetVar="dlgMessageExito" modal="true" closable="true" 
+                         <p:dialog id="dlgMsgExito" widgetVar="dlgMessageExito" modal="true" closable="true" 
                                   >
-                            <p:ajax event="close" listener="#{baeBean.goToFiniquito()}" />
                             <p:messages id="msjDadoBaja" for="msjDadoBaja"></p:messages>
                         </p:dialog>
 
-                        <p:growl id="growl" sticky="true" life="11000"/>
+                        <p:growl id="growl" sticky="true" life="11000" />
                     </h:form>
-
-
-
-
 
 
                 </div>

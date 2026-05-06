@@ -12,21 +12,17 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpSession;
-import mx.com.evoti.bo.CreditosBo;
-import mx.com.evoti.bo.MovimientosBo;
 import mx.com.evoti.bo.administrador.finiquito.FiniquitosBo;
 import mx.com.evoti.bo.exception.BusinessException;
 import mx.com.evoti.dao.EmpresasDao;
 import mx.com.evoti.dao.exception.IntegracionException;
-import mx.com.evoti.dto.DetalleCreditoDto;
 import mx.com.evoti.dto.EmpresasDto;
-import mx.com.evoti.dto.MovimientosDto;
 import mx.com.evoti.hibernate.pojos.BajaEmpleados;
 import mx.com.evoti.hibernate.pojos.Usuarios;
 import mx.com.evoti.presentacion.BaseBean;
 import mx.com.evoti.presentacion.NavigationBean;
+import mx.com.evoti.service.finiquito.FiniquitoService;
 import mx.com.evoti.util.Constantes;
-import mx.com.evoti.util.Util;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -39,11 +35,6 @@ public class BajaEmpleadoBean extends BaseBean implements Serializable {
 
     private static final long serialVersionUID = 2143872566991683216L;
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BajaEmpleadoBean.class);
-
-    public FiniquitosBo finBo;
-    private EmpresasDao empDao;
-    private CreditosBo creditoBo;
-    private MovimientosBo movsBo;
 
     private Usuarios usuarioBaja;
     private List<Usuarios> usuariosBaja;
@@ -63,14 +54,11 @@ public class BajaEmpleadoBean extends BaseBean implements Serializable {
     private FiniquitoBean finBean;
 
     public BajaEmpleadoBean() {
-        finBo = new FiniquitosBo();
-        empDao = new EmpresasDao();
-        creditoBo = new CreditosBo();
-        movsBo = new MovimientosBo();
     }
 
     public void init() {
         try {
+            EmpresasDao empDao = new EmpresasDao();
             empresas = empDao.getEmpresasDto();
             rdrDatosBajaEmpleado = Boolean.FALSE;
         } catch (IntegracionException ex) {
@@ -85,6 +73,7 @@ public class BajaEmpleadoBean extends BaseBean implements Serializable {
         try {
 
             if (claveEmpleado != null && empresa != null) {
+                FiniquitosBo finBo = new FiniquitosBo();
                 usuariosBaja = finBo.buscaUsuario(claveEmpleado, empresa.getEmpId());
 
                 /**
@@ -153,6 +142,7 @@ public class BajaEmpleadoBean extends BaseBean implements Serializable {
             baja.setBaeEstatus(Constantes.BAJA_INICIADA);
 
             // 2. Persistir baja y actualizar usuario
+            FiniquitosBo finBo = new FiniquitosBo();
             finBo.insertBajaEmpleado(baja);
             LOGGER.info("   → Baja insertada con estatus=BAJA_INICIADA");
 
@@ -161,9 +151,14 @@ public class BajaEmpleadoBean extends BaseBean implements Serializable {
             finBo.updtEstatusUsuario(usuarioBaja);
             LOGGER.info("   → Estatus usuario actualizado a USU_BAJA_0");
 
+            FiniquitoService finiquitoService = new FiniquitoService();
+            finiquitoService.actualizarSnapshotBajaInicial(usuarioBaja);
+            LOGGER.info("   → Snapshot de baja actualizado");
+
             // 3. Mensajes y navegación
             super.muestraMensajeExito("El usuario fue dado de baja", "", "msjDadoBaja");
-            super.hideShowDlg("PF('dlgMessageExito').show()");
+            goToFiniquito();
+            LOGGER.info("→ Redireccion exitosa a finiquito (usuId=" + usuarioBaja.getUsuId() + ")");
 
             LOGGER.info("► Fin proceso de baja (OK)");
 
