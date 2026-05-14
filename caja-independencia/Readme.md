@@ -1,3 +1,9 @@
+# Caja Independencia
+
+## Documentacion tecnica para IA y desarrolladores
+
+Antes de modificar el proyecto, lee [`docs/AI_CONTEXT.md`](docs/AI_CONTEXT.md). Ese archivo resume la arquitectura, modulos, flujo de capas, reglas de dominio y estructura de base de datos para evitar tener que revisar todo el codigo desde cero en cada cambio.
+
 # 🧹 Flujo de Trabajo Maven + Tomcat
 
 ## ✅ 1. Después de hacer cambios en el `pom.xml`

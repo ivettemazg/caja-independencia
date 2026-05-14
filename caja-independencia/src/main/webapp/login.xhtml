@@ -48,7 +48,13 @@
                     <p:commandButton  value="Entrar" styleClass="Fs16" actionListener="#{loginBean.validaLogin}"
                                       update=":frmLogin"
                                       ></p:commandButton>
-                    <div class="EmptyBox10"></div>
+                    <div class="EmptyBox20"></div>
+                    <h:outputLink value="#{request.contextPath}/recuperar-password.xhtml"
+                                  styleClass="Fs14"
+                                  style="display:inline-block;">
+                        <h:outputText value="¿Olvidaste tu contraseña?" />
+                    </h:outputLink>
+                    <div class="EmptyBox20"></div>
                     <div class="Seperator"></div>
                     <div class="EmptyBox10"></div>
                      <p:messages id="mensajes" showDetail="false" />
