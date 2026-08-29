@@ -70,5 +70,6 @@
     <mapping resource="mx/com/evoti/hibernate/pojos/TipoTransaccion.hbm.xml"/>
     <mapping resource="mx/com/evoti/hibernate/pojos/RegistroTransaccion.hbm.xml"/>
     <mapping resource="mx/com/evoti/hibernate/pojos/Configuracion.hbm.xml"/>
+    <mapping resource="mx/com/evoti/hibernate/pojos/PasswordResetTokens.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

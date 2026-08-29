@@ -155,6 +155,17 @@ public class EnviaCorreo implements Serializable {
         return rpta;
     }
 
+    public static boolean sendPasswordResetMessage(String nombre, String liga, String email) {
+        String usuario = nombre == null || nombre.trim().isEmpty() ? "Usuario" : nombre.trim();
+        String mensaje = "Estimado(a) " + usuario + ":<br/><br/>"
+                + "Recibimos una solicitud para restablecer la contrase&ntilde;a de tu cuenta. "
+                + "Para continuar, da clic en la siguiente liga:<br/><br/>"
+                + "<a href='" + liga + "'>Restablecer contrase&ntilde;a</a><br/><br/>"
+                + "Esta liga estara vigente por 10 minutos. "
+                + "Si no solicitaste este cambio, puedes ignorar este correo.";
+        return sendMessage(mensaje, "Restablecer contrasena", email);
+    }
+
     public static void main(String args[]) {
 
         System.out.println("HOLA");
