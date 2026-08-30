@@ -1,8 +1,42 @@
 @charset "UTF-8";
 /* CSS Document */
 
+/* ============================================================================
+   COLORES POR ESTATUS EN DATATABLES
+   ----------------------------------------------------------------------------
+   Las clases de abajo (.PAGADO, .PAG, .CANCELADO, ...) se aplican al <tr>
+   mediante rowStyleClass, por ejemplo:
 
+       <p:dataTable rowStyleClass="#{amo.amoEstColor}">
 
+   POR QUE SE PERDIA EL COLOR AL PASAR EL CURSOR
+   ---------------------------------------------
+   El tema Spark pinta el fondo de hover y de seleccion sobre los <td>,
+   no sobre el <tr> (ver resources/primefaces-spark-blue/theme.css, lineas
+   604-606):
+
+       .ui-datatable table tbody .ui-state-hover td     {background-color:#E0E6ED;}
+       .ui-datatable table tbody .ui-state-highlight td {background-color:#F7941E;}
+
+   Como las celdas son opacas y estan ENCIMA de la fila, tapaban el color del
+   <tr> y la fila se veia gris. Por eso agregar mas "!important" a .PAGADO
+   nunca funciono: el conflicto no es de especificidad, es que cada regla
+   pinta un elemento distinto (una el <tr>, la otra los <td>).
+
+   SOLUCION (bloque al final de este archivo)
+   ------------------------------------------
+   1. En las filas CON estatus, los <td> heredan el fondo de su <tr>, para que
+      el color se vea.
+   2. El hover de esas filas deja de pintar el gris fijo del tema: aplica una
+      capa oscura translucida que respeta el color de la fila.
+   3. La seleccion (naranja) sigue ganando, porque es funcionalmente necesaria
+      para las pantallas donde se eligen renglones (pago a capital, etc.).
+   4. La fila en edicion conserva el gris del tema.
+
+   El bloque esta acotado a las filas con clase de estatus, de modo que las
+   tablas que no usan rowStyleClass no cambian en nada. Al dar de alta un
+   estatus nuevo hay que agregar su clase a las reglas 1 y 2.
+   ============================================================================ */
 
 .PAGADO{
     background-color: #9BFF78 !important; 
@@ -75,6 +109,91 @@
 
 
 /*Colores de pagos_estatus*/
+/* PENDIENTE: los valores de pagos_estatus.pag_est_color (PENDT, EXACTO, MENOR,
+   MAYOR, MASUNO, MASUNOA, SAMORT, ACUM, CAPITAL, EXTEMP, DEVAC, FINIQ,
+   CAPAHORRO) no tienen clase definida aqui, por lo que las tablas de
+   rep-resultado-pagos.xhtml y carga-archivo.xhtml se muestran sin color.
+   Lo mismo aplica a 'ajustado' / 'ajustado-parcial' (bancos) y
+   'colorArchivoAsignado' (carga de archivos). Falta definir esos colores. */
+
+
+/* ============================================================================
+   CORRECCION DE HOVER Y SELECCION SOBRE FILAS CON COLOR DE ESTATUS
+   Ver explicacion completa en el encabezado de este archivo.
+
+   ALCANCE DELIBERADO
+   ------------------
+   Las reglas 1 y 2 se limitan a las filas que traen clase de estatus. En el
+   sistema hay 77 dataTables y solo 14 usan rowStyleClass; las otras 63 no
+   tenian el problema, asi que se dejan intactas: conservan exactamente el
+   hover gris del tema.
+
+   >>> AL AGREGAR UN ESTATUS NUEVO hay que sumar su clase a las listas de las
+   >>> reglas 1 y 2, o esa fila volvera a perder el color al pasar el cursor.
+
+   El orden de las cuatro reglas importa: van de menos a mas prioritaria,
+   porque varias empatan en especificidad y desempata la ultima declarada.
+   ============================================================================ */
+
+/* 1) Las celdas de una fila con estatus heredan el color de esa fila.
+      Sin esto, el color que rowStyleClass pone en el <tr> queda oculto en
+      cuanto el tema pinta un fondo en los <td>. */
+.ui-datatable table tbody tr.PAGADO > td,
+.ui-datatable table tbody tr.CANCELADO > td,
+.ui-datatable table tbody tr.TRANSFERIDO > td,
+.ui-datatable table tbody tr.INCOBRABLE > td,
+.ui-datatable table tbody tr.AJUSTADO > td,
+.ui-datatable table tbody tr.AJUSTADO_DESC_EMP > td,
+.ui-datatable table tbody tr.PAG > td,
+.ui-datatable table tbody tr.DFIN > td,
+.ui-datatable table tbody tr.TRA > td,
+.ui-datatable table tbody tr.INCO > td,
+.ui-datatable table tbody tr.REC > td {
+    background-color: inherit;
+}
+
+/* 2) Hover sobre una fila con estatus: en lugar del gris fijo del tema, una
+      capa oscura translucida que deja ver el color de la fila. El box-shadow
+      inset se dibuja por detras del texto, asi que no afecta la legibilidad. */
+.ui-datatable table tbody tr.PAGADO.ui-state-hover > td,
+.ui-datatable table tbody tr.CANCELADO.ui-state-hover > td,
+.ui-datatable table tbody tr.TRANSFERIDO.ui-state-hover > td,
+.ui-datatable table tbody tr.INCOBRABLE.ui-state-hover > td,
+.ui-datatable table tbody tr.AJUSTADO.ui-state-hover > td,
+.ui-datatable table tbody tr.AJUSTADO_DESC_EMP.ui-state-hover > td,
+.ui-datatable table tbody tr.PAG.ui-state-hover > td,
+.ui-datatable table tbody tr.DFIN.ui-state-hover > td,
+.ui-datatable table tbody tr.TRA.ui-state-hover > td,
+.ui-datatable table tbody tr.INCO.ui-state-hover > td,
+.ui-datatable table tbody tr.REC.ui-state-hover > td {
+    background-color: inherit !important;
+    box-shadow: inset 0 0 0 9999px rgba(0, 0, 0, 0.07);
+}
+
+/* 3) Seleccion: debe seguir siendo evidente, porque en varias pantallas se
+      eligen renglones para operar sobre ellos (pago a capital, pago
+      extemporaneo, recorrer catorcenas). Sin esto, las reglas 1 y 2 le
+      ganarian al tema y la fila seleccionada se veria de su color de estatus.
+      Repite el mismo naranja del tema, asi que en las tablas sin color el
+      resultado es identico al actual. */
+.ui-datatable table tbody tr.ui-state-highlight > td,
+.ui-datatable table tbody tr.ui-state-highlight.ui-state-hover > td {
+    background-color: #F7941E !important;
+    color: #F1F6F9;                 /* sin !important: mismo valor y prioridad que el tema */
+    box-shadow: none !important;    /* anula la capa de hover de la regla 2 */
+}
+
+/* 4) Fila en edicion (p:rowEditor / p:cellEditor): conserva el gris del tema.
+      Va al final porque PrimeFaces marca la fila en edicion con
+      ui-state-highlight ADEMAS de ui-row-editing, y sin esto la regla 3 la
+      pintaria de naranja. Repite el gris del tema, de modo que las tablas sin
+      color quedan igual que hoy. Se usa en ahorros-tabla.xhtml,
+      amortizacion-rep-e.xhtml, ajuste-banco.xhtml, beneficiarios.xhtml, etc. */
+.ui-datatable table tbody tr.ui-state-highlight.ui-row-editing > td {
+    background-color: #DDE4ED !important;
+    color: #778D9B;                 /* sin !important: mismo valor y prioridad que el tema */
+    box-shadow: none !important;    /* anula la capa de hover de la regla 2 */
+}
 
 
 
