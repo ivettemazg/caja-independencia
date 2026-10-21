@@ -78,7 +78,7 @@ public class CambiosEmpresaBo implements Serializable {
                 if (!coincidencias.isEmpty()) {
 
                     for (Usuarios usu : coincidencias) {
-                        MovimientosDto ultimosMovs = dao.getUltimosMovs(usu.getUsuId(), movimiento.getMovId());
+                        MovimientosDto ultimosMovs = dao.getUltimosMovs(usu.getUsuId());
 
                         if (ultimosMovs != null) {
 

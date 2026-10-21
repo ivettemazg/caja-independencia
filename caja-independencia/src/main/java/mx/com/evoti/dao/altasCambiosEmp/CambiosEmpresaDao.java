@@ -215,13 +215,19 @@ public class CambiosEmpresaDao extends ManagerDB implements Serializable {
     }
 
     /**
+     * Obtiene el último movimiento (cargado desde archivo) del usuario.
+     *
+     * No hace falta excluir el movimiento pendiente que se está evaluando: ese
+     * movimiento tiene mov_usu_id nulo (así lo selecciona getPendtsCambiosAltas)
+     * y esta consulta filtra por mov_usu_id = idUsuario, por lo que nunca
+     * aparece aquí. Antes se excluía con "mov_id <> movId", pero movId llegaba
+     * nulo y la condición "mov_id <> null" hacía que nunca regresara filas.
      *
      * @param idUsuario
-     * @param movId
      * @return
      * @throws IntegracionException
      */
-    public MovimientosDto getUltimosMovs(Integer idUsuario, Integer movId) throws IntegracionException {
+    public MovimientosDto getUltimosMovs(Integer idUsuario) throws IntegracionException {
 
         try {
             super.beginTransaction();
@@ -232,8 +238,7 @@ public class CambiosEmpresaDao extends ManagerDB implements Serializable {
                             + "mov.mov_fecha as movFecha,mov.mov_empresa as movEmpresa, mov.mov_arh_id as movArhId  "
                             + "from movimientos mov where mov.mov_usu_id = %1$s "
                             + "and mov.mov_arh_id is not null "
-                            + "and mov.mov_id <> %2$s "
-                            + "order by mov_fecha desc", idUsuario, movId));
+                            + "order by mov_fecha desc", idUsuario));
 
             MovimientosDto movimientos = (MovimientosDto) query.setResultTransformer(Transformers.aliasToBean(MovimientosDto.class)).setMaxResults(1).uniqueResult();
 
@@ -253,7 +258,7 @@ public class CambiosEmpresaDao extends ManagerDB implements Serializable {
 //            List<PagoDto> pagos = dao.getCambiosEmpresaFrmPag("2016-10-13");
 //            List<Object[]> result = dao.obtieneUsuarioXNombre("MANZANO");
 
-            MovimientosDto movs = dao.getUltimosMovs(1, 1302126);
+            MovimientosDto movs = dao.getUltimosMovs(1);
 
             System.out.println(movs.getMovFecha());
 
