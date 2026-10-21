@@ -144,8 +144,9 @@ public class CambiosEmpresaDao extends ManagerDB implements Serializable {
     }
 
     public void updateUsuarioClaveEmpresa(Usuarios pojo) throws IntegracionException {
-        super.beginTransaction();
-
+        // No se abre sesión aquí: executeUpdateSql abre, confirma y cierra la suya.
+        // Antes se llamaba beginTransaction() sin endTransaction() y cada cambio de
+        // empresa dejaba una conexión del pool ocupada.
         try {
 
             String sql = String.format("update usuarios set usu_clave_empleado = %1$s, "
