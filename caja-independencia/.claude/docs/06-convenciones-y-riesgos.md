@@ -181,6 +181,28 @@ Nunca se comparan montos por igualdad exacta. Las tolerancias vigentes:
 
 Respétalas. Vienen del redondeo `DOWN`/`UP` a 2 decimales del cálculo de amortización.
 
+### Colores de fila por estatus: el tema pinta las celdas, no la fila
+
+`rowStyleClass="#{dto.color}"` aplica la clase de color al **`<tr>`**, pero el tema Spark pinta el
+fondo de hover y selección sobre los **`<td>`** (`primefaces-spark-*/theme.css`, líneas 604-606,
+sin `!important`). Como las celdas son opacas y están encima de la fila, tapan su color.
+
+Por eso **subir el `!important` de la clase de color nunca sirve**: las dos reglas no compiten,
+pintan elementos distintos. La corrección (hecha en agosto 2026) vive en
+`webapp/resources/sindicato/css/colores-estatus.css` y consiste en que las celdas de una fila con
+estatus hereden su fondo, más reglas explícitas para que selección y edición sigan ganando. Ese
+archivo lleva la explicación completa en su encabezado.
+
+Está **acotado a las 11 clases de estatus existentes** para no alterar las 63 tablas que no usan
+`rowStyleClass` (de 77 en total). Consecuencia a recordar:
+
+> Al dar de alta un estatus con color hay que agregar su clase a las reglas 1 y 2 de
+> `colores-estatus.css`, o esa fila perderá el color al pasar el cursor.
+
+Pendiente relacionado: 16 clases que las vistas ya usan **no están definidas**, así que esas tablas
+se ven sin color — los 13 valores de `pagos_estatus.pag_est_color` (`rep-resultado-pagos.xhtml`,
+`carga-archivo.xhtml`), `ajustado` / `ajustado-parcial` (bancos) y `colorArchivoAsignado`.
+
 ### Scopes de bean no uniformes
 
 `cargaPagosApoBean` y `generadorReportesBean` son `@SessionScoped`; `asignaPagosBean` y

@@ -1,0 +1,56 @@
+Conectado a la instancia de ENSAYO 34.121.1.96 como sindicatoindependencia | MySQL 8.0.31-google
+
+=== Huella de cada tabla de sindicato: numero de filas y checksum del contenido ===
+> checksum table sindicato.ajuste, sindicato.altas_cambios_hist, sindicato.amortizacion, sindicato.amortizacion_estatus, sindicato.archivos_historial, sindicato.avales, sindicato.baja_empleados, sindicato.bajasahorro, sindicato.banco_edocta, sindicato.bancos, sindicato.bancos_conceptos, sindicato.beneficiarios, sindicato.bitacora, sindicato.bitacora_transacciones, sindicato.cargos, sindicato.catorcenas, sindicato.configuracion, sindicato.credito_estatus, sindicato.creditos, sindicato.creditos02, sindicato.creditos_final, sindicato.devoluciones, sindicato.empresas, sindicato.estado_cuenta, sindicato.imagenes, sindicato.movimientos, sindicato.pagos, sindicato.pagos_estatus, sindicato.parentesco_ben, sindicato.password_reset_tokens, sindicato.productos, sindicato.rel_banco_edocta, sindicato.registro_transaccion, sindicato.rendimiento, sindicato.rendimiento3, sindicato.roles, sindicato.solicitud_avales, sindicato.solicitud_estatus, sindicato.solicitudes, sindicato.tabulador, sindicato.tipo_transaccion, sindicato.usuarios, sindicato.usuarios_resp
+sindicato.ajuste | 162680844
+sindicato.altas_cambios_hist | 2000438068
+sindicato.amortizacion | 526570508
+sindicato.amortizacion_estatus | 3697028740
+sindicato.archivos_historial | 1297420085
+sindicato.avales | 0
+sindicato.baja_empleados | 753931127
+sindicato.bajasahorro | 1586196331
+sindicato.banco_edocta | 0
+sindicato.bancos | 2693579483
+sindicato.bancos_conceptos | 3493492143
+sindicato.beneficiarios | 3429668987
+sindicato.bitacora | 3729532695
+sindicato.bitacora_transacciones | 0
+sindicato.cargos | 0
+sindicato.catorcenas | 238848331
+sindicato.configuracion | 254445513
+sindicato.credito_estatus | 2388052666
+sindicato.creditos | 0
+sindicato.creditos02 | 4129298407
+sindicato.creditos_final | 3051521998
+sindicato.devoluciones | 0
+sindicato.empresas | 1245865845
+sindicato.estado_cuenta | 2446600494
+sindicato.imagenes | 2975614054
+sindicato.movimientos | 2720024284
+sindicato.pagos | 2255131762
+sindicato.pagos_estatus | 2487461954
+sindicato.parentesco_ben | 1842087652
+sindicato.password_reset_tokens | 4157500404
+sindicato.productos | 3067258425
+sindicato.rel_banco_edocta | 0
+sindicato.registro_transaccion | 273843767
+sindicato.rendimiento | 1355302406
+sindicato.rendimiento3 | 0
+sindicato.roles | 2236424567
+sindicato.solicitud_avales | 1154177114
+sindicato.solicitud_estatus | 446109491
+sindicato.solicitudes | 3341580263
+sindicato.tabulador | 3628396530
+sindicato.tipo_transaccion | 2626140887
+sindicato.usuarios | 1028160702
+sindicato.usuarios_resp | 0
+(43 filas)
+
+=== Objetos programados y procedimientos ===
+> select event_name, status, interval_value, interval_field from information_schema.events where event_schema = 'sindicato'
+ev_eliminar_solicitudes_antiguas | DISABLED | 1 | DAY
+(1 filas)
+> select routine_name, routine_type from information_schema.routines where routine_schema = 'sindicato'
+sp_eliminar_solicitudes_antiguas | PROCEDURE
+(1 filas)
