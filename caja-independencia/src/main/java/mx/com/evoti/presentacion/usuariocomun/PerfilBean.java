@@ -7,6 +7,7 @@ package mx.com.evoti.presentacion.usuariocomun;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import mx.com.evoti.bo.exception.BusinessException;
@@ -120,9 +121,18 @@ public class PerfilBean extends BaseBean implements Serializable {
                 bo.updtUsuario(usuario);
             }
 
-            UsuarioDto usrDto = bo.getUsuarioActualizado(usuario.getUsuId());
-            if(usrDto != null){
-                this.getSession().setAttribute("usuario", usrDto);
+            /**
+             * Solo se refresca el usuario de la sesión cuando quien guarda es el mismo
+             * usuario del perfil (Mi Perfil o su propia solicitud). Desde el panel de
+             * administración se edita a otro socio: si se reemplazara la sesión, el
+             * administrador quedaría con la identidad y el rol de ese socio.
+             */
+            UsuarioDto usrSesion = (UsuarioDto) this.getSession().getAttribute("usuario");
+            if (usrSesion != null && Objects.equals(usrSesion.getId(), usuario.getUsuId())) {
+                UsuarioDto usrDto = bo.getUsuarioActualizado(usuario.getUsuId());
+                if(usrDto != null){
+                    this.getSession().setAttribute("usuario", usrDto);
+                }
             }
             
             
