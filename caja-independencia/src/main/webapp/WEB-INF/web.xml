@@ -23,7 +23,18 @@
     <listener>
         <listener-class>mx.com.evoti.hibernate.config.ContextListener</listener-class>
     </listener>
-    
+
+    <!-- Control de acceso: sesión obligatoria y pantallas administrativas solo para Administrador y Auxiliar.
+         Va primero para que una petición sin permiso no llegue a procesarse. -->
+    <filter>
+        <filter-name>Control de Acceso</filter-name>
+        <filter-class>mx.com.evoti.seguridad.ControlAccesoFiltro</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>Control de Acceso</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+    </filter-mapping>
+
      <filter>
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
         <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
