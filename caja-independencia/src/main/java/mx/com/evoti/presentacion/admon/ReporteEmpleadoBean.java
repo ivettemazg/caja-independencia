@@ -876,6 +876,20 @@ public class ReporteEmpleadoBean extends BaseBean implements Serializable {
     }
 
     /**
+     * @return the totalDetalle
+     */
+    public Double getTotalDetalle() {
+        return totalDetalle;
+    }
+
+    /**
+     * @param totalDetalle the totalDetalle to set
+     */
+    public void setTotalDetalle(Double totalDetalle) {
+        this.totalDetalle = totalDetalle;
+    }
+
+    /**
      * @return the totalAhorro
      */
     public Double getTotalAhorro() {
